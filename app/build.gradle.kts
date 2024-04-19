@@ -71,6 +71,7 @@ dependencies {
     debugImplementation(libs.androidx.ui.test.manifest)
     implementation(libs.google.dagger)
     kapt(libs.google.dagger.compiler)
+    implementation(libs.sqldelight.driver)
 }
 
 sqldelight {
