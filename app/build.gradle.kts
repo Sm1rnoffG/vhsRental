@@ -73,4 +73,10 @@ dependencies {
     kapt(libs.google.dagger.compiler)
 }
 
-
+sqldelight {
+    databases {
+        create("VhsRental") {
+            packageName.set("com.example")
+        }
+    }
+}
