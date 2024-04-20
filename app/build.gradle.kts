@@ -76,8 +76,8 @@ dependencies {
 
 sqldelight {
     databases {
-        create("VhsRental") {
-            packageName.set("com.example")
+        create("VHSRental") {
+            packageName.set("com.example.vhsrental.data")
         }
     }
 }
