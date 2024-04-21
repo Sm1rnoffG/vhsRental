@@ -16,7 +16,7 @@ sealed class Genre {
 }
 
 data class Movie (
-    val id: Int,
+    override val id: Int,
     var name: String,
     var length: Int,
     var availableCopies: Int,
@@ -28,4 +28,4 @@ data class Movie (
     var releaseYear: Int,
     var description: String,
     var genre: Genre
-)
+) : ADataModel()

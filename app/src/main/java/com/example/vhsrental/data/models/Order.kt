@@ -4,13 +4,15 @@ import java.util.Date
 
 sealed class OrderState {
     data object Reservation
+    data object InProgress
+    data object Done
 }
 
 data class Order (
-    val id: Int,
+    override val id: Int,
     var state: OrderState,
     var createDate: Date,
     var returnDate: Date?,
     var user: User,
     var movie: Movie
-)
+) : ADataModel()
