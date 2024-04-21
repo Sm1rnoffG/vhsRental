@@ -2,10 +2,10 @@ package com.example.vhsrental.data.models
 
 import java.util.Date
 
-sealed class OrderState {
-    data object Reservation
-    data object InProgress
-    data object Done
+enum class OrderState {
+    Reservation,
+    InProgress,
+    Done
 }
 
 data class Order (

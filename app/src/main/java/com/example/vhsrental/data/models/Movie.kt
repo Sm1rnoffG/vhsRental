@@ -1,18 +1,18 @@
 package com.example.vhsrental.data.models
 
 
-sealed class Format {
-    data object DVD
-    data object VHS
-    data object BlueRay
+enum class Format {
+    DVD,
+    VHS,
+    BlueRay
 }
 
-sealed class Genre {
-    data object Action
-    data object Romantic
-    data object Horror
-    data object Family
-    data object Comedy
+enum class Genre {
+    Action,
+    Romantic,
+    Horror,
+    Family,
+    Comedy
 }
 
 data class Movie (
