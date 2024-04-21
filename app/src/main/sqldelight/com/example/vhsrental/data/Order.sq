@@ -12,6 +12,16 @@ SELECT *
 FROM rental_order
 ORDER BY id;
 
+deleteOrder:
+DELETE FROM rental_order
+WHERE id = ?;
+
+selectUsersOrders:
+SELECT *
+FROM rental_order
+WHERE user_id = ?
+ORDER BY return_date DESC;
+
 createOrder:
 INSERT OR ABORT INTO rental_order (
     id,

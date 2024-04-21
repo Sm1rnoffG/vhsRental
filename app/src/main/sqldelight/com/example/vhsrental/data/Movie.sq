@@ -18,6 +18,11 @@ SELECT *
 FROM movie
 ORDER BY name;
 
+deleteMovie:
+DELETE FROM movie
+WHERE id = ?;
+
+
 addMovie:
 INSERT OR ABORT INTO movie (
     id,

@@ -17,6 +17,10 @@ SELECT *
 FROM user
 WHERE email = ?;
 
+deleteUser:
+DELETE FROM user
+WHERE id = ?;
+
 addUser:
 INSERT OR ABORT INTO user (
     id,
