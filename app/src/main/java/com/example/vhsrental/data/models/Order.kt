@@ -5,7 +5,9 @@ import java.util.Date
 enum class OrderState {
     Reservation,
     InProgress,
-    Done
+    Done,
+    OverDue,
+    Extended
 }
 
 data class Order (
