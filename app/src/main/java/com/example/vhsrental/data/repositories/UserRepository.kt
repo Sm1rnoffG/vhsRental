@@ -1,7 +1,8 @@
 package com.example.vhsrental.data.repositories
 
 import com.example.vhsrental.data.VHSRentalDB
-import com.example.vhsrental.data.models.ADataModel
+import com.example.vhsrental.data.models.ADomainModel
+import com.example.vhsrental.data.models.DomainUser
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -9,27 +10,16 @@ import javax.inject.Singleton
 class UserRepository @Inject constructor(
     private val db: VHSRentalDB
 ) : IRepository {
-    override fun sellectAll(): List<ADataModel> {
-        TODO("Not yet implemented")
+    override fun sellectAll(): List<DomainUser> {
+        return db.selectAllUsers().map { it.asDomainModel() }
     }
 
-    override fun filter(column: String, value: String): List<ADataModel> {
-        TODO("Not yet implemented")
+    override fun delete(id: Long) {
+        db.deleteUser(id)
     }
 
-    override fun sort(column: String, lowToHigh: Boolean): List<ADataModel> {
-        TODO("Not yet implemented")
-    }
-
-    override fun search(column: String, value: String): List<ADataModel> {
-        TODO("Not yet implemented")
-    }
-
-    override fun delete(id: Int) {
-        TODO("Not yet implemented")
-    }
-
-    override fun insert(new: ADataModel) {
-        TODO("Not yet implemented")
+    override fun insert(new: ADomainModel) {
+        val user = new as DomainUser
+        db.addUser(user.asDBModel())
     }
 }

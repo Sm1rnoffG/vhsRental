@@ -1,7 +1,8 @@
 package com.example.vhsrental.data.repositories
 
 import com.example.vhsrental.data.VHSRentalDB
-import com.example.vhsrental.data.models.ADataModel
+import com.example.vhsrental.data.models.ADomainModel
+import com.example.vhsrental.data.models.DomainOrder
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -9,27 +10,16 @@ import javax.inject.Singleton
 class OrderRepository @Inject constructor(
     private val db: VHSRentalDB
 ) : IRepository {
-    override fun sellectAll(): List<ADataModel> {
-        TODO("Not yet implemented")
+    override fun sellectAll(): List<ADomainModel> {
+        return db.selectAllOrders().map { it.asDomainModel() }
     }
 
-    override fun filter(column: String, value: String): List<ADataModel> {
-        TODO("Not yet implemented")
+    override fun delete(id: Long) {
+        db.deleteOrder(id)
     }
 
-    override fun sort(column: String, lowToHigh: Boolean): List<ADataModel> {
-        TODO("Not yet implemented")
-    }
-
-    override fun search(column: String, value: String): List<ADataModel> {
-        TODO("Not yet implemented")
-    }
-
-    override fun delete(id: Int) {
-        TODO("Not yet implemented")
-    }
-
-    override fun insert(new: ADataModel) {
-        TODO("Not yet implemented")
+    override fun insert(new: ADomainModel) {
+        val order = new as DomainOrder
+        db.addOrder(order.asDBModel())
     }
 }
