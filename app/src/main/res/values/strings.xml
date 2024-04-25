@@ -1,3 +1,15 @@
 <resources>
     <string name="app_name">vhsRental</string>
+    <string name="loginHeading">Welcome!</string>
+    <string name="emailPlaceholder">E-mail</string>
+    <string name="loginButton">Log in!</string>
+    <string name="logToRegButton">Don\'t have an account? Sign up!</string>
+    <string name="registerHeading">Create an account!</string>
+    <string name="namePlaceholder">Name</string>
+    <string name="surnamePlaceholder">Surname</string>
+    <string name="passwordPlaceholder">Password</string>
+    <string name="repeatPasswordPlaceholder">Repeat password</string>
+    <string name="registerSuccess">Successfully created account!</string>
+    <string name="registerButton">Sign up!</string>
+    <string name="regToLogButton">Already have an account? Log in!</string>
 </resources>
