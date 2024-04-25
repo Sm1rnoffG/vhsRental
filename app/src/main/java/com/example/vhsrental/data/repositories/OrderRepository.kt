@@ -10,15 +10,15 @@ import javax.inject.Singleton
 class OrderRepository @Inject constructor(
     private val db: VHSRentalDB
 ) : IRepository {
-    override fun sellectAll(): List<ADomainModel> {
+    override suspend fun selectAll(): List<ADomainModel> {
         return db.selectAllOrders().map { it.asDomainModel() }
     }
 
-    override fun delete(id: Long) {
+    override suspend fun delete(id: Long) {
         db.deleteOrder(id)
     }
 
-    override fun insert(new: ADomainModel) {
+    override suspend fun insert(new: ADomainModel) {
         val order = new as DomainOrder
         db.addOrder(order.asDBModel())
     }
