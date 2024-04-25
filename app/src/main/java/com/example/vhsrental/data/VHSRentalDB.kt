@@ -7,10 +7,11 @@ import app.cash.sqldelight.driver.android.AndroidSqliteDriver
 import com.example.vhsrental.data.models.DBMovie
 import com.example.vhsrental.data.models.DBOrder
 import com.example.vhsrental.data.models.DBUser
-import dagger.hilt.android.qualifiers.ActivityContext
 import javax.inject.Inject
+import javax.inject.Singleton
 
-class VHSRentalDB @Inject constructor(@ActivityContext context: Context) {
+@Singleton
+class VHSRentalDB @Inject constructor(context: Context) {
 
     private val driver: SqlDriver
 
