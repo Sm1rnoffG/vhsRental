@@ -12,11 +12,6 @@ SELECT *
 FROM user
 ORDER BY id;
 
-findUserByEmail:
-SELECT *
-FROM user
-WHERE email = ?;
-
 deleteUser:
 DELETE FROM user
 WHERE id = ?;
