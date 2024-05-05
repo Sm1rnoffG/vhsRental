@@ -13,15 +13,11 @@ import javax.inject.Singleton
 @Singleton
 class VHSRentalDB @Inject constructor(context: Context) {
 
-    private val driver: SqlDriver
-
-    init {
-        driver = AndroidSqliteDriver(
-            schema = VHSRental.Schema,
-            context = context,
-            name = "vhsrental.db"
-        )
-    }
+    private val driver: SqlDriver = AndroidSqliteDriver(
+        schema = VHSRental.Schema,
+        context = context,
+        name = "vhsrental.db"
+    )
 
     fun selectAllMovies() : List<DBMovie> {
         return VHSRental(driver).movieQueries
@@ -59,6 +55,21 @@ class VHSRentalDB @Inject constructor(context: Context) {
             }
     }
 
+    fun getUserById(id: Long) : DBUser {
+        return VHSRental(driver).userQueries
+            .getUser(id)
+            .executeAsList()[0].let {
+                DBUser(it.id, it.name, it.surname, it.email, it.password, it.role)
+        }
+    }
+
+    fun getUserByEmail(email: String) : List<DBUser> {
+        return VHSRental(driver).userQueries
+            .getUserByEmail(email)
+            .executeAsList()
+            .map { DBUser(it.id, it.name, it.surname, it.email, it.password, it.role) }
+    }
+
     fun deleteUser(id: Long) {
         VHSRental(driver).userQueries.deleteUser(id)
     }
@@ -92,5 +103,17 @@ class VHSRentalDB @Inject constructor(context: Context) {
 
     fun deleteOrder(id: Long) {
         VHSRental(driver).orderQueries.deleteOrder(id)
+    }
+
+    fun updateUser(user: DBUser) {
+        VHSRental(driver).userQueries
+            .updateAccount(
+                user.id,
+                user.name,
+                user.surname,
+                user.email,
+                user.password,
+                user.role
+            )
     }
 }

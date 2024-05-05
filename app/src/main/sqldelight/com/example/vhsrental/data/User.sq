@@ -16,6 +16,25 @@ deleteUser:
 DELETE FROM user
 WHERE id = ?;
 
+updateAccount:
+INSERT OR REPLACE INTO user(
+    id,
+    name,
+    surname,
+    email,
+    password,
+    role
+)
+VALUES (?, ?, ?, ?, ?, ?);
+
+getUser:
+SELECT * FROM user
+WHERE id = ?;
+
+getUserByEmail:
+SELECT * FROM user
+WHERE email = ?;
+
 addUser:
 INSERT OR ABORT INTO user (
     id,

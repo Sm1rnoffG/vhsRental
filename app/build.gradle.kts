@@ -73,6 +73,7 @@ dependencies {
     implementation(libs.google.dagger)
     kapt(libs.google.dagger.compiler)
     implementation(libs.sqldelight.driver)
+    implementation(libs.coil.compose)
 }
 
 sqldelight {

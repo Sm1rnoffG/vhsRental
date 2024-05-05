@@ -1,4 +1,4 @@
-package com.example.vhsrental.ui.screens
+package com.example.vhsrental.ui.screens.login
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.material3.Button
@@ -16,10 +16,10 @@ import com.example.vhsrental.ui.viewmodels.LoginUiState
 
 @Composable
 fun LoginScreen(
-    toCatalogue: () -> Unit,
-    toRegister: () -> Unit,
     vm: LoginViewModel,
     modifier: Modifier = Modifier,
+    toCatalogue: () -> Unit = {},
+    toRegister: () -> Unit = {},
 ) {
     val collected = vm.uiStateFlow.collectAsState()
     if (collected.value is LoginUiState.Register) {
@@ -42,14 +42,16 @@ fun LoginScreen(
             value = state.email,
             onValueChange = { vm.emitAction(LoginActions.OnLoginEmailUpdate(it)) },
             placeholder = { Text(text = stringResource(id = R.string.emailPlaceholder)) },
-            modifier = Modifier
+            modifier = Modifier,
+            isError = state.loginError && state.email.isEmpty()
         )
         OutlinedTextField(
             value = state.password,
             onValueChange = { vm.emitAction(LoginActions.OnLoginPasswordUpdate(it)) },
             placeholder = { Text(text = stringResource(id = R.string.passwordPlaceholder)) },
             visualTransformation = PasswordVisualTransformation(),
-            modifier = Modifier
+            modifier = Modifier,
+            isError = state.loginError && state.password.isEmpty()
         )
         if (state.loginError) {
             Text(
@@ -66,7 +68,7 @@ fun LoginScreen(
             )
         }
         Button(
-            onClick = { vm.emitAction(LoginActions.OnSwitchScreen) } ,
+            onClick = { vm.emitAction(LoginActions.OnSwitchScreen) },
             modifier = Modifier
         ) {
             Text(
