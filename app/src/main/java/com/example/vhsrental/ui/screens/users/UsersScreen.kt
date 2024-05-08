@@ -10,12 +10,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import com.example.vhsrental.data.models.DomainUser
 import com.example.vhsrental.ui.screens.QuerryBar
+import com.example.vhsrental.ui.viewmodels.QueryRequest
 
 @Composable
 fun UsersScreen(
     users: List<DomainUser>,
     toUserDetail: (DomainUser) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    onQueryRequest: () -> Unit = {},
 ) {
     Column (
         modifier = modifier

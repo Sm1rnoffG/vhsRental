@@ -14,13 +14,13 @@ import com.example.vhsrental.data.models.DomainMovie
 import com.example.vhsrental.data.models.DomainOrder
 import com.example.vhsrental.data.models.OrderState
 import com.example.vhsrental.ui.screens.movies.Poster
-import com.example.vhsrental.ui.viewmodels.MyOrderActions
+import com.example.vhsrental.ui.viewmodels.OrderActions
 
 @Composable
 fun MyOrderDetail(
     order: DomainOrder,
     movie: DomainMovie,
-    onMyOrderAction: (MyOrderActions) -> Unit,
+    onMyOrderAction: (OrderActions) -> Unit,
     modifier: Modifier = Modifier
 ) {
     Column (
@@ -52,14 +52,14 @@ fun MyOrderDetail(
 @Composable
 fun MyOrderActionButton(
     order: DomainOrder,
-    onMyOrderAction: (MyOrderActions) -> Unit,
+    onMyOrderAction: (OrderActions) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val action: MyOrderActions
+    val action: OrderActions
     val text: String
     when (order.state) {
-        OrderState.Reservation -> { action = MyOrderActions.Cancel(order); text = "Cancel Reservation" }
-        OrderState.InProgress -> { action = MyOrderActions.Extend(order); text = "Extend order"}
+        OrderState.Reservation -> { action = OrderActions.OnOrderFinish; text = "Cancel Reservation" }
+        OrderState.InProgress -> { action = OrderActions.OnOrderExtend; text = "Extend order"}
         else -> return
     }
 

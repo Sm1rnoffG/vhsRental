@@ -7,8 +7,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.navigation.compose.rememberNavController
-import com.example.vhsrental.ui.screens.navigation.AccountNavigation
-import com.example.vhsrental.ui.screens.navigation.LoginNavigation
+import com.example.vhsrental.ui.navigation.AccountNavigation
+import com.example.vhsrental.ui.navigation.LoginNavigation
+import com.example.vhsrental.ui.navigation.MoviesNavigation
 import com.example.vhsrental.ui.viewmodels.LoginUiState
 import com.example.vhsrental.ui.viewmodels.LoginViewModel
 import com.example.vhsrental.ui.viewmodels.MoviesViewModel
@@ -20,7 +21,7 @@ enum class Tab {
     MyOrders,
     Orders,
     Users,
-    AccountDetail
+    AccountDetail,
 }
 
 @Composable
@@ -36,12 +37,12 @@ fun AppSpine(
     Scaffold (
         topBar = { TopBar(vm = loginVm, navController = navController) },
         bottomBar = { BottomBar(vm = loginVm) },
-        floatingActionButton = { ActionButton(loginVm) }
+        floatingActionButton = { ActionButton(loginVm, movieVm) }
     ) { innerPadding ->
         Box(modifier = Modifier.padding(innerPadding)){
             if (state is LoginUiState.LoggedIn) {
                 when (state.selectedTab) {
-                    Tab.Movies -> Unit // MoviesNavigation(movieVm = movieVm, userRole = state.user.role)
+                    Tab.Movies -> MoviesNavigation(navController = navController, movieVm = movieVm, userRole = state.user.role)
                     Tab.MyOrders -> Unit
                     Tab.Orders -> Unit
                     Tab.Users -> Unit

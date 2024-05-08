@@ -48,7 +48,7 @@ sealed class LoginUiState {
         var email: String = "",
         var password: String = "",
         var loginError: Boolean = false,
-        var loginErrorMessage: String = ""
+        var loginErrorMessage: String = "",
     ) : LoginUiState()
 
     data class Register (
@@ -81,7 +81,7 @@ sealed class LoginUiState {
 
 @HiltViewModel
 class LoginViewModel @Inject constructor (
-    private val _userRepository: UserRepository
+    private val userRepository: UserRepository,
 ) : ViewModel() {
     private val _uiStateFlow: MutableStateFlow<LoginUiState> = MutableStateFlow(LoginUiState.Login())
 
@@ -111,65 +111,67 @@ class LoginViewModel @Inject constructor (
     }
 
     fun emitActionLoggedIn(action: UpdateAccountActions) {
+        val state = uiStateFlow.value as LoginUiState.LoggedIn
+
         when (action) {
             is UpdateAccountActions.OnEmailUpdate ->
-                _uiStateFlow.update { (it as LoginUiState.LoggedIn).copy(newEmail = action.update) }
+                _uiStateFlow.update { state.copy(newEmail = action.update) }
             is UpdateAccountActions.OnNameUpdate ->
-                _uiStateFlow.update { (it as LoginUiState.LoggedIn).copy(newName = action.update) }
+                _uiStateFlow.update { state.copy(newName = action.update) }
             is UpdateAccountActions.OnOldPasswordUpdate ->
-                _uiStateFlow.update { (it as LoginUiState.LoggedIn).copy(oldPassword = action.update) }
+                _uiStateFlow.update { state.copy(oldPassword = action.update) }
             is UpdateAccountActions.OnPasswordRepeatUpdate ->
-                _uiStateFlow.update { (it as LoginUiState.LoggedIn).copy(newPasswordRepeat = action.update) }
+                _uiStateFlow.update { state.copy(newPasswordRepeat = action.update) }
             is UpdateAccountActions.OnPasswordUpdate ->
-                _uiStateFlow.update { (it as LoginUiState.LoggedIn).copy(newPassword = action.update) }
+                _uiStateFlow.update { state.copy(newPassword = action.update) }
             is UpdateAccountActions.OnSurnameUpdate ->
-                _uiStateFlow.update { (it as LoginUiState.LoggedIn).copy(newSurname = action.update) }
+                _uiStateFlow.update { state.copy(newSurname = action.update) }
             is UpdateAccountActions.OnConfirmUpdatePassword -> updatePassword()
             is UpdateAccountActions.OnConfirmUpdateData -> updateAccountData()
             is UpdateAccountActions.OnSwitchTab ->
-                _uiStateFlow.update { (it as LoginUiState.LoggedIn).copy(selectedTab = action.newTab) }
+                _uiStateFlow.update { state.copy(selectedTab = action.newTab) }
             is UpdateAccountActions.OnLogOut -> _uiStateFlow.update { LoginUiState.Login() }
             is UpdateAccountActions.OnDisplayDataRequest ->
-                _uiStateFlow.update { (it as LoginUiState.LoggedIn).copy(
-                    selectedTab = Tab.AccountDetail,
-                ) }
+                _uiStateFlow.update { state.copy(selectedTab = Tab.AccountDetail) }
             is UpdateAccountActions.DismissAlert ->
-                _uiStateFlow.update { (it as LoginUiState.LoggedIn).copy(successfulUpdate = false) }
+                _uiStateFlow.update { state.copy(successfulUpdate = false) }
         }
     }
 
     private fun updatePassword() {
         try {
-            _userRepository.updatePassword(uiStateFlow.value as LoginUiState.LoggedIn)
+            userRepository.updatePassword(uiStateFlow.value as LoginUiState.LoggedIn)
             _uiStateFlow.update { LoginUiState.LoggedIn(
-                user = _userRepository.getUserById(
-                    (uiStateFlow.value as LoginUiState.LoggedIn).user.id),
+                user = userRepository.getUserById(
+                    (uiStateFlow.value as LoginUiState.LoggedIn).user.id
+                ),
                 selectedTab = Tab.AccountDetail,
-                successfulUpdate = true
+                successfulUpdate = true,
             ) }
         } catch (e: Exception) {
             _uiStateFlow.update {(uiStateFlow.value as LoginUiState.LoggedIn).copy(
                 isError = true,
                 errorMessage = e.message ?: "Error",
-                oldPassword = ""
+                oldPassword = "",
             ) }
         }
     }
 
     private fun updateAccountData() {
         try {
-            _userRepository.updateAccountData(uiStateFlow.value as LoginUiState.LoggedIn)
+            userRepository.updateAccountData(uiStateFlow.value as LoginUiState.LoggedIn)
             _uiStateFlow.update { LoginUiState.LoggedIn(
-                user = _userRepository.getUserById(
-                    (uiStateFlow.value as LoginUiState.LoggedIn).user.id),
+                user = userRepository.getUserById(
+                    (uiStateFlow.value as LoginUiState.LoggedIn).user.id
+                ),
                 selectedTab = Tab.AccountDetail,
-                successfulUpdate = true
+                successfulUpdate = true,
             ) }
         } catch (e: Exception) {
             _uiStateFlow.update { (uiStateFlow.value as LoginUiState.LoggedIn).copy(
                 isError = true,
                 errorMessage = e.message ?: "Error",
-                newEmail = ""
+                newEmail = "",
             ) }
         }
     }
@@ -185,16 +187,16 @@ class LoginViewModel @Inject constructor (
     private fun login() {
         val state = uiStateFlow.value as LoginUiState.Login
 
-        viewModelScope.launch (Dispatchers.IO) {
+        viewModelScope.launch(Dispatchers.IO) {
             try {
-                val user = _userRepository.login(state)
+                val user = userRepository.login(state)
                 _uiStateFlow.update { LoginUiState.LoggedIn(user) }
             } catch (e: LoginException) {
                 _uiStateFlow.update {
                     state.copy(
                         loginError = true,
                         loginErrorMessage = e.message ?: "Error",
-                        password = ""
+                        password = "",
                 ) }
             }
         }
@@ -203,14 +205,14 @@ class LoginViewModel @Inject constructor (
     private fun register() {
         val state = uiStateFlow.value as LoginUiState.Register
 
-        viewModelScope.launch (Dispatchers.IO) {
+        viewModelScope.launch(Dispatchers.IO) {
             try {
-                _userRepository.register(state)
+                userRepository.register(state)
             } catch (e: LoginException) {
                 _uiStateFlow.update {
                     state.copy(
                         registerError = true,
-                        registerErrorMessage = e.message ?: "Error"
+                        registerErrorMessage = e.message ?: "Error",
                 ) }
             }
         }

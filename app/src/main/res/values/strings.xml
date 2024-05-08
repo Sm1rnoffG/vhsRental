@@ -12,4 +12,11 @@
     <string name="registerSuccess">Successfully created account!</string>
     <string name="registerButton">Sign up!</string>
     <string name="regToLogButton">Already have an account? Log in!</string>
+    <string name="password_alert">Password successfully changed</string>
+    <string name="update_password_heading">Update password</string>
+    <string name="new_password_label">New password</string>
+    <string name="repeat_new_password_label">Repeat new password</string>
+    <string name="old_password_label">Old password</string>
+    <string name="confirm_changes_button">Confirm changes</string>
+    <string name="generic_error">Error</string>
 </resources>

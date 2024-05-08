@@ -23,7 +23,7 @@ WHERE user_id = ?
 ORDER BY return_date DESC;
 
 createOrder:
-INSERT OR ABORT INTO rentalOrder (
+INSERT OR REPLACE INTO rentalOrder (
     id,
     state,
     create_date,

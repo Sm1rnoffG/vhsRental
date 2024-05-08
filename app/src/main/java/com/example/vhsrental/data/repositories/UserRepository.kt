@@ -13,15 +13,11 @@ import javax.inject.Singleton
 
 @Singleton
 class UserRepository @Inject constructor(
-    private val db: VHSRentalDB
+    private val db: VHSRentalDB,
 ) : IRepository {
-    override suspend fun selectAll(): List<DomainUser> {
-        return db.selectAllUsers().map { it.asDomainModel() }
-    }
+    override suspend fun selectAll() = db.selectAllUsers().map { it.asDomainModel() }
 
-    override suspend fun delete(id: Long) {
-        db.deleteUser(id)
-    }
+    override suspend fun delete(id: Long) = db.deleteUser(id)
 
     override suspend fun insert(new: ADomainModel) {
         val user = new as DomainUser
@@ -73,13 +69,10 @@ class UserRepository @Inject constructor(
         db.updateUser(updated)
     }
 
-    private fun getUsersWithEmail(email: String) : List<DomainUser> {
-        return db.getUserByEmail(email).map { it.asDomainModel() }
-    }
+    private fun getUsersWithEmail(email: String) =
+        db.getUserByEmail(email).map { it.asDomainModel() }
 
-    fun getUserById(id: Long) : DomainUser {
-        return db.getUserById(id).asDomainModel()
-    }
+    fun getUserById(id: Long) = db.getUserById(id).asDomainModel()
 
     suspend fun login(attempt: LoginUiState.Login) : DomainUser {
         if (attempt.email.isEmpty() || attempt.password.isEmpty())
@@ -110,9 +103,10 @@ class UserRepository @Inject constructor(
 
         val passwordHash = getHash(attempt.password.toByteArray())
         val id = (users.maxOfOrNull { it.id } ?: 0) + 1
+
         insert(DomainUser(
             name = attempt.name, surname = attempt.surname, email = attempt.email,
-            password = passwordHash, id = id, role = Role.User
+            password = passwordHash, id = id, role = Role.User,
         ))
     }
 

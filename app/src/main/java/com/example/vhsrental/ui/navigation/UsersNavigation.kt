@@ -1,4 +1,4 @@
-package com.example.vhsrental.ui.screens.navigation
+package com.example.vhsrental.ui.navigation
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState

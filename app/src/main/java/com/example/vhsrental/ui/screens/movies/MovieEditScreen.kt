@@ -1,10 +1,10 @@
 package com.example.vhsrental.ui.screens.movies
 
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.OutlinedTextField
@@ -24,11 +24,14 @@ import java.time.LocalDate
 
 @Composable
 fun MovieEditScreen(
-    state: MovieUiState.MovieEditing,
+    state: MovieUiState,
     onConfirm: () -> Unit,
     onValueChange: (MovieEditActions) -> Unit,
     modifier: Modifier = Modifier
 ) {
+    if (state is MovieUiState.Catalogue) return
+    val currentState = state as MovieUiState.MovieEditing
+
     val textFieldModifier = Modifier
         .wrapContentHeight()
         .fillMaxWidth()
@@ -37,88 +40,124 @@ fun MovieEditScreen(
     val genreOptions = Genre.entries.map { it.name }.zip(Genre.entries)
     val formatOptions = Format.entries.map { it.name }.zip(Format.entries)
     val releaseYearOptions = (1920..LocalDate.now().year).map{ it.toString() }
-        .zip((1920L..LocalDate.now().year))
-    val heading = if (state.movie == null)
-        "Add movie to database" else "Editing movie: ${state.movie.name}"
-    val confirmButtonText = if (state.movie == null) "Add movie" else "Confirm changes"
+        .zip((1920L..LocalDate.now().year)).reversed()
+    val heading = if (currentState.movie == null)
+        "Add movie to database" else "Editing movie: ${currentState.movie.name}"
+    val confirmButtonText = if (currentState.movie == null) "Add movie" else "Confirm changes"
 
-    Column (
+    LazyColumn (
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = modifier
     ) {
-        Text(text = heading)
-
-        OutlinedTextField(
-            value = state.newName ?: "",
-            onValueChange = { onValueChange(MovieEditActions.OnNameChange(it)) },
-            label = { Text(text = "Name") },
-            placeholder = { Text(state.movie?.name ?: "") },
-            modifier = textFieldModifier
-        )
-        OutlinedTextField(
-            value = state.newLength ?: "",
-            onValueChange = { onValueChange(MovieEditActions.OnLengthChange(it)) },
-            label = { Text(text = "Length") },
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
-            placeholder = { Text(state.movie?.length.toString()) },
-            modifier = textFieldModifier
-        )
-        OutlinedTextField(
-            value = state.newAvailableCopies ?: "",
-            onValueChange = { onValueChange(MovieEditActions.OnAvailableCopiesChange(it)) },
-            label = { Text(text = "Available copies") },
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
-            placeholder = { Text(state.movie?.availableCopies.toString()) },
-            modifier = textFieldModifier
-        )
-        OptionSelectDropdownMenu(
-            displaySelected = state.newAgeRating?.toString() ?: state.movie?.ageRating.toString(),
-            options = ageRatingOptions,
-            onSelection = { onValueChange(MovieEditActions.OnAgeRatingChange(it)) }
-        )
-        OptionSelectDropdownMenu(
-            displaySelected = state.newFormat?.name ?: state.movie?.format?.name ?: "",
-            options = formatOptions,
-            onSelection = { onValueChange(MovieEditActions.OnFormatChange(it)) }
-        )
-        OutlinedTextField(
-            value = state.newImageUrl ?: "",
-            onValueChange = { onValueChange(MovieEditActions.OnImageUrlChange(it)) },
-            label = { Text(text = "Poster URL") },
-            placeholder = { Text(state.movie?.imageUrl ?: "") },
-            modifier = textFieldModifier
-        )
-        OutlinedTextField(
-            value = state.newImdbUrl ?: "",
-            onValueChange = { onValueChange(MovieEditActions.OnImdbUrlChange(it)) },
-            label = { Text(text = "IMDB URL") },
-            placeholder = { Text(state.movie?.imdbUrl ?: "") },
-            modifier = textFieldModifier
-        )
-        OptionSelectDropdownMenu(
-            displaySelected = state.newReleaseYear?.toString() ?: state.movie?.releaseYear.toString(),
-            options = releaseYearOptions,
-            onSelection = { onValueChange(MovieEditActions.OnReleaseYearChange(it)) }
-        )
-        OutlinedTextField(
-            value = state.newDescription ?: "",
-            onValueChange = { onValueChange(MovieEditActions.OnDescriptionChange(it)) },
-            label = { Text(text = "Available copies") },
-            placeholder = { Text(state.movie?.description ?: "") },
-            modifier = textFieldModifier
-        )
-        OptionSelectDropdownMenu(
-            displaySelected = state.newGenre?.name ?: state.movie?.genre?.name ?: "",
-            options = genreOptions,
-            onSelection = { onValueChange(MovieEditActions.OnGenreChange(it)) }
-        )
-
-        Button(
-            onClick = { onConfirm() },
-            modifier = Modifier.wrapContentSize()
-        ) {
-            Text(text = confirmButtonText, textAlign = TextAlign.Center)
+        item {
+            Text(text = heading)
+        }
+        item {
+            OutlinedTextField(
+                value = currentState.newName ?: "",
+                onValueChange = { onValueChange(MovieEditActions.OnNameChange(it)) },
+                label = { Text(text = "Name") },
+                placeholder = { Text(state.movie?.name ?: "") },
+                modifier = textFieldModifier
+            )
+        }
+        item {
+            OutlinedTextField(
+                value = currentState.newLength ?: "",
+                onValueChange = { onValueChange(MovieEditActions.OnLengthChange(it)) },
+                label = { Text(text = "Length") },
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
+                placeholder = { Text(currentState.movie?.length.toString()) },
+                modifier = textFieldModifier
+            )
+        }
+        item {
+            OutlinedTextField(
+                value = currentState.newAvailableCopies ?: "",
+                onValueChange = { onValueChange(MovieEditActions.OnAvailableCopiesChange(it)) },
+                label = { Text(text = "Available copies") },
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
+                placeholder = { Text(currentState.movie?.availableCopies.toString()) },
+                modifier = textFieldModifier
+            )
+        }
+        item {
+            Text(text = "Age rating")
+        }
+        item {
+            OptionSelectDropdownMenu(
+                displaySelected = currentState.newAgeRating?.toString()
+                    ?: currentState.movie?.ageRating.toString(),
+                options = ageRatingOptions,
+                onSelection = { onValueChange(MovieEditActions.OnAgeRatingChange(it)) }
+            )
+        }
+        item {
+            Text(text = "Format")
+        }
+        item {
+            OptionSelectDropdownMenu(
+                displaySelected = currentState.newFormat?.name ?: currentState.movie?.format?.name ?: "",
+                options = formatOptions,
+                onSelection = { onValueChange(MovieEditActions.OnFormatChange(it)) }
+            )
+        }
+        item {
+            OutlinedTextField(
+                value = currentState.newImageUrl ?: "",
+                onValueChange = { onValueChange(MovieEditActions.OnImageUrlChange(it)) },
+                label = { Text(text = "Poster URL") },
+                placeholder = { Text(state.movie?.imageUrl ?: "") },
+                modifier = textFieldModifier
+            )
+        }
+        item {
+            OutlinedTextField(
+                value = currentState.newImdbUrl ?: "",
+                onValueChange = { onValueChange(MovieEditActions.OnImdbUrlChange(it)) },
+                label = { Text(text = "IMDB URL") },
+                placeholder = { Text(currentState.movie?.imdbUrl ?: "") },
+                modifier = textFieldModifier
+            )
+        }
+        item {
+            Text(text = "Release year")
+        }
+        item {
+            OptionSelectDropdownMenu(
+                displaySelected = currentState.newReleaseYear?.toString()
+                    ?: currentState.movie?.releaseYear.toString(),
+                options = releaseYearOptions,
+                onSelection = { onValueChange(MovieEditActions.OnReleaseYearChange(it)) }
+            )
+        }
+        item {
+            OutlinedTextField(
+                value = currentState.newDescription ?: "",
+                onValueChange = { onValueChange(MovieEditActions.OnDescriptionChange(it)) },
+                label = { Text(text = "Available copies") },
+                placeholder = { Text(state.movie?.description ?: "") },
+                modifier = textFieldModifier
+            )
+        }
+        item {
+            Text(text = "Genre")
+        }
+        item {
+            OptionSelectDropdownMenu(
+                displaySelected = currentState.newGenre?.name ?: currentState.movie?.genre?.name ?: "",
+                options = genreOptions,
+                onSelection = { onValueChange(MovieEditActions.OnGenreChange(it)) }
+            )
+        }
+        item {
+            Button(
+                onClick = { onConfirm() },
+                modifier = Modifier.wrapContentSize()
+            ) {
+                Text(text = confirmButtonText, textAlign = TextAlign.Center)
+            }
         }
     }
 }

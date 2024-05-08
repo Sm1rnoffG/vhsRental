@@ -3,6 +3,8 @@ package com.example.vhsrental.data.repositories
 import com.example.vhsrental.data.VHSRentalDB
 import com.example.vhsrental.data.models.ADomainModel
 import com.example.vhsrental.data.models.DomainMovie
+import com.example.vhsrental.data.models.Format
+import com.example.vhsrental.data.models.Genre
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.asFlow
 import javax.inject.Inject

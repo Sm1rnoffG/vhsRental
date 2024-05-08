@@ -39,3 +39,20 @@ INSERT OR ABORT INTO movie (
     genre
 )
 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
+
+INSERT INTO movie(
+      id,
+      name,
+      length,
+      available_copies,
+      currently_available,
+      format,
+      age_rating,
+      image_url,
+      imdb_url,
+      release_year,
+      description,
+      genre
+)
+VALUES (0, "Up", 96, 1, 1, 0, 3, "https://lumiere-a.akamaihd.net/v1/images/p_up_19753_e6f911e3.jpeg", "https://www.imdb.com/title/tt1049413/", 2009, "film", 2),
+(1, "Up", 96, 1, 1, 2, 3, "", "https://www.imdb.com/title/tt1049413/", 2009, "film", 2);

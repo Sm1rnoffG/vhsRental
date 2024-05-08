@@ -10,10 +10,17 @@ import androidx.compose.ui.Modifier
 import com.example.vhsrental.data.models.Role
 import com.example.vhsrental.ui.viewmodels.LoginUiState
 import com.example.vhsrental.ui.viewmodels.LoginViewModel
+import com.example.vhsrental.ui.viewmodels.MovieActions
+import com.example.vhsrental.ui.viewmodels.MovieEditActions
+import com.example.vhsrental.ui.viewmodels.MoviesViewModel
 
 @Composable
-fun ActionButton(vm: LoginViewModel, modifier: Modifier = Modifier) {
-    val state = vm.uiStateFlow.collectAsState().value
+fun ActionButton(
+    loginVm: LoginViewModel,
+    movieVm: MoviesViewModel,
+    modifier: Modifier = Modifier
+) {
+    val state = loginVm.uiStateFlow.collectAsState().value
     if (state !is LoginUiState.LoggedIn) return
 
     if (state.user.role == Role.Employee &&
@@ -21,7 +28,7 @@ fun ActionButton(vm: LoginViewModel, modifier: Modifier = Modifier) {
     ) {
 
         FloatingActionButton(
-            onClick = { },
+            onClick = { if (state.selectedTab == Tab.Movies) movieVm.emitAction(MovieActions.AddMovie) },
             modifier = modifier
         ) {
             Icon(imageVector = Icons.Default.Add, contentDescription = "add button")

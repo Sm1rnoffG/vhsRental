@@ -5,6 +5,8 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Surface
@@ -23,27 +25,35 @@ import com.example.vhsrental.data.models.Format
 import com.example.vhsrental.data.models.Genre
 import com.example.vhsrental.ui.screens.Dot
 import com.example.vhsrental.ui.screens.QuerryBar
+import com.example.vhsrental.ui.viewmodels.MovieUiState
 
 @Composable
 fun CatalogueScreen (
-    movieList: List<DomainMovie>,
+    state: MovieUiState,
     toMovieDetail: (DomainMovie) -> Unit,
+    onAddMovie: () -> Unit,
     onQuerryRequest: () -> Unit,
     modifier: Modifier = Modifier
 ) {
+    val listState = rememberLazyListState()
+    if (state is MovieUiState.MovieEditing) {
+        onAddMovie()
+        return
+    }
+    val movieList: List<DomainMovie> = (state as MovieUiState.Catalogue).movies
+
     Column (
         modifier = modifier
     ) {
         // QuerryBar()
         LazyColumn(
+            state = listState,
             modifier = Modifier
                 .fillMaxWidth()
         ) {
-            movieList.forEach {
-                item {
-                    Surface(onClick = { toMovieDetail(it) }) {
-                        MovieCard(movie = it)
-                    }
+            itemsIndexed(movieList) { _, movie ->
+                Surface(onClick = { toMovieDetail(movie) }) {
+                    MovieCard(movie = movie)
                 }
             }
         }

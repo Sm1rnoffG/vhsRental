@@ -63,6 +63,7 @@ sealed class MovieUiState {
         val newReleaseYear: Long? = null,
         val newDescription: String? = null,
         val newGenre: Genre? = null,
+        val errorMessage: String = ""
     ) : MovieUiState()
     data class MovieDetail(val movie: DomainMovie) : MovieUiState()
 }
@@ -157,7 +158,7 @@ class MoviesViewModel @Inject constructor(
         }
     }
 
-    private fun getAllMovies() : List<DomainMovie> {
+    fun getAllMovies() : List<DomainMovie> {
         var movies = emptyList<DomainMovie>();
         viewModelScope.launch (Dispatchers.IO) {
             movies = repository.selectAll()
@@ -167,10 +168,14 @@ class MoviesViewModel @Inject constructor(
 
     private fun addMovie() {
         val currentState = _uiStateFlow.value as MovieUiState.MovieEditing
-        val movie = currentState.createMovie()
+        try {
+            val movie = currentState.createMovie()
 
-        viewModelScope.launch {
-            // TODO send movie to repository
+            viewModelScope.launch {
+                repository.insert(movie)
+            }
+        } catch (e: Exception) {
+            _uiStateFlow.update { currentState.copy(errorMessage = e.message ?: "Error") }
         }
     }
 
@@ -179,12 +184,13 @@ class MoviesViewModel @Inject constructor(
         currentState.updateMovie()
 
         viewModelScope.launch {
-            // TODO update movie in repository
+
         }
     }
 
     private fun reserveMovie(userID: Long) {
         val currentState = _uiStateFlow.value as MovieUiState.MovieDetail
+
         viewModelScope.launch {
             // TODO send new reservation
         }
