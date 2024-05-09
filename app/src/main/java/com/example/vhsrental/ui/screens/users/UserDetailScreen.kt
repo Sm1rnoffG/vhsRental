@@ -1,0 +1,163 @@
+package com.example.vhsrental.ui.screens.users
+
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonColors
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import com.example.vhsrental.data.models.DomainOrder
+import com.example.vhsrental.data.models.DomainUser
+import com.example.vhsrental.data.models.OrderState
+import com.example.vhsrental.data.models.Role
+
+@Composable
+fun UserDetailScreen(
+    user: DomainUser,
+    usersOrders: List<DomainOrder>,
+    modifier: Modifier = Modifier,
+    onPromoteClick: () -> Unit = {},
+    onDeleteClick: () -> Unit = {},
+) {
+    val displayDeleteWarning = remember { mutableStateOf(false) }
+    val displayPromoteWarning = remember { mutableStateOf(false) }
+
+    when {
+        displayDeleteWarning.value -> {
+            FinalWarning(
+                heading = "Permanent deletion!",
+                text = "You are about to delete this user permanently",
+                onConfirm = onDeleteClick,
+                onCancel = { displayDeleteWarning.value = false }
+            )
+        }
+        displayPromoteWarning.value -> {
+            FinalWarning(
+                heading = "Promotion to employee!",
+                text = "You are about to promote this user to employee role and give " +
+                        "them access to the whole app",
+                onConfirm = onPromoteClick,
+                onCancel = { displayPromoteWarning.value = false }
+            )
+        }
+    }
+
+    LazyColumn (
+        modifier = modifier
+            .fillMaxWidth()
+    ) {
+        item {
+            Text(
+                text = "Name: ${user.name}"
+            )
+        }
+        item {
+            Text(
+                text = "Surname: ${user.surname}"
+            )
+        }
+        item {
+            Text(
+                text = "E-mail: ${user.email}"
+            )
+        }
+        item {
+            Text(
+                text = "Role: ${user.role}"
+            )
+        }
+        item {
+            Text(
+                text = "Latest order on: ${usersOrders.maxOf { it.createDate }}"
+            )
+        }
+        item {
+            OrderStats(usersOrders = usersOrders)
+        }
+        if (user.role == Role.Employee) {
+            item {
+                Button(
+                    onClick = { displayPromoteWarning.value = true },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                ) {
+                    Text(text = "Promote to employee")
+                }
+            }
+        }
+        item {
+            Button(
+                onClick = { displayDeleteWarning.value = true },
+                colors = ButtonColors(
+                    containerColor = Color.Red,
+                    contentColor = Color.White,
+                    disabledContentColor = Color.White,
+                    disabledContainerColor = Color.LightGray
+                ),
+                modifier = Modifier
+                    .fillMaxWidth()
+            ) {
+                Text(text = "Delete user")
+            }
+        }
+    }
+}
+
+@Composable
+fun OrderStats(
+    usersOrders: List<DomainOrder>
+) {
+    Row (
+        horizontalArrangement = Arrangement.Center,
+        modifier = Modifier
+            .fillMaxWidth()
+    ) {
+        Column (horizontalAlignment = Alignment.CenterHorizontally) {
+            Text(text = "Total orders")
+            Text(text = usersOrders.size.toString())
+        }
+        Column (horizontalAlignment = Alignment.CenterHorizontally) {
+            Text(text = "Ongoing orders")
+            Text(text = usersOrders.filter { it.state == OrderState.InProgress }.size.toString())
+        }
+        Column (horizontalAlignment = Alignment.CenterHorizontally) {
+            Text(text = "Overdue orders")
+            Text(text = usersOrders.filter { it.state == OrderState.OverDue }.size.toString())
+        }
+    }
+}
+
+@Composable
+fun FinalWarning(
+    modifier: Modifier = Modifier,
+    heading: String = "",
+    text: String = "",
+    onConfirm: () -> Unit = {},
+    onCancel: () -> Unit = {},
+) {
+    AlertDialog(
+        title = { Text(text = heading) },
+        text = { Text(text = text) },
+        onDismissRequest = onCancel,
+        confirmButton = {
+            Button(onClick = onConfirm) {
+                Text(text = "Confirm")
+            }
+        },
+        dismissButton = {
+            Button(onClick = onCancel) {
+                Text(text = "Cancel")
+            }
+        },
+        modifier = modifier,
+    )
+}

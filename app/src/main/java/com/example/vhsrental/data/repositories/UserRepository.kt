@@ -86,6 +86,10 @@ class UserRepository @Inject constructor(
         return user[0]
     }
 
+    fun promoteUser(user: DomainUser) {
+        db.updateUser(user.copy(role = Role.Employee).asDBModel())
+    }
+
     suspend fun register(attempt: LoginUiState.Register) {
         if (attempt.name.isEmpty() || attempt.surname.isEmpty() || attempt.email.isEmpty() ||
             attempt.password.isEmpty() || attempt.passwordRepeat.isEmpty())

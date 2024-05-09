@@ -24,6 +24,7 @@ sealed class OrderActions {
     data class OnMovieUpdate(val update: DomainMovie) : OrderActions()
     data class OnReservationRequest(val movie: DomainMovie, val user: DomainUser) : OrderActions()
     data class OnOrderDetailRequest(val order: DomainOrder) : OrderActions()
+    data class OnDeleteUser(val userId: Long) : OrderActions()
     data object OnCreateOrder : OrderActions()
     data object OnOrderFinish : OrderActions()
     data object OnOrderConfirm : OrderActions()
@@ -71,6 +72,7 @@ class OrderViewModel @Inject constructor(
             is OrderActions.OnOrderExtend -> extendOrder()
             is OrderActions.OnCreateOrder ->
                 _uiStateFlow.update { OrderUiState.OrderCreation() }
+            is OrderActions.OnDeleteUser -> deleteUsersOrders(action.userId)
         }
     }
 
@@ -83,6 +85,16 @@ class OrderViewModel @Inject constructor(
 
         return orders
     }
+
+    private fun deleteUsersOrders(usersId: Long) {
+        val orders = getAllOrders().filter { it.user == usersId }
+
+        viewModelScope.launch (Dispatchers.IO) {
+            orders.forEach { repository.delete(it.id) }
+        }
+    }
+
+    fun getUsersOrders(userId: Long) = getAllOrders().filter { it.user == userId }
 
     private fun addRecord(isReservationRequest: Boolean) {
         val state = uiStateFlow.value as OrderUiState.OrderCreation

@@ -18,7 +18,7 @@ import com.example.vhsrental.ui.screens.movies.Poster
 import java.time.LocalDate
 
 @Composable
-fun MyOrders(
+fun MyOrdersScreen(
     myOrders: List<Pair<DomainOrder, DomainMovie>>,
     toOrderMyOrderDetail: (Pair<DomainOrder, DomainMovie>) -> Unit,
     modifier: Modifier = Modifier
