@@ -7,6 +7,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.example.vhsrental.data.models.DomainMovie
+import com.example.vhsrental.data.models.DomainUser
 import com.example.vhsrental.data.models.Role
 import com.example.vhsrental.ui.screens.movies.CatalogueScreen
 import com.example.vhsrental.ui.screens.movies.MovieDetail
@@ -14,9 +15,16 @@ import com.example.vhsrental.ui.screens.movies.MovieEditScreen
 import com.example.vhsrental.ui.viewmodels.MovieActions
 import com.example.vhsrental.ui.viewmodels.MovieUiState
 import com.example.vhsrental.ui.viewmodels.MoviesViewModel
+import com.example.vhsrental.ui.viewmodels.OrderActions
+import com.example.vhsrental.ui.viewmodels.OrderViewModel
 
 @Composable
-fun MoviesNavigation(navController: NavHostController, movieVm: MoviesViewModel, userRole: Role) {
+fun MoviesNavigation(
+    navController: NavHostController,
+    movieVm: MoviesViewModel,
+    orderVm: OrderViewModel,
+    user: DomainUser
+) {
     NavHost(navController = navController, startDestination = "catalogue") {
         composable("catalogue") {
             CatalogueScreen(state = (movieVm.uiStateFlow.collectAsState().value),
@@ -25,10 +33,11 @@ fun MoviesNavigation(navController: NavHostController, movieVm: MoviesViewModel,
                 onQuerryRequest = { /*TODO*/ })
         }
         composable("movie_detail") {
+            val movie = (movieVm.uiStateFlow.collectAsState().value as MovieUiState.MovieDetail).movie
             MovieDetail(
-                movie = (movieVm.uiStateFlow.collectAsState().value as MovieUiState.MovieDetail).movie,
-                onMovieAction = {},
-                asEmployee = userRole == Role.Employee
+                movie = movie,
+                onMovieAction = { orderVm.emitOrderAction(OrderActions.OnReservationRequest(movie, user)) },
+                asEmployee = user.role == Role.Employee
             )
         }
         composable("edit_movie") {
@@ -43,7 +52,8 @@ fun MoviesNavigation(navController: NavHostController, movieVm: MoviesViewModel,
                 onValueChange = { action -> movieVm.emitEditAction(action) })
         }
         composable("add_movie") {
-            MovieEditScreen(state = (movieVm.uiStateFlow.collectAsState().value as MovieUiState.MovieEditing),
+            MovieEditScreen(
+                state = (movieVm.uiStateFlow.collectAsState().value as MovieUiState.MovieEditing),
                 onConfirm = {
                     movieVm.emitAction(MovieActions.ConfirmAddMovie)
                     if ((movieVm.uiStateFlow.value as MovieUiState.MovieEditing).errorMessage.isEmpty()) {
@@ -51,7 +61,8 @@ fun MoviesNavigation(navController: NavHostController, movieVm: MoviesViewModel,
                         navController.popBackStack()
                     }
                 },
-                onValueChange = { action -> movieVm.emitEditAction(action) })
+                onValueChange = { action -> movieVm.emitEditAction(action) }
+            )
         }
     }
 }

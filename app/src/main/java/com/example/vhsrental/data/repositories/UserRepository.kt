@@ -15,11 +15,11 @@ import javax.inject.Singleton
 class UserRepository @Inject constructor(
     private val db: VHSRentalDB,
 ) : IRepository {
-    override suspend fun selectAll() = db.selectAllUsers().map { it.asDomainModel() }
+    override fun selectAll() = db.selectAllUsers().map { it.asDomainModel() }
 
-    override suspend fun delete(id: Long) = db.deleteUser(id)
+    override fun delete(id: Long) = db.deleteUser(id)
 
-    override suspend fun insert(new: ADomainModel) {
+    override fun insert(new: ADomainModel) {
         val user = new as DomainUser
         db.addUser(user.asDBModel())
     }
@@ -74,23 +74,22 @@ class UserRepository @Inject constructor(
 
     fun getUserById(id: Long) = db.getUserById(id).asDomainModel()
 
-    suspend fun login(attempt: LoginUiState.Login) : DomainUser {
+    fun login(attempt: LoginUiState.Login) : DomainUser {
         if (attempt.email.isEmpty() || attempt.password.isEmpty())
             throw LoginException.EmptyFieldException()
 
         val users = selectAll()
         val password = getHash(attempt.password.toByteArray())
-        val user = users.filter { it.email == attempt.email && it.password.contentEquals(password) }
+        val user = users.find { it.email == attempt.email && it.password.contentEquals(password) }
 
-        if (user.isEmpty()) throw LoginException.WrongNameOrPasswordException()
-        return user[0]
+        return user ?: throw LoginException.WrongNameOrPasswordException()
     }
 
     fun promoteUser(user: DomainUser) {
         db.updateUser(user.copy(role = Role.Employee).asDBModel())
     }
 
-    suspend fun register(attempt: LoginUiState.Register) {
+    fun register(attempt: LoginUiState.Register) {
         if (attempt.name.isEmpty() || attempt.surname.isEmpty() || attempt.email.isEmpty() ||
             attempt.password.isEmpty() || attempt.passwordRepeat.isEmpty())
                 throw LoginException.EmptyFieldException()

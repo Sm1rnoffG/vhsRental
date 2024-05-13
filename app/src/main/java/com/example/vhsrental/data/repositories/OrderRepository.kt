@@ -2,10 +2,8 @@ package com.example.vhsrental.data.repositories
 
 import com.example.vhsrental.data.VHSRentalDB
 import com.example.vhsrental.data.models.ADomainModel
-import com.example.vhsrental.data.models.DomainMovie
 import com.example.vhsrental.data.models.DomainOrder
 import com.example.vhsrental.data.models.OrderState
-import com.example.vhsrental.ui.viewmodels.OrderActions
 import java.time.LocalDate
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -14,20 +12,36 @@ import javax.inject.Singleton
 class OrderRepository @Inject constructor(
     private val db: VHSRentalDB
 ) : IRepository {
-    override suspend fun selectAll(): List<DomainOrder> {
+    override fun selectAll(): List<DomainOrder> {
         return db.selectAllOrders().map { it.asDomainModel() }
     }
 
-    override suspend fun delete(id: Long) {
+    override fun delete(id: Long) {
         db.deleteOrder(id)
     }
 
-    override suspend fun insert(new: ADomainModel) {
+    override fun insert(new: ADomainModel) {
         val order = new as DomainOrder
         db.addOrder(order.asDBModel())
     }
 
-    suspend fun createOrder(
+    fun deleteOld() {
+        db.deleteMultipleOrders(
+            db.selectAllOrders()
+                .map { it.asDomainModel() }
+                .filter {
+                    it.state == OrderState.Reservation &&
+                    it.createDate.plusDays(3).isBefore(LocalDate.now())
+                }
+                .map { it.asDBModel() }
+        )
+    }
+
+    fun deleteUsersOrders(orders: List<DomainOrder>) {
+        db.deleteMultipleOrders(orders.map { it.asDBModel() })
+    }
+
+    fun createOrder(
         userId: Long,
         movieId: Long,
         isReservationRequest: Boolean,

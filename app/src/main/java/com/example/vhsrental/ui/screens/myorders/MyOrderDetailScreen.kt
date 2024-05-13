@@ -17,7 +17,7 @@ import com.example.vhsrental.ui.screens.movies.Poster
 import com.example.vhsrental.ui.viewmodels.OrderActions
 
 @Composable
-fun MyOrderDetail(
+fun MyOrderDetailScreen(
     order: DomainOrder,
     movie: DomainMovie,
     onMyOrderAction: (OrderActions) -> Unit,

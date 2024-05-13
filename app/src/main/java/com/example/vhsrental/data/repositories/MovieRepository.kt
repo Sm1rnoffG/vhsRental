@@ -15,15 +15,15 @@ class MovieRepository @Inject constructor(
     private val db: VHSRentalDB
 ) : IRepository {
 
-    override suspend fun selectAll(): List<DomainMovie> {
+    override fun selectAll(): List<DomainMovie> {
         return db.selectAllMovies().map { it.asDomainModel() }
     }
 
-    override suspend fun delete(id: Long) {
+    override fun delete(id: Long) {
         db.deleteMovie(id)
     }
 
-    override suspend fun insert(new: ADomainModel) {
+    override fun insert(new: ADomainModel) {
         val movie = new as DomainMovie
         db.addMovie(movie.asDBModel())
     }

@@ -1,7 +1,6 @@
 package com.example.vhsrental.ui.viewmodels
 
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import com.example.vhsrental.data.models.DomainUser
 import com.example.vhsrental.data.repositories.UserRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -47,23 +46,9 @@ class UsersViewModel @Inject constructor(
         }
     }
 
-    private fun promoteUser(user: DomainUser) {
-        repository.promoteUser(user)
-    }
+    private fun promoteUser(user: DomainUser) = repository.promoteUser(user)
 
-    private fun deleteUser(user: DomainUser) {
-        viewModelScope.launch (Dispatchers.IO) {
-            repository.delete(user.id)
-        }
-    }
+    private fun deleteUser(user: DomainUser) = repository.delete(user.id)
 
-    fun getAllUsers() : List<DomainUser> {
-        var users = emptyList<DomainUser>()
-
-        viewModelScope.launch (Dispatchers.IO) {
-            users = repository.selectAll()
-        }
-
-        return users
-    }
+    fun getAllUsers() : List<DomainUser> = repository.selectAll()
 }

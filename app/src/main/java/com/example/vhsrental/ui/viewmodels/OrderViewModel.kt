@@ -3,7 +3,6 @@ package com.example.vhsrental.ui.viewmodels
 import android.util.Log
 import androidx.compose.animation.core.updateTransition
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.vhsrental.data.exceptions.OrderExeptions
 import com.example.vhsrental.data.models.DomainMovie
@@ -24,7 +23,9 @@ sealed class OrderActions {
     data class OnMovieUpdate(val update: DomainMovie) : OrderActions()
     data class OnReservationRequest(val movie: DomainMovie, val user: DomainUser) : OrderActions()
     data class OnOrderDetailRequest(val order: DomainOrder) : OrderActions()
+    data class OnMyOrderDetailRequest(val orderAndMovie: Pair<DomainOrder, DomainMovie>) : OrderActions()
     data class OnDeleteUser(val userId: Long) : OrderActions()
+    data class OnLoadMyList(val userId: Long): OrderActions()
     data object OnCreateOrder : OrderActions()
     data object OnOrderFinish : OrderActions()
     data object OnOrderConfirm : OrderActions()
@@ -41,6 +42,10 @@ sealed class OrderUiState {
         var movie: DomainMovie? = null
     ) : OrderUiState()
     data class OrderDetail(val order: DomainOrder) : OrderUiState()
+    data class MyOrderDetail(
+        val order: DomainOrder,
+        val movie: DomainMovie
+    ) : OrderUiState()
 }
 
 @HiltViewModel
@@ -52,6 +57,9 @@ class OrderViewModel @Inject constructor(
     val uiStateFlow: StateFlow<OrderUiState>
         get() = _uiStateFlow
 
+    init {
+        repository.deleteOld()
+    }
     fun emitOrderAction(action: OrderActions) {
         when (action) {
             is OrderActions.OnClearMovie ->
@@ -73,25 +81,19 @@ class OrderViewModel @Inject constructor(
             is OrderActions.OnCreateOrder ->
                 _uiStateFlow.update { OrderUiState.OrderCreation() }
             is OrderActions.OnDeleteUser -> deleteUsersOrders(action.userId)
+            is OrderActions.OnLoadMyList ->
+                _uiStateFlow.update { OrderUiState.OrderList(getAllOrders().filter { it.user == action.userId }) }
+            is OrderActions.OnMyOrderDetailRequest ->
+                _uiStateFlow.update { OrderUiState.MyOrderDetail(action.orderAndMovie.first, action.orderAndMovie.second) }
         }
     }
 
-    private fun getAllOrders() : List<DomainOrder> {
-        var orders: List<DomainOrder> = emptyList()
-
-        viewModelScope.launch (Dispatchers.IO) {
-            orders = repository.selectAll()
-        }
-
-        return orders
-    }
+    private fun getAllOrders() : List<DomainOrder> = repository.selectAll()
 
     private fun deleteUsersOrders(usersId: Long) {
         val orders = getAllOrders().filter { it.user == usersId }
+        repository.deleteUsersOrders(orders)
 
-        viewModelScope.launch (Dispatchers.IO) {
-            orders.forEach { repository.delete(it.id) }
-        }
     }
 
     fun getUsersOrders(userId: Long) = getAllOrders().filter { it.user == userId }
@@ -100,13 +102,11 @@ class OrderViewModel @Inject constructor(
         val state = uiStateFlow.value as OrderUiState.OrderCreation
 
         try {
-            viewModelScope.launch (Dispatchers.IO) {
-                repository.createOrder(
-                    movieId = state.movie?.id ?: throw OrderExeptions.EmptyFieldException(),
-                    userId = state.user?.id ?: throw OrderExeptions.EmptyFieldException(),
-                    isReservationRequest = isReservationRequest
-                )
-            }
+            repository.createOrder(
+                movieId = state.movie?.id ?: throw OrderExeptions.EmptyFieldException(),
+                userId = state.user?.id ?: throw OrderExeptions.EmptyFieldException(),
+                isReservationRequest = isReservationRequest
+            )
         } catch (e: Exception) {
             Log.d(null, e.message ?: "Error")
         }
@@ -115,10 +115,7 @@ class OrderViewModel @Inject constructor(
     private fun finishOrder() {
         val uiState = uiStateFlow.value as OrderUiState.OrderDetail
         val updatedOrder = uiState.order.copy(state = OrderState.Done)
-
-        viewModelScope.launch (Dispatchers.IO) {
-            repository.insert(updatedOrder)
-        }
+        repository.insert(updatedOrder)
     }
 
     private fun extendOrder() {
@@ -128,8 +125,7 @@ class OrderViewModel @Inject constructor(
             returnDate = uiState.order.returnDate?.plusDays(30)
         )
 
-        viewModelScope.launch (Dispatchers.IO) {
-            repository.insert(updatedOrder)
-        }
+        repository.insert(updatedOrder)
+
     }
 }

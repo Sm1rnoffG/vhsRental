@@ -10,11 +10,15 @@ import androidx.navigation.compose.rememberNavController
 import com.example.vhsrental.ui.navigation.AccountNavigation
 import com.example.vhsrental.ui.navigation.LoginNavigation
 import com.example.vhsrental.ui.navigation.MoviesNavigation
+import com.example.vhsrental.ui.navigation.MyOrdersNavigation
+import com.example.vhsrental.ui.navigation.OrdersNavigation
+import com.example.vhsrental.ui.navigation.UsersNavigation
 import com.example.vhsrental.ui.viewmodels.LoginUiState
 import com.example.vhsrental.ui.viewmodels.LoginViewModel
 import com.example.vhsrental.ui.viewmodels.MoviesViewModel
 import com.example.vhsrental.ui.viewmodels.OrderViewModel
 import com.example.vhsrental.ui.viewmodels.UsersViewModel
+import kotlin.math.log
 
 enum class Tab {
     Movies,
@@ -42,11 +46,35 @@ fun AppSpine(
         Box(modifier = Modifier.padding(innerPadding)){
             if (state is LoginUiState.LoggedIn) {
                 when (state.selectedTab) {
-                    Tab.Movies -> MoviesNavigation(navController = navController, movieVm = movieVm, userRole = state.user.role)
-                    Tab.MyOrders -> Unit
-                    Tab.Orders -> Unit
-                    Tab.Users -> Unit
-                    Tab.AccountDetail -> AccountNavigation(loginVm = loginVm, navController = navController)
+                    Tab.Movies -> MoviesNavigation(
+                        navController = navController,
+                        movieVm = movieVm,
+                        user = state.user,
+                        orderVm = orderVm
+                    )
+                    Tab.MyOrders -> MyOrdersNavigation(
+                        orderViewModel = orderVm,
+                        movieViewModel = movieVm,
+                        currentUser = state.user,
+                        navHostController = navController
+                    )
+                    Tab.Orders -> OrdersNavigation(
+                        userVm = usersVm,
+                        movieVm = movieVm,
+                        orderVm = orderVm,
+                        currentUser = state.user,
+                        navController = navController
+                    )
+                    Tab.Users -> UsersNavigation(
+                        loginVm = loginVm,
+                        userVm = usersVm,
+                        orderVm = orderVm,
+                        navController = navController
+                    )
+                    Tab.AccountDetail -> AccountNavigation(
+                        loginVm = loginVm,
+                        navController = navController
+                    )
                 }
             } else {
                 LoginNavigation(vm = loginVm, navController = navController)

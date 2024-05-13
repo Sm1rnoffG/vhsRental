@@ -19,12 +19,12 @@ fun BottomBar(vm: LoginViewModel) {
     if (state !is LoginUiState.LoggedIn || state.selectedTab == Tab.AccountDetail) return
 
     val navBarItems = mutableListOf(
-        Pair(painterResource(id = R.drawable.baseline_menu_book_24), "Movie Catalogue"),
+        Pair(painterResource(id = R.drawable.baseline_menu_book_24), "Catalogue"),
         Pair(painterResource(id = R.drawable.baseline_checklist_24), "My Orders")
     )
     if (state.user.role == Role.Employee) {
         navBarItems.addAll(listOf(
-            Pair(painterResource(id = R.drawable.baseline_storefront_24), "Manage Orders"),
+            Pair(painterResource(id = R.drawable.baseline_storefront_24), "All Orders"),
             Pair(painterResource(id = R.drawable.baseline_manage_accounts_24), "Manage Users")
         ))
     }

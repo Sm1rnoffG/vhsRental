@@ -24,7 +24,7 @@ WHERE id = ?;
 
 
 addMovie:
-INSERT OR ABORT INTO movie (
+INSERT OR REPLACE INTO movie (
     id,
     name,
     length,
@@ -40,7 +40,7 @@ INSERT OR ABORT INTO movie (
 )
 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
 
-INSERT INTO movie(
+INSERT OR REPLACE INTO movie(
       id,
       name,
       length,

@@ -48,7 +48,7 @@ fun NavigationButton(vm: LoginViewModel, navController: NavHostController) {
         onClick = {
             if (state is LoginUiState.LoggedIn && state.selectedTab == Tab.AccountDetail) {
                 vm.emitActionLoggedIn(UpdateAccountActions.OnSwitchTab(Tab.Movies))
-            } else if (stackTop == null) {
+            } else if (stackTop == null || stackTop.id == "login") {
                 activity?.finish()  // Exit app
             } else {
                 navController.popBackStack()

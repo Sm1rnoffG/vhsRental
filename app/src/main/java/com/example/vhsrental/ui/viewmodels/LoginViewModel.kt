@@ -1,7 +1,6 @@
 package com.example.vhsrental.ui.viewmodels
 
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import com.example.vhsrental.data.exceptions.LoginException
 import com.example.vhsrental.data.models.DomainUser
 import com.example.vhsrental.data.repositories.UserRepository
@@ -187,34 +186,30 @@ class LoginViewModel @Inject constructor (
     private fun login() {
         val state = uiStateFlow.value as LoginUiState.Login
 
-        viewModelScope.launch(Dispatchers.IO) {
-            try {
-                val user = userRepository.login(state)
-                _uiStateFlow.update { LoginUiState.LoggedIn(user) }
-            } catch (e: LoginException) {
-                _uiStateFlow.update {
-                    state.copy(
-                        loginError = true,
-                        loginErrorMessage = e.message ?: "Error",
-                        password = "",
-                ) }
-            }
+        try {
+            val user = userRepository.login(state)
+            _uiStateFlow.update { LoginUiState.LoggedIn(user) }
+        } catch (e: LoginException) {
+            _uiStateFlow.update {
+                state.copy(
+                    loginError = true,
+                    loginErrorMessage = e.message ?: "Error",
+                    password = "",
+            ) }
         }
     }
 
     private fun register() {
         val state = uiStateFlow.value as LoginUiState.Register
 
-        viewModelScope.launch(Dispatchers.IO) {
-            try {
-                userRepository.register(state)
-            } catch (e: LoginException) {
-                _uiStateFlow.update {
-                    state.copy(
-                        registerError = true,
-                        registerErrorMessage = e.message ?: "Error",
-                ) }
-            }
+        try {
+            userRepository.register(state)
+        } catch (e: LoginException) {
+            _uiStateFlow.update {
+                state.copy(
+                    registerError = true,
+                    registerErrorMessage = e.message ?: "Error",
+            ) }
         }
         _uiStateFlow.update {
             (uiStateFlow.value as LoginUiState.Register).copy(successfulRegister = true)

@@ -5,6 +5,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import com.example.vhsrental.data.models.DomainUser
 import com.example.vhsrental.ui.screens.movies.CatalogueScreen
 import com.example.vhsrental.ui.screens.orders.CreateOrderScreen
 import com.example.vhsrental.ui.screens.orders.OrderDetailScreen
@@ -24,6 +25,7 @@ fun OrdersNavigation(
     userVm: UsersViewModel,
     movieVm: MoviesViewModel,
     orderVm: OrderViewModel,
+    currentUser: DomainUser,
     navController: NavHostController
 ) {
     NavHost(navController = navController, startDestination = "orders") {
@@ -75,7 +77,7 @@ fun OrdersNavigation(
             )
         }
         composable("choose_user") {
-            userVm.emitAction(UserActions.OnUserList)
+            userVm.emitAction(UserActions.OnUserList(currentUser))
             UsersScreen(
                 users = (userVm.uiStateFlow.collectAsState().value as UserUiState.UserList).users,
                 toUserDetail = {

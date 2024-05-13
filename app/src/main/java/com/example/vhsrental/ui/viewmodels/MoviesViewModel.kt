@@ -1,9 +1,9 @@
 package com.example.vhsrental.ui.viewmodels
 
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import com.example.vhsrental.data.exceptions.MovieExceptions
 import com.example.vhsrental.data.models.DomainMovie
+import com.example.vhsrental.data.models.DomainOrder
 import com.example.vhsrental.data.models.DomainUser
 import com.example.vhsrental.data.models.Format
 import com.example.vhsrental.data.models.Genre
@@ -38,7 +38,6 @@ sealed class MovieEditActions {
 }
 
 sealed class MovieActions {
-    data class Reserve(val user: DomainUser) : MovieActions()
     data class EditMovie(val movie: DomainMovie) : MovieActions()
     data class OpenMovieDetail(val movie: DomainMovie) : MovieActions()
     data object SaveChanges : MovieActions()
@@ -68,7 +67,7 @@ sealed class MovieUiState {
     data class MovieDetail(val movie: DomainMovie) : MovieUiState()
 }
 
-fun MovieUiState.MovieEditing.updateMovie() {
+fun MovieUiState.MovieEditing.updateMovie() : DomainMovie {
     if (movie == null) throw MovieExceptions.NotEditingException()
 
     movie.name = newName ?: movie.name
@@ -81,6 +80,8 @@ fun MovieUiState.MovieEditing.updateMovie() {
     movie.description = newDescription ?: movie.description
     movie.genre = newGenre ?: movie.genre
     movie.format = newFormat ?: movie.format
+
+    return movie
 }
 
 fun MovieUiState.MovieEditing.createMovie() : DomainMovie {
@@ -108,20 +109,13 @@ class MoviesViewModel @Inject constructor(
 ) : ViewModel() {
 
     private val _uiStateFlow: MutableStateFlow<MovieUiState> =
-        MutableStateFlow(MovieUiState.Catalogue(emptyList()))
+        MutableStateFlow(MovieUiState.Catalogue(repository.selectAll()))
     val uiStateFlow: StateFlow<MovieUiState>
         get() = _uiStateFlow
-
-    init {
-        viewModelScope.launch {
-            _uiStateFlow.update { MovieUiState.Catalogue(repository.selectAll()) }
-        }
-    }
 
     fun emitAction(action: MovieActions) {
         when (action) {
             is MovieActions.EditMovie -> _uiStateFlow.update { MovieUiState.MovieEditing(action.movie) }
-            is MovieActions.Reserve -> reserveMovie(action.user.id)
             is MovieActions.SaveChanges -> saveChanges()
             is MovieActions.OpenMovieDetail -> _uiStateFlow.update { MovieUiState.MovieDetail(action.movie) }
             is MovieActions.AddMovie -> _uiStateFlow.update { MovieUiState.MovieEditing() }
@@ -158,22 +152,13 @@ class MoviesViewModel @Inject constructor(
         }
     }
 
-    fun getAllMovies() : List<DomainMovie> {
-        var movies = emptyList<DomainMovie>();
-        viewModelScope.launch (Dispatchers.IO) {
-            movies = repository.selectAll()
-        }
-        return movies
-    }
+    fun getAllMovies() : List<DomainMovie> = repository.selectAll()
 
     private fun addMovie() {
         val currentState = _uiStateFlow.value as MovieUiState.MovieEditing
         try {
             val movie = currentState.createMovie()
-
-            viewModelScope.launch {
-                repository.insert(movie)
-            }
+            repository.insert(movie)
         } catch (e: Exception) {
             _uiStateFlow.update { currentState.copy(errorMessage = e.message ?: "Error") }
         }
@@ -181,18 +166,18 @@ class MoviesViewModel @Inject constructor(
 
     private fun saveChanges() {
         val currentState = _uiStateFlow.value as MovieUiState.MovieEditing
-        currentState.updateMovie()
+        val movie = currentState.updateMovie()
 
-        viewModelScope.launch {
-
-        }
+        repository.insert(movie)
     }
 
-    private fun reserveMovie(userID: Long) {
-        val currentState = _uiStateFlow.value as MovieUiState.MovieDetail
-
-        viewModelScope.launch {
-            // TODO send new reservation
+    fun assignMoviesToOrders(orders: List<DomainOrder>) : List<Pair<DomainOrder, DomainMovie>> {
+        val movies = repository.selectAll()
+        val result = orders.map { order ->
+            Pair(order, movies.find { movie ->
+                movie.id == order.movie
+            } ?: throw MovieExceptions.NoMovieFoundException() )
         }
+        return result
     }
 }

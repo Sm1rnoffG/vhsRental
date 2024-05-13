@@ -13,9 +13,14 @@ sealed class MovieExceptions(message: String) : Exception(message) {
             const val message: String = "Ui state is editing existing movie"
         }
     }
-    class NotEnoughDataExceptions: MovieExceptions(message) {
+    class NotEnoughDataExceptions : MovieExceptions(message) {
         companion object {
             const val message: String = "Not enough data to create new movie"
+        }
+    }
+    class NoMovieFoundException : MovieExceptions(message) {
+        companion object{
+            const val message: String = "Movie assigned to this order does not exist anymore"
         }
     }
 }
