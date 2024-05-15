@@ -1,6 +1,7 @@
 package com.example.vhsrental.ui.viewmodels
 
 import androidx.lifecycle.ViewModel
+import com.example.vhsrental.data.exceptions.UserExceptions
 import com.example.vhsrental.data.models.DomainUser
 import com.example.vhsrental.data.repositories.UserRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -19,30 +20,32 @@ sealed class UserActions {
     data object OnDeleteUser : UserActions()
 }
 
-sealed class UserUiState {
-    data class UserList(val users: List<DomainUser>) : UserUiState()
-    data class UserDetail(val user: DomainUser) : UserUiState()
-}
+data class UserUiState(
+    val users: List<DomainUser>,
+    val displayedUser: DomainUser? = null
+)
 
 @HiltViewModel
 class UsersViewModel @Inject constructor(
     private val repository: UserRepository
 ) : ViewModel() {
     private val _uiStateFlow: MutableStateFlow<UserUiState> =
-        MutableStateFlow(UserUiState.UserList(getAllUsers()))
+        MutableStateFlow(UserUiState(getAllUsers()))
     val uiStateFlow: StateFlow<UserUiState>
         get() = _uiStateFlow
 
     fun emitAction(action: UserActions) {
         when (action) {
             is UserActions.OnDeleteUser ->
-                deleteUser((uiStateFlow.value as UserUiState.UserDetail).user)
+                deleteUser(uiStateFlow.value.displayedUser ?: throw UserExceptions.UnexpectedException())
             is UserActions.OnPromoteUser ->
-                promoteUser((uiStateFlow.value as UserUiState.UserDetail).user)
+                promoteUser(uiStateFlow.value.displayedUser ?: throw UserExceptions.UnexpectedException())
             is UserActions.OnUserDetail ->
-                _uiStateFlow.update { UserUiState.UserDetail(action.user) }
+                _uiStateFlow.update { uiStateFlow.value.copy(displayedUser = action.user) }
             is UserActions.OnUserList ->
-                _uiStateFlow.update { UserUiState.UserList(getAllUsers().filter { it != action.currentUser }) }
+                _uiStateFlow.update { uiStateFlow.value.copy(
+                    users = getAllUsers().filter { it != action.currentUser
+                }) }
         }
     }
 

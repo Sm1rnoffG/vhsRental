@@ -13,16 +13,20 @@ import com.example.vhsrental.data.models.DomainMovie
 import com.example.vhsrental.data.models.DomainOrder
 import com.example.vhsrental.data.models.DomainUser
 import com.example.vhsrental.data.models.OrderState
+import com.example.vhsrental.ui.screens.movies.Movie
+import com.example.vhsrental.ui.viewmodels.OrderUiState
 
 @Composable
 fun OrderDetailScreen(
-    order: DomainOrder,
-    movie: DomainMovie?,
-    user: DomainUser?,
+    state: OrderUiState,
     onCloseOrder: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    val textColor = when (order.state) {
+    val order = state.order
+    val movie = state.movie
+    val user = state.user
+
+    val textColor = when (order?.state) {
         OrderState.OverDue -> Color.Red
         OrderState.Done -> Color.LightGray
         else -> Color.Black
@@ -33,20 +37,20 @@ fun OrderDetailScreen(
             .fillMaxWidth()
     ) {
         Text(
-            text = "Order id: ${order.id}",
+            text = "Order id: ${order?.id}",
             textAlign = TextAlign.Left,
         )
         Text(
-            text = "Order state: ${order.state.name}",
+            text = "Order state: ${order?.state?.name}",
             textAlign = TextAlign.Left,
             color = textColor
         )
         Text(
-            text = "Order create date: ${order.createDate}",
+            text = "Order create date: ${order?.createDate}",
             textAlign = TextAlign.Left,
         )
         Text(
-            text = "Order return date: ${order.returnDate ?: order.createDate.plusDays(3)}",
+            text = "Order return date: ${order?.returnDate ?: order?.createDate?.plusDays(3)}",
             textAlign = TextAlign.Left,
             color =  textColor
         )

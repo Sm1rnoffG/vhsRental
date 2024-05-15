@@ -19,6 +19,7 @@ import com.example.vhsrental.data.models.DomainOrder
 import com.example.vhsrental.data.models.DomainUser
 import com.example.vhsrental.data.models.OrderState
 import com.example.vhsrental.data.models.Role
+import com.example.vhsrental.ui.viewmodels.UserUiState
 
 @Composable
 fun UserDetailScreen(
@@ -26,17 +27,19 @@ fun UserDetailScreen(
     usersOrders: List<DomainOrder>,
     modifier: Modifier = Modifier,
     onPromoteClick: () -> Unit = {},
-    onDeleteClick: () -> Unit = {},
+    onDeleteClick: (DomainUser) -> Unit = {},
 ) {
     val displayDeleteWarning = remember { mutableStateOf(false) }
     val displayPromoteWarning = remember { mutableStateOf(false) }
+
+    val orderCount = if (usersOrders.isEmpty()) "Never" else usersOrders.maxOf { it.createDate }
 
     when {
         displayDeleteWarning.value -> {
             FinalWarning(
                 heading = "Permanent deletion!",
                 text = "You are about to delete this user permanently",
-                onConfirm = onDeleteClick,
+                onConfirm = { onDeleteClick(user) },
                 onCancel = { displayDeleteWarning.value = false }
             )
         }
@@ -77,13 +80,13 @@ fun UserDetailScreen(
         }
         item {
             Text(
-                text = "Latest order on: ${usersOrders.maxOf { it.createDate }}"
+                text = "Latest order on: $orderCount"
             )
         }
         item {
             OrderStats(usersOrders = usersOrders)
         }
-        if (user.role == Role.Employee) {
+        if (user.role == Role.User) {
             item {
                 Button(
                     onClick = { displayPromoteWarning.value = true },

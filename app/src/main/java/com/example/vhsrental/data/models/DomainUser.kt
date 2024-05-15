@@ -45,3 +45,12 @@ data class DomainUser (
         )
     }
 }
+
+val DEFAULT_USER = DomainUser(
+    id = -1,
+    name = "default value",
+    surname = "default value",
+    email = "default value",
+    password = ByteArray(0),
+    role = Role.User
+)

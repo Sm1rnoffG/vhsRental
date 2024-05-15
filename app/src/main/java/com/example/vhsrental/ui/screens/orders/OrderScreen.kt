@@ -13,16 +13,17 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.modifier.modifierLocalOf
 import androidx.compose.ui.text.style.TextAlign
+import com.example.vhsrental.data.models.DomainMovie
 import com.example.vhsrental.data.models.DomainOrder
 import com.example.vhsrental.data.models.DomainUser
 import com.example.vhsrental.data.models.OrderState
+import com.example.vhsrental.ui.viewmodels.OrderUiState
 
 @Composable
 fun OrderScreen(
-    orders: List<DomainOrder>,
-    users: List<DomainUser>,
+    orderData: List<Triple<DomainOrder, DomainMovie, DomainUser>>,
     modifier: Modifier = Modifier,
-    onOrderSelection: (DomainOrder) -> Unit,
+    onOrderSelection: (Triple<DomainOrder, DomainMovie, DomainUser>) -> Unit,
     onQueryRequest: () -> Unit,
 ) {
     val listState = rememberLazyListState()
@@ -34,11 +35,11 @@ fun OrderScreen(
         LazyColumn (
             state = listState,
         ) {
-            itemsIndexed(orders) {_, order ->
+            itemsIndexed(orderData) {_, data ->
                 OrderPreview(
-                    user = users.find { it.id == order.user },
-                    order = order,
-                    onClick = { onOrderSelection(order) },
+                    user = data.third,
+                    order = data.first,
+                    onClick = { onOrderSelection(data) },
                 )
             }
         }

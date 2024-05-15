@@ -36,4 +36,23 @@ data class DomainMovie (
             imageUrl, imdbUrl, releaseYear, description, genre.ordinal.toLong()
         )
     }
+
+    enum class Cols {
+        Name, xd
+    }
 }
+
+val DEFAULT_MOVIE = DomainMovie(
+    id = -1,
+    name = "default value",
+    length = -1,
+    availableCopies = -1,
+    currentlyAvailable = -1,
+    format = Format.VHS,
+    ageRating = 3,
+    imageUrl = "default value",
+    imdbUrl = "default value",
+    releaseYear = -1,
+    description = "default value",
+    genre = Genre.Action
+)

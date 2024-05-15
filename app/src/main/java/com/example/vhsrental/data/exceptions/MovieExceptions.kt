@@ -23,4 +23,9 @@ sealed class MovieExceptions(message: String) : Exception(message) {
             const val message: String = "Movie assigned to this order does not exist anymore"
         }
     }
+    class UnexpectedException : MovieExceptions(message) {
+        companion object{
+            const val message: String = "This should not be possible"
+        }
+    }
 }

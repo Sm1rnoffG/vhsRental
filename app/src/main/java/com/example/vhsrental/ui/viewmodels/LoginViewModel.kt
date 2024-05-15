@@ -4,13 +4,11 @@ import androidx.lifecycle.ViewModel
 import com.example.vhsrental.data.exceptions.LoginException
 import com.example.vhsrental.data.models.DomainUser
 import com.example.vhsrental.data.repositories.UserRepository
-import com.example.vhsrental.ui.screens.spine.Tab
+import com.example.vhsrental.ui.navigation.Tab
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 

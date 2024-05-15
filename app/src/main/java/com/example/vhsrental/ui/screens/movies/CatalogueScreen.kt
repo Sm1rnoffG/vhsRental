@@ -24,23 +24,16 @@ import com.example.vhsrental.data.models.DomainMovie
 import com.example.vhsrental.data.models.Format
 import com.example.vhsrental.data.models.Genre
 import com.example.vhsrental.ui.screens.Dot
-import com.example.vhsrental.ui.screens.QuerryBar
-import com.example.vhsrental.ui.viewmodels.MovieUiState
+import com.example.vhsrental.ui.viewmodels.MoviesUiState
 
 @Composable
 fun CatalogueScreen (
-    state: MovieUiState,
+    state: MoviesUiState,
     toMovieDetail: (DomainMovie) -> Unit,
-    onAddMovie: () -> Unit,
     onQuerryRequest: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     val listState = rememberLazyListState()
-    if (state is MovieUiState.MovieEditing) {
-        onAddMovie()
-        return
-    }
-    val movieList: List<DomainMovie> = (state as MovieUiState.Catalogue).movies
 
     Column (
         modifier = modifier
@@ -51,7 +44,7 @@ fun CatalogueScreen (
             modifier = Modifier
                 .fillMaxWidth()
         ) {
-            itemsIndexed(movieList) { _, movie ->
+            itemsIndexed(state.catalogue) { _, movie ->
                 Surface(onClick = { toMovieDetail(movie) }) {
                     MovieCard(movie = movie)
                 }

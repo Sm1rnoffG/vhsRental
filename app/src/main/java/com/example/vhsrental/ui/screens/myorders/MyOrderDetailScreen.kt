@@ -15,11 +15,12 @@ import com.example.vhsrental.data.models.DomainOrder
 import com.example.vhsrental.data.models.OrderState
 import com.example.vhsrental.ui.screens.movies.Poster
 import com.example.vhsrental.ui.viewmodels.OrderActions
+import com.example.vhsrental.ui.viewmodels.OrderUiState
 
 @Composable
 fun MyOrderDetailScreen(
-    order: DomainOrder,
-    movie: DomainMovie,
+    movie: DomainMovie?,
+    order: DomainOrder?,
     onMyOrderAction: (OrderActions) -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -27,22 +28,22 @@ fun MyOrderDetailScreen(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = modifier.fillMaxWidth()
     ) {
-        Poster(url = movie.imageUrl, isPreview = false)
+        Poster(url = movie?.imageUrl ?: "", isPreview = false)
         Text(
-            text = movie.name,
+            text = movie?.name ?: "",
             textAlign = TextAlign.Center
         )
         Text(
-            text = order.state.name,
+            text = order?.state?.name ?: "",
             textAlign = TextAlign.Center,
-            color = if (order.state == OrderState.OverDue) Color.Red else Color.Black
+            color = if (order?.state == OrderState.OverDue) Color.Red else Color.Black
         )
         Text(
-            text = "From: ${order.createDate}",
+            text = "From: ${order?.createDate}",
             textAlign = TextAlign.Center
         )
         Text(
-            text = "Till: ${order.returnDate ?: order.createDate.plusDays(3)}",
+            text = "Till: ${order?.returnDate ?: order?.createDate?.plusDays(3)}",
             textAlign = TextAlign.Center
         )
         MyOrderActionButton(order, onMyOrderAction)
@@ -51,13 +52,13 @@ fun MyOrderDetailScreen(
 
 @Composable
 fun MyOrderActionButton(
-    order: DomainOrder,
+    order: DomainOrder?,
     onMyOrderAction: (OrderActions) -> Unit,
     modifier: Modifier = Modifier
 ) {
     val action: OrderActions
     val text: String
-    when (order.state) {
+    when (order?.state) {
         OrderState.Reservation -> { action = OrderActions.OnOrderFinish; text = "Cancel Reservation" }
         OrderState.InProgress -> { action = OrderActions.OnOrderExtend; text = "Extend order"}
         else -> return

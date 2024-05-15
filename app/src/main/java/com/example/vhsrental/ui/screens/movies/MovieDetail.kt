@@ -17,12 +17,14 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.example.vhsrental.data.models.DomainMovie
 import com.example.vhsrental.ui.screens.Dot
-import com.example.vhsrental.ui.viewmodels.MovieActions
+import com.example.vhsrental.ui.viewmodels.MoviesUiState
 
 @Composable
 fun MovieDetail(
     movie: DomainMovie,
-    onMovieAction: (MovieActions) -> Unit,
+    onEdit: (DomainMovie) -> Unit,
+    onReservation: (DomainMovie) -> Unit,
+    onDelete: (DomainMovie) -> Unit,
     asEmployee: Boolean,
     modifier: Modifier = Modifier
 ) {
@@ -48,7 +50,12 @@ fun MovieDetail(
             AgeRatingChip(rating = movie.ageRating)
             LengthChip(length = movie.length)
         }
-        MovieActionButtons(movie, { onMovieAction(MovieActions.EditMovie(movie)) }, asEmployee)
+        MovieActionButtons(
+            onEdit = { onEdit(movie) },
+            onReserve = { onReservation(movie) },
+            onDelete = { onDelete(movie) },
+            asEmployee = asEmployee
+        )
         Text(
             text = movie.description,
             textAlign = TextAlign.Justify,
@@ -65,17 +72,19 @@ fun MovieDetail(
 
 @Composable
 fun MovieActionButtons(
-    movie: DomainMovie,
-    editMovie: () -> Unit,
+    onEdit: () -> Unit,
+    onReserve: () -> Unit,
+    onDelete: () -> Unit,
     asEmployee: Boolean,
     modifier: Modifier = Modifier
 ) {
     val buttonWidth = Modifier
         .width(15.dp)
         .wrapContentHeight()
-    val buttons = mutableListOf(Pair("Reserve", {  }))
+    val buttons = mutableListOf(Pair("Reserve", onReserve))
     if (asEmployee) buttons.addAll(listOf(
-        Pair("Edit", editMovie)
+        Pair("Edit", onEdit),
+        Pair("Delete", onDelete)
     ))
 
     Row (

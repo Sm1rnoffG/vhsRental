@@ -20,12 +20,13 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.example.vhsrental.ui.screens.Dot
+import com.example.vhsrental.ui.viewmodels.CreateOrderUiState
 import com.example.vhsrental.ui.viewmodels.OrderUiState
 import java.time.LocalDate
 
 @Composable
 fun CreateOrderScreen(
-    state: OrderUiState.OrderCreation,
+    state: CreateOrderUiState,
     modifier: Modifier = Modifier,
     onMovieSelection: () -> Unit = {},
     onMovieClear: () -> Unit = {},
@@ -48,8 +49,8 @@ fun CreateOrderScreen(
             }
         } else {
             OrderField(
-                left = state.movie?.name ?: "NaV",
-                right = state.movie?.format?.name ?: "NaV",
+                left = state.movie.name,
+                right = state.movie.format.name,
                 onClear = onMovieClear,
             )
         }
@@ -60,8 +61,8 @@ fun CreateOrderScreen(
             }
         } else {
             OrderField(
-                left = "${state.user?.name ?: "NaV"} ${state.user?.surname ?: "NaV"}",
-                right = state.user?.email ?: "NaV",
+                left = "${state.user.name} ${state.user.surname}",
+                right = state.user.email,
                 onClear = onUserClear,
             )
         }

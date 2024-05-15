@@ -1,4 +1,4 @@
-package com.example.vhsrental.ui.screens.spine
+package com.example.vhsrental.ui.navigation
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.wrapContentSize
