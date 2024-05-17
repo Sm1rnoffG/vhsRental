@@ -1,9 +1,16 @@
 package com.example.vhsrental.ui.screens.movies
 
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -19,16 +26,18 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.example.vhsrental.data.models.DomainMovie
 import com.example.vhsrental.data.models.Format
 import com.example.vhsrental.data.models.Genre
 import com.example.vhsrental.ui.screens.Dot
+import com.example.vhsrental.ui.theme.Paddings
 import com.example.vhsrental.ui.viewmodels.MoviesUiState
 
 @Composable
 fun CatalogueScreen (
-    state: MoviesUiState,
+    movies: List<DomainMovie>,
     toMovieDetail: (DomainMovie) -> Unit,
     onQuerryRequest: () -> Unit,
     modifier: Modifier = Modifier
@@ -43,8 +52,9 @@ fun CatalogueScreen (
             state = listState,
             modifier = Modifier
                 .fillMaxWidth()
+                .padding(Paddings.medium)
         ) {
-            itemsIndexed(state.catalogue) { _, movie ->
+            itemsIndexed(movies) { _, movie ->
                 Surface(onClick = { toMovieDetail(movie) }) {
                     MovieCard(movie = movie)
                 }
@@ -58,28 +68,35 @@ fun MovieCard(
     movie: DomainMovie,
     modifier: Modifier = Modifier
 ) {
-    Row (
-        modifier = modifier
-            .fillMaxWidth()
+    Surface (
+        shape = RoundedCornerShape(5.dp),
+        color = Color.LightGray
     ) {
-        Poster(movie.imageUrl, true)
-        MoviePreview(movie = movie)
+        Row(
+            modifier = modifier
+                .fillMaxWidth()
+                .padding(Paddings.large)
+        ) {
+            Poster(movie.imageUrl, true)
+            MoviePreview(movie = movie)
+        }
     }
 }
 
 @Composable
 fun Poster(url: String, isPreview: Boolean, modifier: Modifier = Modifier) {
-    val size = if (isPreview) 30.dp else 60.dp
+    val size = if (isPreview) 100.dp else 300.dp
 
     Surface (
-        shape = RoundedCornerShape(corner = CornerSize(2.dp)),
+        shape = RoundedCornerShape(corner = CornerSize(6.dp)),
         modifier = modifier
-            .size(size)
+            .size(width = size, height = size.times(1.5F))
     ) {
         AsyncImage(
             model = url,
             contentDescription = "Movie poster from: $url",
-            contentScale = ContentScale.FillBounds
+            contentScale = ContentScale.FillBounds,
+            modifier = Modifier
         )
     }
 }
@@ -88,26 +105,72 @@ fun Poster(url: String, isPreview: Boolean, modifier: Modifier = Modifier) {
 fun MoviePreview(movie: DomainMovie, modifier: Modifier = Modifier) {
     Column (
         horizontalAlignment = Alignment.End,
+        verticalArrangement = Arrangement.SpaceAround,
         modifier = modifier
+            .fillMaxWidth()
     ) {
         Text(
             text = movie.name,
-            textAlign = TextAlign.Right
+            textAlign = TextAlign.Right,
+            fontSize = 35.sp
         )
-        Row  {
-            Text(text = movie.format.name)
-            Dot()
-            if (movie.availableCopies > 0) {
-                Text(text = "Available", color = Color.Green)
-            } else {
-                Text(text = "Not available", color = Color.Red)
-            }
+        Row (
+            modifier = Modifier
+                .padding(Paddings.small)
+        ) {
+            FormatChip(format = movie.format)
+            Spacer(modifier = Modifier.size(10.dp))
+            AvailableChip(isAvailable = movie.currentlyAvailable > 0)
         }
         Row {
             GenreChip(genre = movie.genre)
+            Spacer(modifier = Modifier.size(10.dp))
             AgeRatingChip(rating = movie.ageRating)
+            Spacer(modifier = Modifier.size(10.dp))
             LengthChip(length = movie.length)
         }
+    }
+}
+
+@Composable
+fun AvailableChip (
+    isAvailable: Boolean,
+    modifier: Modifier = Modifier
+) {
+    Surface (
+        color = Color.DarkGray,
+        shape = RoundedCornerShape(size = 5.dp),
+        modifier = modifier
+            .wrapContentSize()
+    ) {
+        Text(
+            text = if (isAvailable) "Available" else "Not available",
+            color = if (isAvailable) Color.Green else Color.Red,
+            textAlign = TextAlign.Center,
+            modifier = Modifier
+                .padding(Paddings.medium)
+        )
+    }
+}
+
+@Composable
+fun FormatChip (
+    format: Format,
+    modifier: Modifier = Modifier
+) {
+    Surface (
+        color = Color.DarkGray,
+        shape = RoundedCornerShape(size = 5.dp),
+        modifier = modifier
+            .wrapContentSize()
+    ) {
+        Text(
+            text = format.name,
+            color = Color.White,
+            textAlign = TextAlign.Center,
+            modifier = Modifier
+                .padding(Paddings.medium)
+        )
     }
 }
 
@@ -125,11 +188,14 @@ fun GenreChip(genre: Genre, modifier: Modifier = Modifier) {
         color = chipColor,
         shape = RoundedCornerShape(size = 5.dp),
         modifier = modifier
+            .wrapContentSize()
     ) {
         Text(
             text = genre.name,
-            color = Color.White,
-            textAlign = TextAlign.Center
+            color = if (chipColor == Color.Yellow) Color.Black else Color.White,
+            textAlign = TextAlign.Center,
+            modifier = Modifier
+                .padding(Paddings.medium)
         )
     }
 }
@@ -148,11 +214,14 @@ fun AgeRatingChip(rating: Long, modifier: Modifier = Modifier) {
         color = chipColor,
         shape = RoundedCornerShape(size = 5.dp),
         modifier = modifier
+            .wrapContentSize()
     ) {
         Text(
             text = "$rating+",
             color = Color.White,
-            textAlign = TextAlign.Center
+            textAlign = TextAlign.Center,
+            modifier = Modifier
+                .padding(Paddings.medium)
         )
     }
 }
@@ -163,11 +232,14 @@ fun LengthChip(length: Long, modifier: Modifier = Modifier) {
         color = Color.Gray,
         shape = RoundedCornerShape(size = 5.dp),
         modifier = modifier
+            .wrapContentSize()
     ) {
         Text(
             text = "$length min",
             color = Color.White,
-            textAlign = TextAlign.Center
+            textAlign = TextAlign.Center,
+            modifier = Modifier
+                .padding(Paddings.medium)
         )
     }
 }
@@ -183,7 +255,7 @@ fun Movie() {
         currentlyAvailable = 4,
         format = Format.DVD,
         ageRating = 12,
-        imageUrl = "",
+        imageUrl = "https://image.tmdb.org/t/p/original/nlV35BhheFq9QqIdiL8aMCa3zAm.jpg",
         imdbUrl = "url",
         releaseYear = 12,
         description = "a",

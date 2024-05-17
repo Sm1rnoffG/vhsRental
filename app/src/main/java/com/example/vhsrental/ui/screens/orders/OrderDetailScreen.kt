@@ -19,7 +19,7 @@ import com.example.vhsrental.ui.viewmodels.OrderUiState
 @Composable
 fun OrderDetailScreen(
     state: OrderUiState,
-    onCloseOrder: () -> Unit,
+    onCloseOrder: (DomainMovie?) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val order = state.order
@@ -71,7 +71,7 @@ fun OrderDetailScreen(
             textAlign = TextAlign.Left,
         )
 
-        Button(onClick = onCloseOrder) {
+        Button(onClick = { onCloseOrder(movie) }) {
             Text(text = "Finalize order and mark as returned")
         }
     }

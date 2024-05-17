@@ -27,8 +27,8 @@ fun ActionButton(
     val navBackStackEntry by navHostController.currentBackStackEntryAsState()
     val currentDestinationRoute = navBackStackEntry?.destination?.route
 
-    if (state !is LoginUiState.LoggedIn || (currentDestinationRoute != Tab.Movies.route &&
-                currentDestinationRoute != Tab.Orders.route))
+    if (state !is LoginUiState.LoggedIn || state.user.role != Role.Employee ||
+        (currentDestinationRoute != Tab.Movies.route && currentDestinationRoute != Tab.Orders.route))
         return
 
     FloatingActionButton(

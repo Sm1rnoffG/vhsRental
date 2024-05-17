@@ -46,6 +46,7 @@ fun UserCard(user: DomainUser, modifier: Modifier = Modifier) {
     Row (
         horizontalArrangement = Arrangement.SpaceBetween,
         modifier = modifier
+            .fillMaxWidth()
     ) {
         Text(text = user.id.toString())
         Text(text = user.email)

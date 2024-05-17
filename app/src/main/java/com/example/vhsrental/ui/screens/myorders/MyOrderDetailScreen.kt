@@ -1,8 +1,8 @@
 package com.example.vhsrental.ui.screens.myorders
 
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -15,38 +15,39 @@ import com.example.vhsrental.data.models.DomainOrder
 import com.example.vhsrental.data.models.OrderState
 import com.example.vhsrental.ui.screens.movies.Poster
 import com.example.vhsrental.ui.viewmodels.OrderActions
-import com.example.vhsrental.ui.viewmodels.OrderUiState
 
 @Composable
 fun MyOrderDetailScreen(
     movie: DomainMovie?,
     order: DomainOrder?,
-    onMyOrderAction: (OrderActions) -> Unit,
+    onMyOrderAction: (OrderActions, DomainMovie?) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    Column (
+    LazyColumn (
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = modifier.fillMaxWidth()
     ) {
-        Poster(url = movie?.imageUrl ?: "", isPreview = false)
-        Text(
-            text = movie?.name ?: "",
-            textAlign = TextAlign.Center
-        )
-        Text(
-            text = order?.state?.name ?: "",
-            textAlign = TextAlign.Center,
-            color = if (order?.state == OrderState.OverDue) Color.Red else Color.Black
-        )
-        Text(
-            text = "From: ${order?.createDate}",
-            textAlign = TextAlign.Center
-        )
-        Text(
-            text = "Till: ${order?.returnDate ?: order?.createDate?.plusDays(3)}",
-            textAlign = TextAlign.Center
-        )
-        MyOrderActionButton(order, onMyOrderAction)
+        items (count = 1) {
+            Poster(url = movie?.imageUrl ?: "", isPreview = false)
+            Text(
+                text = movie?.name ?: "",
+                textAlign = TextAlign.Center
+            )
+            Text(
+                text = order?.state?.name ?: "",
+                textAlign = TextAlign.Center,
+                color = if (order?.state == OrderState.OverDue) Color.Red else Color.Black
+            )
+            Text(
+                text = "From: ${order?.createDate}",
+                textAlign = TextAlign.Center
+            )
+            Text(
+                text = "Till: ${order?.returnDate ?: order?.createDate?.plusDays(3)}",
+                textAlign = TextAlign.Center
+            )
+            MyOrderActionButton(order, { action -> onMyOrderAction(action, movie) })
+        }
     }
 }
 

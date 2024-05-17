@@ -33,6 +33,7 @@ fun UserDetailScreen(
     val displayPromoteWarning = remember { mutableStateOf(false) }
 
     val orderCount = if (usersOrders.isEmpty()) "Never" else usersOrders.maxOf { it.createDate }
+    val cantDelete = usersOrders.any { it.state != OrderState.Done }
 
     when {
         displayDeleteWarning.value -> {
@@ -106,10 +107,14 @@ fun UserDetailScreen(
                     disabledContentColor = Color.White,
                     disabledContainerColor = Color.LightGray
                 ),
+                enabled = !cantDelete,
                 modifier = Modifier
                     .fillMaxWidth()
             ) {
                 Text(text = "Delete user")
+            }
+            if (cantDelete) {
+                Text(text = "User cannot be deleted if they have opened orders")
             }
         }
     }

@@ -20,14 +20,20 @@ sealed class QueryRequest {
 }
 
 sealed class MovieActions {
-    data class OpenMovieDetail(val movie: DomainMovie) : MovieActions()
+    data class OpenMovieDetail(
+        val movie: DomainMovie,
+        val canMovieEdit: Boolean,
+        val canMovieReserve: Boolean
+    ) : MovieActions()
     data class DeleteMovie(val movie: DomainMovie) : MovieActions()
     data object LoadCatalogue : MovieActions()
 }
 
 data class MoviesUiState (
     val catalogue: List<DomainMovie>,
-    val displayMovie: DomainMovie? = null
+    val displayMovie: DomainMovie? = null,
+    val canMovieEdit: Boolean = false,
+    val canMovieReserve: Boolean = false,
 )
 
 @HiltViewModel
@@ -46,7 +52,11 @@ class MoviesViewModel @Inject constructor(
             is MovieActions.LoadCatalogue ->
                 _uiStateFlow.update { uiStateFlow.value.copy(catalogue = getAllMovies()) }
             is MovieActions.OpenMovieDetail ->
-                _uiStateFlow.update { uiStateFlow.value.copy(displayMovie = action.movie) }
+                _uiStateFlow.update { uiStateFlow.value.copy(
+                    displayMovie = action.movie,
+                    canMovieReserve = action.canMovieReserve,
+                    canMovieEdit = action.canMovieEdit,
+                ) }
         }
     }
 

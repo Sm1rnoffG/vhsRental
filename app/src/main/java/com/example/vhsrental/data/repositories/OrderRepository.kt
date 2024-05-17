@@ -49,9 +49,12 @@ class OrderRepository @Inject constructor(
         val creationDate = LocalDate.now()
         val returnDate = creationDate.plusDays(if (isReservationRequest) 3 else 30)
         val state = if (isReservationRequest) OrderState.Reservation else OrderState.InProgress
+        val id = try {
+            selectAll().maxOf { it.id } + 1
+        } catch (e: NoSuchElementException) { 0 }
 
         insert(DomainOrder(
-            id = selectAll().maxOf { it.id } + 1,
+            id = id,
             user = userId,
             movie = movieId,
             createDate = creationDate,

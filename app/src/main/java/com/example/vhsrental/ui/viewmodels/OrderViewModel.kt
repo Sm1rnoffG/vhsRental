@@ -30,8 +30,8 @@ sealed class OrderActions {
 data class OrderUiState (
     val orders: List<DomainOrder>,
     val order: DomainOrder? = null,
-    var user: DomainUser? = null,
-    var movie: DomainMovie? = null
+    val user: DomainUser? = null,
+    val movie: DomainMovie? = null,
 )
 
 @HiltViewModel
@@ -52,7 +52,7 @@ class OrderViewModel @Inject constructor(
             is OrderActions.OnLoadList ->
                 _uiStateFlow.update { uiStateFlow.value.copy(orders = getAllOrders()) }
             is OrderActions.OnLoadMyList ->
-                _uiStateFlow.update { OrderUiState(getAllOrders().filter { it.user != action.userId }) }
+                _uiStateFlow.update { uiStateFlow.value.copy(orders = getAllOrders().filter { it.user != action.userId }) }
             is OrderActions.OnOrderDetailRequest ->
                 _uiStateFlow.update { uiStateFlow.value.copy(order = action.order, movie = action.movie, user = action.user) }
             is OrderActions.OnOrderExtend -> extendOrder()
@@ -65,11 +65,18 @@ class OrderViewModel @Inject constructor(
 
     fun getOrderData(users: List<DomainUser>, movies: List<DomainMovie>) =
         uiStateFlow.value.orders
-            .map { Triple(
-                it,
-                movies.find { movie -> movie.id == it.movie } ?: DEFAULT_MOVIE,
-                users.find { user -> user.id == it.user } ?: DEFAULT_USER
-            ) }
+            .map {
+                Triple(
+                    it,
+                    movies.find { movie -> movie.id == it.movie } ?: DEFAULT_MOVIE,
+                    users.find { user -> user.id == it.user } ?: DEFAULT_USER
+                )
+            }
+
+    fun canEmployeeEdit(movie: DomainMovie) = getAllOrders().any { it.movie == movie.id }
+
+    fun canUserReserve(movie: DomainMovie, user: DomainUser) =
+        getUsersOrders(user.id).none { it.movie == movie.id }
 
     private fun getAllOrders() : List<DomainOrder> = repository.selectAll()
 

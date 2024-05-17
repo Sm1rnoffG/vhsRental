@@ -13,6 +13,8 @@ import kotlinx.coroutines.flow.update
 import javax.inject.Inject
 
 sealed class MovieEditActions {
+    data class OnMovieRent(val movie: DomainMovie?) : MovieEditActions()
+    data class OnMovieReturn(val movie: DomainMovie?) : MovieEditActions()
     data class OnNameChange(val update: String) : MovieEditActions()
     data class OnLengthChange(val update: String) : MovieEditActions()
     data class OnAvailableCopiesChange(val update: String) : MovieEditActions()
@@ -113,6 +115,8 @@ class MovieEditingViewModel @Inject constructor(
                 _uiStateFlow.update { MovieEditingUiState(movie = action.movie) }
             is MovieEditActions.OnAddMovie -> addMovie()
             is MovieEditActions.OnSaveChanges -> saveChanges()
+            is MovieEditActions.OnMovieRent -> rentMovie(action.movie)
+            is MovieEditActions.OnMovieReturn -> returnMovie(action.movie)
         }
     }
 
@@ -125,4 +129,12 @@ class MovieEditingViewModel @Inject constructor(
             _uiStateFlow.update { uiStateFlow.value.copy(errorMessage = e.message ?: "Error") }
         }
     }
+
+    private fun rentMovie(movie: DomainMovie?) =
+        repository.updateMovie(movie?.copy(currentlyAvailable = movie.currentlyAvailable - 1) ?:
+            throw MovieExceptions.UnexpectedException())
+
+    private fun returnMovie(movie: DomainMovie?) =
+        repository.updateMovie(movie?.copy(currentlyAvailable = movie.currentlyAvailable + 1) ?:
+            throw MovieExceptions.UnexpectedException())
 }

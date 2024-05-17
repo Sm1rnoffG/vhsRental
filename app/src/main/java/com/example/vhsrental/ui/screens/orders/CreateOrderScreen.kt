@@ -11,7 +11,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -19,9 +18,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import com.example.vhsrental.data.models.DomainMovie
 import com.example.vhsrental.ui.screens.Dot
 import com.example.vhsrental.ui.viewmodels.CreateOrderUiState
-import com.example.vhsrental.ui.viewmodels.OrderUiState
 import java.time.LocalDate
 
 @Composable
@@ -32,7 +31,7 @@ fun CreateOrderScreen(
     onMovieClear: () -> Unit = {},
     onUserSelection: () -> Unit = {},
     onUserClear: () -> Unit = {},
-    onConfirm: () -> Unit = {}
+    onConfirm: (DomainMovie?) -> Unit = {}
 ) {
     Column (
         modifier = modifier
@@ -45,7 +44,7 @@ fun CreateOrderScreen(
 
         if (state.movie == null) {
             Button(onClick = onMovieSelection ) {
-                Text(text = "Choose user")
+                Text(text = "Choose movie")
             }
         } else {
             OrderField(
@@ -57,7 +56,7 @@ fun CreateOrderScreen(
 
         if (state.user == null) {
             Button(onClick = onUserSelection) {
-                Text(text = "Choose movie")
+                Text(text = "Choose user")
             }
         } else {
             OrderField(
@@ -77,8 +76,8 @@ fun CreateOrderScreen(
         )
 
         Button(
-            onClick = onConfirm,
-            enabled = state.user != null && state.movie != null,
+            onClick = { onConfirm(state.movie) },
+            enabled = state.canCreate,
         ) {
             Text(text = "Create order")
         }

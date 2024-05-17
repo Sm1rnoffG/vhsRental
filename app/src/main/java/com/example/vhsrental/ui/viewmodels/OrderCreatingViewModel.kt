@@ -24,6 +24,7 @@ sealed class CreateOrderActions {
 data class CreateOrderUiState (
     val movie: DomainMovie? = null,
     val user: DomainUser? = null,
+    val canCreate: Boolean = false,
 )
 
 @HiltViewModel
@@ -42,11 +43,30 @@ class OrderCreatingViewModel @Inject constructor(
                 _uiStateFlow.update { uiStateFlow.value.copy(movie = null) }
             is CreateOrderActions.OnClearUser ->
                 _uiStateFlow.update { uiStateFlow.value.copy(user = null) }
-            is CreateOrderActions.OnMovieUpdate ->
+            is CreateOrderActions.OnMovieUpdate -> {
                 _uiStateFlow.update { uiStateFlow.value.copy(movie = action.update) }
-            is CreateOrderActions.OnUserUpdate ->
+                checkCanCreate()
+            }
+            is CreateOrderActions.OnUserUpdate -> {
                 _uiStateFlow.update { uiStateFlow.value.copy(user = action.update) }
+                checkCanCreate()
+            }
             is CreateOrderActions.OnOrderConfirm -> createOrder()
+        }
+    }
+
+    private fun checkCanCreate() {
+        val user = uiStateFlow.value.user
+        val movie = uiStateFlow.value.movie
+
+        if (user != null && movie != null) {
+            _uiStateFlow.update { uiStateFlow.value.copy(
+                canCreate = repository.selectAll()
+                    .filter { it.user == uiStateFlow.value.user?.id }
+                    .none { it.movie == uiStateFlow.value.movie?.id }
+            ) }
+        } else {
+            _uiStateFlow.update { uiStateFlow.value.copy(canCreate = false) }
         }
     }
 

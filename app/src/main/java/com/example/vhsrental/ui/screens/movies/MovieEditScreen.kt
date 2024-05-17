@@ -134,7 +134,7 @@ fun MovieEditScreen(
             OutlinedTextField(
                 value = state.newDescription ?: "",
                 onValueChange = { onValueChange(MovieEditActions.OnDescriptionChange(it)) },
-                label = { Text(text = "Available copies") },
+                label = { Text(text = "Description") },
                 placeholder = { Text(state.movie?.description ?: "") },
                 modifier = textFieldModifier
             )

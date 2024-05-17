@@ -26,7 +26,8 @@ enum class Screens {
     MovieDetail, EditMovie, AddMovie,  // Movie tab - Add movie is side branch
     MyOrderDetail,    // My orders tab
     UserDetail,  // Users Tab
-    OrderDetail, CreateOrder, ChooseMovie, ChooseUser,   // Order tab - create order is side branch
+    OrderDetail, CreateOrder, ChooseType, CreateFromReservation,
+        ChooseMovie, ChooseUser, SelectReservation,   // Order tab - create order is side branch
     AccountDetail, EditAccount, EditPassword // Accessible always from tob bar
 }
 
@@ -70,7 +71,7 @@ fun AppSpine(
                 loginVm = loginVm,
                 navHostController = navController,
                 whenOnMoviesClick = { navController.navigate(Screens.AddMovie.name) },
-                whenOnOrdersClick = { navController.navigate(Screens.CreateOrder.name) }
+                whenOnOrdersClick = { navController.navigate(Screens.ChooseType.name) }
             )
         },
     ) { innerPadding ->
