@@ -1,5 +1,7 @@
 package com.example.vhsrental
 
+import com.example.vhsrental.data.Query
+import kotlinx.coroutines.selects.select
 import org.junit.Test
 
 import org.junit.Assert.*

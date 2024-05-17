@@ -1,5 +1,6 @@
 package com.example.vhsrental.ui.navigation
 
+import androidx.compose.foundation.layout.Column
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -7,36 +8,73 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.res.painterResource
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.currentBackStackEntryAsState
 import com.example.vhsrental.R
+import com.example.vhsrental.ui.screens.query.QueryBar
 import com.example.vhsrental.ui.viewmodels.LoginUiState
 import com.example.vhsrental.ui.viewmodels.LoginViewModel
+import com.example.vhsrental.ui.viewmodels.MoviesViewModel
+import com.example.vhsrental.ui.viewmodels.OrderViewModel
+import com.example.vhsrental.ui.viewmodels.UsersViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TopBar(
-    vm: LoginViewModel,
+    loginVm: LoginViewModel,
+    movieVm: MoviesViewModel,
+    userVm: UsersViewModel,
+    orderVm: OrderViewModel,
+    navController: NavHostController,
     onLogout: () -> Unit,
     onAccountDetailClick: () -> Unit,
     onBackClick: () -> Unit
 ) {
-    val state = vm.uiStateFlow.collectAsState().value
+    val state = loginVm.uiStateFlow.collectAsState().value
+    val navBackStackEntry by navController.currentBackStackEntryAsState()
+    val currentDestinationRoute = navBackStackEntry?.destination?.route
+    val queryTab = when (currentDestinationRoute) {
+        Tab.Movies.route -> Tab.Movies
+        Tab.Users.route -> Tab.Users
+        Tab.Orders.route -> Tab.Orders
+        Tab.MyOrders.route -> Tab.MyOrders
+        else -> null
+    }
 
-    CenterAlignedTopAppBar(
-        title = { Icon(painterResource(id = R.drawable.baseline_storefront_24), contentDescription = "shopIcon") },
-        navigationIcon = { NavigationButton(vm = vm, onBackClick) },
-        actions = {
-            if (state is LoginUiState.LoggedIn) {
-                UserOptions(
-                    loggedInUser = state.user,
-                    onUserDetail = onAccountDetailClick,
-                    onLogout = onLogout
+    Column {
+        CenterAlignedTopAppBar(
+            title = {
+                Icon(
+                    painterResource(id = R.drawable.baseline_storefront_24),
+                    contentDescription = "shopIcon"
                 )
-            } else {
-                Text(text = "Not signed in")
-            }
-        },
-    )
+            },
+            navigationIcon = { NavigationButton(vm = loginVm, onBackClick) },
+            actions = {
+                if (state is LoginUiState.LoggedIn) {
+                    UserOptions(
+                        loggedInUser = state.user,
+                        onUserDetail = onAccountDetailClick,
+                        onLogout = onLogout
+                    )
+                } else {
+                    Text(text = "Not signed in")
+                }
+            },
+        )
+
+        if (queryTab != null && state is LoginUiState.LoggedIn) {
+            QueryBar(
+                movieVm = movieVm,
+                orderVm = orderVm,
+                usersVm = userVm,
+                displayedTab = queryTab,
+                currentUser = state.user
+            )
+        }
+    }
 }
 
 @Composable

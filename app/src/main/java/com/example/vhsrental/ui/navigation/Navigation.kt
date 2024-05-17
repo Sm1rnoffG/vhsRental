@@ -41,7 +41,6 @@ import com.example.vhsrental.ui.viewmodels.OrderViewModel
 import com.example.vhsrental.ui.viewmodels.UpdateAccountActions
 import com.example.vhsrental.ui.viewmodels.UserActions
 import com.example.vhsrental.ui.viewmodels.UsersViewModel
-import kotlin.math.log
 
 @Composable
 fun Navigation(
@@ -85,7 +84,7 @@ fun Navigation(
             val loginState = loginVm.uiStateFlow.collectAsState().value
 
             if (loginState is LoginUiState.LoggedIn) {
-                CatalogueScreen(movies = (movieVm.uiStateFlow.collectAsState().value.catalogue),
+                CatalogueScreen(movies = (movieVm.uiStateFlow.collectAsState().value.catalogue.list),
                     toMovieDetail = { movie ->
                         movieVm.emitAction(
                             MovieActions.OpenMovieDetail(
@@ -250,7 +249,7 @@ fun Navigation(
         composable(Screens.ChooseMovie.name) {
             movieVm.emitAction(MovieActions.LoadCatalogue)
             CatalogueScreen(
-                movies = movieVm.uiStateFlow.collectAsState().value.catalogue.filter { it.currentlyAvailable > 0 },
+                movies = movieVm.uiStateFlow.collectAsState().value.catalogue.list.filter { it.currentlyAvailable > 0 },
                 toMovieDetail = {
                     orderCreatingVm.emitAction(CreateOrderActions.OnMovieUpdate(it))
                     navController.popBackStack()
@@ -263,7 +262,7 @@ fun Navigation(
             if (loginState is LoginUiState.LoggedIn) {
                 usersVm.emitAction(UserActions.OnUserList(loginState.user))
                 UsersScreen(
-                    users = usersVm.uiStateFlow.collectAsState().value.users,
+                    users = usersVm.uiStateFlow.collectAsState().value.users.list,
                     toUserDetail = {
                         orderCreatingVm.emitAction(CreateOrderActions.OnUserUpdate(it))
                         navController.popBackStack()

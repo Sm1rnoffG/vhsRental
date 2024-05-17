@@ -13,7 +13,6 @@ import androidx.compose.ui.text.style.TextAlign
 import com.example.vhsrental.data.models.DomainMovie
 import com.example.vhsrental.data.models.DomainOrder
 import com.example.vhsrental.data.models.OrderState
-import com.example.vhsrental.ui.screens.QuerryBar
 import com.example.vhsrental.ui.screens.movies.Poster
 import com.example.vhsrental.ui.viewmodels.OrderUiState
 import java.time.LocalDate

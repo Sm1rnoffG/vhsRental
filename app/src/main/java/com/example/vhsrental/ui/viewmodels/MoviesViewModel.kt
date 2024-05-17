@@ -1,6 +1,8 @@
 package com.example.vhsrental.ui.viewmodels
 
+import android.text.BoringLayout
 import androidx.lifecycle.ViewModel
+import com.example.vhsrental.data.Query
 import com.example.vhsrental.data.exceptions.MovieExceptions
 import com.example.vhsrental.data.models.DomainMovie
 import com.example.vhsrental.data.models.DomainOrder
@@ -12,13 +14,6 @@ import kotlinx.coroutines.flow.update
 import javax.inject.Inject
 
 
-sealed class QueryRequest {
-    data class Search(val column: String, val search: String) : QueryRequest()
-    data class Filter(val column: String, val filter: String) : QueryRequest()
-    data class Sort(val column: String) : QueryRequest()
-    data object FlipOrder : QueryRequest()
-}
-
 sealed class MovieActions {
     data class OpenMovieDetail(
         val movie: DomainMovie,
@@ -26,11 +21,15 @@ sealed class MovieActions {
         val canMovieReserve: Boolean
     ) : MovieActions()
     data class DeleteMovie(val movie: DomainMovie) : MovieActions()
+    data class UpdateSearchValue(val update: String) : MovieActions()
+    data class OnSearch(val searchFunction: (DomainMovie) -> String) : MovieActions()
+    data class OnFilter(val filterFunction: (DomainMovie) -> Boolean) : MovieActions()
+    data class OnSort(val sortFunction: Comparator<DomainMovie>, val flipped: Boolean) : MovieActions()
     data object LoadCatalogue : MovieActions()
 }
 
 data class MoviesUiState (
-    val catalogue: List<DomainMovie>,
+    val catalogue: Query<DomainMovie>,
     val displayMovie: DomainMovie? = null,
     val canMovieEdit: Boolean = false,
     val canMovieReserve: Boolean = false,
@@ -42,7 +41,7 @@ class MoviesViewModel @Inject constructor(
 ) : ViewModel() {
 
     private val _uiStateFlow: MutableStateFlow<MoviesUiState> =
-        MutableStateFlow(MoviesUiState(repository.selectAll()))
+        MutableStateFlow(MoviesUiState(Query(repository.selectAll())))
     val uiStateFlow: StateFlow<MoviesUiState>
         get() = _uiStateFlow
 
@@ -50,13 +49,21 @@ class MoviesViewModel @Inject constructor(
         when (action) {
             is MovieActions.DeleteMovie -> deleteMovie()
             is MovieActions.LoadCatalogue ->
-                _uiStateFlow.update { uiStateFlow.value.copy(catalogue = getAllMovies()) }
+                _uiStateFlow.update { uiStateFlow.value.copy(catalogue = Query(getAllMovies())) }
             is MovieActions.OpenMovieDetail ->
                 _uiStateFlow.update { uiStateFlow.value.copy(
                     displayMovie = action.movie,
                     canMovieReserve = action.canMovieReserve,
                     canMovieEdit = action.canMovieEdit,
                 ) }
+            is MovieActions.OnFilter ->
+                _uiStateFlow.update { uiStateFlow.value.copy(catalogue = uiStateFlow.value.catalogue.filter(action.filterFunction)) }
+            is MovieActions.OnSearch ->
+                _uiStateFlow.update { uiStateFlow.value.copy(catalogue = uiStateFlow.value.catalogue.search(action.searchFunction)) }
+            is MovieActions.OnSort ->
+                _uiStateFlow.update { uiStateFlow.value.copy(catalogue = uiStateFlow.value.catalogue.sort(action.sortFunction, action.flipped)) }
+            is MovieActions.UpdateSearchValue ->
+                _uiStateFlow.update { uiStateFlow.value.copy(catalogue = uiStateFlow.value.catalogue.updateSearch(action.update)) }
         }
     }
 

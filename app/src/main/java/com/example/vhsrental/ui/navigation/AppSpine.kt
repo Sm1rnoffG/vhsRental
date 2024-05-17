@@ -4,17 +4,15 @@ import android.app.Activity
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavGraph.Companion.findStartDestination
-import androidx.navigation.NavHostController
+import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.vhsrental.ui.viewmodels.LoginViewModel
-import com.example.vhsrental.ui.viewmodels.MovieActions
-import com.example.vhsrental.ui.viewmodels.MovieEditActions
 import com.example.vhsrental.ui.viewmodels.MovieEditingViewModel
 import com.example.vhsrental.ui.viewmodels.MoviesViewModel
-import com.example.vhsrental.ui.viewmodels.OrderActions
 import com.example.vhsrental.ui.viewmodels.OrderCreatingViewModel
 import com.example.vhsrental.ui.viewmodels.OrderViewModel
 import com.example.vhsrental.ui.viewmodels.UpdateAccountActions
@@ -45,7 +43,11 @@ fun AppSpine(
     Scaffold (
         topBar = {
             TopBar(
-                vm = loginVm,
+                loginVm = loginVm,
+                movieVm = movieVm,
+                userVm = usersVm,
+                orderVm = orderVm,
+                navController = navController,
                 onBackClick = {
                     if (!navController.popBackStack()) activity.finish()
                 },

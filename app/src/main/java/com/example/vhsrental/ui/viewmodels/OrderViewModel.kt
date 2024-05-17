@@ -2,6 +2,7 @@ package com.example.vhsrental.ui.viewmodels
 
 import android.util.Log
 import androidx.lifecycle.ViewModel
+import com.example.vhsrental.data.Query
 import com.example.vhsrental.data.exceptions.OrderExceptions
 import com.example.vhsrental.data.models.DEFAULT_MOVIE
 import com.example.vhsrental.data.models.DEFAULT_USER
@@ -20,6 +21,10 @@ sealed class OrderActions {
     data class OnReservationRequest(val movie: DomainMovie, val user: DomainUser) : OrderActions()
     data class OnOrderDetailRequest(val order: DomainOrder, val movie: DomainMovie, val user: DomainUser) : OrderActions()
     data class OnMyOrderDetailRequest(val order: DomainOrder, val movie: DomainMovie) : OrderActions()
+    data class UpdateSearchValue(val update: String) : OrderActions()
+    data class OnSearch(val searchFunction: (DomainOrder) -> String) : OrderActions()
+    data class OnFilter(val filterFunction: (DomainOrder) -> Boolean) : OrderActions()
+    data class OnSort(val sortFunction: Comparator<DomainOrder>, val flipped: Boolean) : OrderActions()
     data class OnDeleteUser(val userId: Long) : OrderActions()
     data class OnLoadMyList(val userId: Long): OrderActions()
     data object OnOrderFinish : OrderActions()
@@ -28,7 +33,7 @@ sealed class OrderActions {
 }
 
 data class OrderUiState (
-    val orders: List<DomainOrder>,
+    val orders: Query<DomainOrder>,
     val order: DomainOrder? = null,
     val user: DomainUser? = null,
     val movie: DomainMovie? = null,
@@ -39,7 +44,7 @@ class OrderViewModel @Inject constructor(
     private val repository: OrderRepository
 ) : ViewModel() {
     private val _uiStateFlow: MutableStateFlow<OrderUiState> =
-        MutableStateFlow(OrderUiState(getAllOrders()))
+        MutableStateFlow(OrderUiState(Query(getAllOrders())))
     val uiStateFlow: StateFlow<OrderUiState>
         get() = _uiStateFlow
 
@@ -50,9 +55,11 @@ class OrderViewModel @Inject constructor(
         when (action) {
             is OrderActions.OnDeleteUser -> deleteUsersOrders(usersId = action.userId)
             is OrderActions.OnLoadList ->
-                _uiStateFlow.update { uiStateFlow.value.copy(orders = getAllOrders()) }
+                _uiStateFlow.update { uiStateFlow.value.copy(orders = Query(getAllOrders())) }
             is OrderActions.OnLoadMyList ->
-                _uiStateFlow.update { uiStateFlow.value.copy(orders = getAllOrders().filter { it.user != action.userId }) }
+                _uiStateFlow.update { uiStateFlow.value.copy(
+                    orders = Query(getAllOrders().filter { it.user != action.userId })
+                ) }
             is OrderActions.OnOrderDetailRequest ->
                 _uiStateFlow.update { uiStateFlow.value.copy(order = action.order, movie = action.movie, user = action.user) }
             is OrderActions.OnOrderExtend -> extendOrder()
@@ -60,11 +67,20 @@ class OrderViewModel @Inject constructor(
             is OrderActions.OnReservationRequest -> reserveMovie()
             is OrderActions.OnMyOrderDetailRequest ->
                 _uiStateFlow.update { uiStateFlow.value.copy(order = action.order, movie = action.movie) }
+
+            is OrderActions.OnFilter ->
+                _uiStateFlow.update { uiStateFlow.value.copy(orders = uiStateFlow.value.orders.filter(action.filterFunction)) }
+            is OrderActions.OnSearch ->
+                _uiStateFlow.update { uiStateFlow.value.copy(orders = uiStateFlow.value.orders.search(action.searchFunction)) }
+            is OrderActions.OnSort ->
+                _uiStateFlow.update { uiStateFlow.value.copy(orders = uiStateFlow.value.orders.sort(action.sortFunction, action.flipped)) }
+            is OrderActions.UpdateSearchValue ->
+                _uiStateFlow.update { uiStateFlow.value.copy(orders = uiStateFlow.value.orders.updateSearch(action.update)) }
         }
     }
 
     fun getOrderData(users: List<DomainUser>, movies: List<DomainMovie>) =
-        uiStateFlow.value.orders
+        uiStateFlow.value.orders.list
             .map {
                 Triple(
                     it,
