@@ -4,13 +4,14 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import com.example.vhsrental.data.Query
 import com.example.vhsrental.data.exceptions.OrderExceptions
-import com.example.vhsrental.data.models.DEFAULT_MOVIE
-import com.example.vhsrental.data.models.DEFAULT_USER
 import com.example.vhsrental.data.models.DomainMovie
 import com.example.vhsrental.data.models.DomainOrder
 import com.example.vhsrental.data.models.DomainUser
+import com.example.vhsrental.data.models.OrderRecord
 import com.example.vhsrental.data.models.OrderState
+import com.example.vhsrental.data.repositories.MovieRepository
 import com.example.vhsrental.data.repositories.OrderRepository
+import com.example.vhsrental.data.repositories.UserRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -19,21 +20,21 @@ import javax.inject.Inject
 
 sealed class OrderActions {
     data class OnReservationRequest(val movie: DomainMovie, val user: DomainUser) : OrderActions()
-    data class OnOrderDetailRequest(val order: DomainOrder, val movie: DomainMovie, val user: DomainUser) : OrderActions()
-    data class OnMyOrderDetailRequest(val order: DomainOrder, val movie: DomainMovie) : OrderActions()
+    data class OnOrderDetailRequest(val record: OrderRecord) : OrderActions()
+    data class OnMyOrderDetailRequest(val record: OrderRecord) : OrderActions()
     data class UpdateSearchValue(val update: String) : OrderActions()
-    data class OnSearch(val searchFunction: (DomainOrder) -> String) : OrderActions()
-    data class OnFilter(val filterFunction: (DomainOrder) -> Boolean) : OrderActions()
-    data class OnSort(val sortFunction: Comparator<DomainOrder>, val flipped: Boolean) : OrderActions()
+    data class OnSearch(val searchFunction: (OrderRecord) -> String) : OrderActions()
+    data class OnFilter(val filterFunction: (OrderRecord) -> Boolean) : OrderActions()
+    data class OnSort(val sortFunction: Comparator<OrderRecord>, val flipped: Boolean) : OrderActions()
     data class OnDeleteUser(val userId: Long) : OrderActions()
-    data class OnLoadMyList(val userId: Long): OrderActions()
+    data class OnLoadMyList(val user: DomainUser): OrderActions()
     data object OnOrderFinish : OrderActions()
     data object OnLoadList : OrderActions()
-    data object OnOrderExtend: OrderActions()
+    data object OnOrderExtend : OrderActions()
 }
 
 data class OrderUiState (
-    val orders: Query<DomainOrder>,
+    val orders: Query<OrderRecord>,
     val order: DomainOrder? = null,
     val user: DomainUser? = null,
     val movie: DomainMovie? = null,
@@ -41,33 +42,32 @@ data class OrderUiState (
 
 @HiltViewModel
 class OrderViewModel @Inject constructor(
-    private val repository: OrderRepository
+    private val orderRepository: OrderRepository,
+    private val movieRepository: MovieRepository,
+    private val userRepository: UserRepository,
 ) : ViewModel() {
     private val _uiStateFlow: MutableStateFlow<OrderUiState> =
-        MutableStateFlow(OrderUiState(Query(getAllOrders())))
+        MutableStateFlow(OrderUiState(Query(getRecords())))
     val uiStateFlow: StateFlow<OrderUiState>
         get() = _uiStateFlow
 
     init {
-        repository.deleteOld()
+        orderRepository.deleteOld()
     }
     fun emitAction(action: OrderActions) {
         when (action) {
             is OrderActions.OnDeleteUser -> deleteUsersOrders(usersId = action.userId)
             is OrderActions.OnLoadList ->
-                _uiStateFlow.update { uiStateFlow.value.copy(orders = Query(getAllOrders())) }
+                _uiStateFlow.update { uiStateFlow.value.copy(orders = Query(getRecords())) }
             is OrderActions.OnLoadMyList ->
-                _uiStateFlow.update { uiStateFlow.value.copy(
-                    orders = Query(getAllOrders().filter { it.user != action.userId })
-                ) }
+                _uiStateFlow.update { uiStateFlow.value.copy(orders = Query(getRecords(action.user))) }
             is OrderActions.OnOrderDetailRequest ->
-                _uiStateFlow.update { uiStateFlow.value.copy(order = action.order, movie = action.movie, user = action.user) }
+                _uiStateFlow.update { uiStateFlow.value.copy(order = action.record.order, movie = action.record.movie, user = action.record.user) }
             is OrderActions.OnOrderExtend -> extendOrder()
             is OrderActions.OnOrderFinish -> finishOrder()
             is OrderActions.OnReservationRequest -> reserveMovie()
             is OrderActions.OnMyOrderDetailRequest ->
-                _uiStateFlow.update { uiStateFlow.value.copy(order = action.order, movie = action.movie) }
-
+                _uiStateFlow.update { uiStateFlow.value.copy(order = action.record.order, movie = action.record.movie) }
             is OrderActions.OnFilter ->
                 _uiStateFlow.update { uiStateFlow.value.copy(orders = uiStateFlow.value.orders.filter(action.filterFunction)) }
             is OrderActions.OnSearch ->
@@ -79,33 +79,41 @@ class OrderViewModel @Inject constructor(
         }
     }
 
-    fun getOrderData(users: List<DomainUser>, movies: List<DomainMovie>) =
-        uiStateFlow.value.orders.list
-            .map {
-                Triple(
-                    it,
-                    movies.find { movie -> movie.id == it.movie } ?: DEFAULT_MOVIE,
-                    users.find { user -> user.id == it.user } ?: DEFAULT_USER
-                )
-            }
-
     fun canEmployeeEdit(movie: DomainMovie) = getAllOrders().any { it.movie == movie.id }
 
     fun canUserReserve(movie: DomainMovie, user: DomainUser) =
         getUsersOrders(user.id).none { it.movie == movie.id }
 
-    private fun getAllOrders() : List<DomainOrder> = repository.selectAll()
+    fun getUsersOrders(userId: Long) = getAllOrders().filter { it.user == userId }
+
+    fun getRecords(user: DomainUser? = null) : List<OrderRecord> {
+        return if (user != null) {
+            getAllOrders().filter { it.user == user.id }
+                .map { order -> OrderRecord(
+                    order = order,
+                    movie = movieRepository.getMovieById(order.movie),
+                    user = user
+                ) }
+        } else {
+            getAllOrders().map { order -> OrderRecord(
+                order = order,
+                movie = movieRepository.getMovieById(order.movie),
+                user = userRepository.getUserById(order.user)
+            ) }
+        }
+    }
+
+    private fun getAllOrders() = orderRepository.selectAll()
 
     private fun deleteUsersOrders(usersId: Long) {
         val orders = getAllOrders().filter { it.user == usersId }
-        repository.deleteUsersOrders(orders)
+        orderRepository.deleteUsersOrders(orders)
     }
 
-    fun getUsersOrders(userId: Long) = getAllOrders().filter { it.user == userId }
 
     private fun reserveMovie() {
         try {
-            repository.createOrder(
+            orderRepository.createOrder(
                 movieId = uiStateFlow.value.movie?.id ?: throw OrderExceptions.EmptyFieldException(),
                 userId = uiStateFlow.value.user?.id ?: throw OrderExceptions.EmptyFieldException(),
                 isReservationRequest = true
@@ -118,7 +126,7 @@ class OrderViewModel @Inject constructor(
     private fun finishOrder() {
         val updatedOrder = uiStateFlow.value.order?.copy(state = OrderState.Done) ?:
             throw OrderExceptions.UnexpectedException()
-        repository.insert(updatedOrder)
+        orderRepository.insert(updatedOrder)
     }
 
     private fun extendOrder() {
@@ -127,7 +135,7 @@ class OrderViewModel @Inject constructor(
             returnDate = uiStateFlow.value.order?.returnDate?.plusDays(30)
         ) ?: throw OrderExceptions.UnexpectedException()
 
-        repository.insert(updatedOrder)
+        orderRepository.insert(updatedOrder)
 
     }
 }

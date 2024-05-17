@@ -11,7 +11,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
@@ -49,6 +48,7 @@ fun QueryBar(
             orderVm = orderVm,
             userVm = usersVm,
             currentTab = displayedTab,
+            currentUser = currentUser,
             onDismiss = { displaySearchDialog.value = !displaySearchDialog.value }
         )
         displaySortDialog.value -> SortDialog(
@@ -56,6 +56,7 @@ fun QueryBar(
             orderVm = orderVm,
             userVm = usersVm,
             currentTab = displayedTab,
+            currentUser = currentUser,
             onDismiss = { displaySortDialog.value = !displaySortDialog.value }
         )
         displayFilterDialog.value -> FilterDialog(
@@ -138,7 +139,7 @@ fun clearQuery(
 ) {
     when (displayedTab) {
         is Tab.Movies -> movieVm.emitAction(MovieActions.LoadCatalogue)
-        is Tab.MyOrders -> orderVm.emitAction(OrderActions.OnLoadMyList(currentUser.id))
+        is Tab.MyOrders -> orderVm.emitAction(OrderActions.OnLoadMyList(currentUser))
         is Tab.Orders -> orderVm.emitAction(OrderActions.OnLoadList)
         is Tab.Users -> usersVm.emitAction(UserActions.OnUserList(currentUser))
         else -> Unit

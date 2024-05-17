@@ -4,9 +4,12 @@ import android.content.Context
 import app.cash.sqldelight.Query
 import app.cash.sqldelight.db.SqlDriver
 import app.cash.sqldelight.driver.android.AndroidSqliteDriver
+import com.example.vhsrental.data.exceptions.MovieExceptions
 import com.example.vhsrental.data.models.DBMovie
 import com.example.vhsrental.data.models.DBOrder
 import com.example.vhsrental.data.models.DBUser
+import com.example.vhsrental.data.models.DEFAULT_MOVIE
+import com.example.vhsrental.data.models.DEFAULT_USER
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -30,6 +33,17 @@ class VHSRentalDB @Inject constructor(context: Context) {
                 )
             }
 
+    fun getMovieById(id: Long) = VHSRental(driver).movieQueries
+        .getMovie(id)
+        .executeAsOneOrNull()
+        ?.let {
+            DBMovie(
+                it.id, it.name, it.length, it.available_copies, it.currently_available,
+                it.format, it.age_rating, it.image_url, it.imdb_url, it.release_year,
+                it.description, it.genre
+            )
+        } ?: throw MovieExceptions.NoMovieFoundException()
+
     fun deleteMovie(id: Long) = VHSRental(driver).movieQueries.deleteMovie(id)
 
     fun addMovie(movie: DBMovie) = VHSRental(driver).movieQueries.addMovie(
@@ -49,9 +63,10 @@ class VHSRentalDB @Inject constructor(context: Context) {
 
     fun getUserById(id: Long) : DBUser = VHSRental(driver).userQueries
             .getUser(id)
-            .executeAsList()[0].let {
+            .executeAsOneOrNull()
+            ?.let {
                 DBUser(it.id, it.name, it.surname, it.email, it.password, it.role)
-        }
+        } ?: DEFAULT_USER.asDBModel()
 
     fun getUserByEmail(email: String) : List<DBUser> = VHSRental(driver).userQueries
             .getUserByEmail(email)

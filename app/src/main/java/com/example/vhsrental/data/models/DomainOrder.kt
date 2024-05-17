@@ -10,6 +10,12 @@ enum class OrderState {
     Extended
 }
 
+data class OrderRecord(
+    val order: DomainOrder,
+    val movie: DomainMovie,
+    val user: DomainUser,
+)
+
 data class DomainOrder (
     override val id: Long,
     var state: OrderState,

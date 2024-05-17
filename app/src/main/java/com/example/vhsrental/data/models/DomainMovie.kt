@@ -36,10 +36,6 @@ data class DomainMovie (
             imageUrl, imdbUrl, releaseYear, description, genre.ordinal.toLong()
         )
     }
-
-    enum class Cols {
-        Name, xd
-    }
 }
 
 val DEFAULT_MOVIE = DomainMovie(

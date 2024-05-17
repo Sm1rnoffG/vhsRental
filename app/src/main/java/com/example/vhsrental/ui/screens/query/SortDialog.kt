@@ -16,6 +16,8 @@ import androidx.compose.ui.window.Dialog
 import com.example.vhsrental.data.models.DomainMovie
 import com.example.vhsrental.data.models.DomainOrder
 import com.example.vhsrental.data.models.DomainUser
+import com.example.vhsrental.data.models.OrderRecord
+import com.example.vhsrental.data.models.Role
 import com.example.vhsrental.ui.navigation.Tab
 import com.example.vhsrental.ui.theme.Paddings
 import com.example.vhsrental.ui.viewmodels.MovieActions
@@ -31,6 +33,7 @@ fun SortDialog(
     orderVm: OrderViewModel,
     userVm: UsersViewModel,
     currentTab: Tab,
+    currentUser: DomainUser,
     onDismiss: () -> Unit
 ) {
     Dialog(
@@ -49,8 +52,8 @@ fun SortDialog(
 
             when (currentTab) {
                 is Tab.Movies -> MovieSortOptions(movieVm = movieVm)
-                is Tab.Orders -> OrderSortOptions(orderVm = orderVm)
-                is Tab.MyOrders -> Unit
+                is Tab.Orders -> OrderSortOptions(orderVm = orderVm, asEmployee = currentUser.role == Role.Employee)
+                is Tab.MyOrders -> OrderSortOptions(orderVm = orderVm, asEmployee = currentUser.role == Role.Employee)
                 is Tab.Users -> UserSortOptions(userVm = userVm)
                 else -> Unit
             }
@@ -65,7 +68,7 @@ fun MovieSortOptions(
 ) {
     val buttonModifier = Modifier
         .padding(Paddings.small)
-        .fillMaxWidth(0.7f)
+        .fillMaxWidth()
 
     val buttons = listOf<Triple<String, Boolean, Comparator<DomainMovie>>>(
         Triple("By id ascending", false, compareBy { it.id }),
@@ -96,18 +99,23 @@ fun MovieSortOptions(
 @Composable
 fun OrderSortOptions(
     orderVm: OrderViewModel,
+    asEmployee: Boolean,
     modifier: Modifier = Modifier
 ) {
     val buttonModifier = Modifier
         .padding(Paddings.small)
-        .fillMaxWidth(0.7f)
+        .fillMaxWidth()
 
-    val buttons = listOf<Triple<String, Boolean, Comparator<DomainOrder>>>(
-        Triple("By create date ascending", false, compareBy { it.createDate }),
-        Triple("By create data descending", true, compareBy { it.createDate }),
-        Triple("By id ascending", false, compareBy { it.id }),
-        Triple("By id descending", true, compareBy { it.id }),
+    val buttons = mutableListOf<Triple<String, Boolean, Comparator<OrderRecord>>>(
+        Triple("By create date ascending", false, compareBy { it.order.createDate }),
+        Triple("By create data descending", true, compareBy { it.order.createDate }),
+        Triple("By movie name ascending", false, compareBy { it.movie.name }),
+        Triple("By movie name descending", true, compareBy { it.movie.name }),
     )
+    if (asEmployee) buttons.addAll(listOf(
+        Triple("By id ascending", false, compareBy { it.order.id }),
+        Triple("By id descending", true, compareBy { it.order.id }),
+    ))
 
     LazyColumn (
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -133,7 +141,7 @@ fun UserSortOptions(
 ) {
     val buttonModifier = Modifier
         .padding(Paddings.small)
-        .fillMaxWidth(0.7f)
+        .fillMaxWidth()
 
     val buttons = listOf<Triple<String, Boolean, Comparator<DomainUser>>>(
         Triple("By surname ascending", false, compareBy { it.surname }),

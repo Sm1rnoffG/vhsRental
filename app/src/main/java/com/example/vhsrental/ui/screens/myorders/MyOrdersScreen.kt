@@ -12,6 +12,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import com.example.vhsrental.data.models.DomainMovie
 import com.example.vhsrental.data.models.DomainOrder
+import com.example.vhsrental.data.models.OrderRecord
 import com.example.vhsrental.data.models.OrderState
 import com.example.vhsrental.ui.screens.movies.Poster
 import com.example.vhsrental.ui.viewmodels.OrderUiState
@@ -19,8 +20,8 @@ import java.time.LocalDate
 
 @Composable
 fun MyOrdersScreen(
-    myOrders: List<Pair<DomainOrder, DomainMovie>>,
-    toOrderMyOrderDetail: (Pair<DomainOrder, DomainMovie>) -> Unit,
+    myOrders: List<OrderRecord>,
+    toOrderMyOrderDetail: (OrderRecord) -> Unit,
     modifier: Modifier = Modifier
 ) {
     Column (
@@ -42,9 +43,9 @@ fun MyOrdersScreen(
 }
 
 @Composable
-fun MyOrderCard(orderPair: Pair<DomainOrder, DomainMovie>, modifier: Modifier = Modifier) {
-    val order = orderPair.first
-    val movie = orderPair.second
+fun MyOrderCard(record: OrderRecord, modifier: Modifier = Modifier) {
+    val order = record.order
+    val movie = record.movie
 
     Row (
         modifier = modifier

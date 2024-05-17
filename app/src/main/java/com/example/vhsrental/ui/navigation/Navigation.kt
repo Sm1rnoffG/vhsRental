@@ -153,16 +153,11 @@ fun Navigation(
         composable(Tab.MyOrders.route) {
             val loginState = loginVm.uiStateFlow.collectAsState().value
             if (loginState is LoginUiState.LoggedIn){
-                orderVm.emitAction(OrderActions.OnLoadMyList(loginState.user.id))
+                orderVm.emitAction(OrderActions.OnLoadMyList(loginState.user))
                 MyOrdersScreen(
-                    myOrders = movieVm.assignMoviesToOrders(orderVm.getUsersOrders(loginState.user.id)),
-                    toOrderMyOrderDetail = { orderAndMovie ->
-                        orderVm.emitAction(
-                            OrderActions.OnMyOrderDetailRequest(
-                                order = orderAndMovie.first,
-                                movie = orderAndMovie.second
-                            )
-                        )
+                    myOrders = orderVm.uiStateFlow.collectAsState().value.orders.list,
+                    toOrderMyOrderDetail = { record ->
+                        orderVm.emitAction(OrderActions.OnMyOrderDetailRequest(record))
                         navController.navigate(Screens.MyOrderDetail.name)
                     }
                 )
@@ -187,11 +182,9 @@ fun Navigation(
         composable(Tab.Orders.route) {
             orderVm.emitAction(OrderActions.OnLoadList)
             OrderScreen(
-                orderData = orderVm.getOrderData(usersVm.getAllUsers(), movieVm.getAllMovies()),
-                onOrderSelection = { triple ->
-                    orderVm.emitAction(OrderActions.OnOrderDetailRequest(
-                        order = triple.first, movie = triple.second, user = triple.third
-                    ))
+                orderData = orderVm.getRecords(),
+                onOrderSelection = { record ->
+                    orderVm.emitAction(OrderActions.OnOrderDetailRequest(record = record))
                     navController.navigate(Screens.OrderDetail.name)
                 },
                 onQueryRequest = {}
@@ -221,12 +214,13 @@ fun Navigation(
             )
         }
         composable(Screens.SelectReservation.name) {
+            orderVm.emitAction(OrderActions.OnLoadList)
             OrderScreen(
-                orderData = orderVm.getOrderData(usersVm.getAllUsers(), movieVm.getAllMovies())
-                    .filter { it.first.state == OrderState.Reservation },
-                onOrderSelection = { triple ->
-                    orderCreatingVm.emitAction(CreateOrderActions.OnUserUpdate(triple.third))
-                    orderCreatingVm.emitAction(CreateOrderActions.OnMovieUpdate(triple.second))
+                orderData = orderVm.uiStateFlow.collectAsState().value.orders.list
+                    .filter { it.order.state == OrderState.Reservation },
+                onOrderSelection = { record ->
+                    orderCreatingVm.emitAction(CreateOrderActions.OnUserUpdate(record.user))
+                    orderCreatingVm.emitAction(CreateOrderActions.OnMovieUpdate(record.movie))
                     navController.navigate(Screens.CreateFromReservation.name)
                 },
                 onQueryRequest = {}

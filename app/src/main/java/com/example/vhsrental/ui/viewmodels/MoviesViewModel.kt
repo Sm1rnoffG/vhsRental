@@ -71,15 +71,6 @@ class MoviesViewModel @Inject constructor(
             uiStateFlow.value.displayMovie?.id ?: throw MovieExceptions.UnexpectedException()
     )
 
-    fun getAllMovies() : List<DomainMovie> = repository.selectAll()
+    private fun getAllMovies() : List<DomainMovie> = repository.selectAll()
 
-    fun assignMoviesToOrders(orders: List<DomainOrder>) : List<Pair<DomainOrder, DomainMovie>> {
-        val movies = repository.selectAll()
-        val result = orders.map { order ->
-            Pair(order, movies.find { movie ->
-                movie.id == order.movie
-            } ?: throw MovieExceptions.NoMovieFoundException() )
-        }
-        return result
-    }
 }

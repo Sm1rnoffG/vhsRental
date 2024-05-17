@@ -25,5 +25,7 @@ class MovieRepository @Inject constructor(
         db.addMovie(movie.asDBModel())
     }
 
+    fun getMovieById(id: Long) = db.getMovieById(id).asDomainModel()
+
     fun updateMovie(updated: DomainMovie) = db.addMovie(updated.asDBModel())
 }

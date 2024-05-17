@@ -25,6 +25,7 @@ import com.example.vhsrental.data.models.DomainOrder
 import com.example.vhsrental.data.models.DomainUser
 import com.example.vhsrental.data.models.Format
 import com.example.vhsrental.data.models.Genre
+import com.example.vhsrental.data.models.OrderRecord
 import com.example.vhsrental.data.models.OrderState
 import com.example.vhsrental.data.models.Role
 import com.example.vhsrental.ui.navigation.Tab
@@ -60,8 +61,9 @@ fun FilterDialog(
 
             when (currentTab) {
                 is Tab.Movies -> MovieFilterOptions(movieVm = movieVm)
+                is Tab.Users -> UserFilterOptions(userVm = userVm)
                 is Tab.Orders -> OrderFilterOptions(orderVm = orderVm)
-                is Tab.MyOrders -> UserFilterOptions(userVm = userVm)
+                is Tab.MyOrders -> OrderFilterOptions(orderVm = orderVm)
                 else -> Unit
             }
         }
@@ -230,11 +232,11 @@ fun OrderFilterOptions(
         .wrapContentHeight()
 
     val statusButtons = listOf(
-        Pair("Only in progress") { order: DomainOrder -> order.state == OrderState.InProgress },
-        Pair("Only extended") { order: DomainOrder -> order.state == OrderState.Extended },
-        Pair("Only done") { order: DomainOrder -> order.state == OrderState.Done },
-        Pair("Only reservations") { order: DomainOrder -> order.state == OrderState.Reservation },
-        Pair("Only overdue") { order: DomainOrder -> order.state == OrderState.OverDue },
+        Pair("Only in progress") { record: OrderRecord -> record.order.state == OrderState.InProgress },
+        Pair("Only extended") { record: OrderRecord -> record.order.state == OrderState.Extended },
+        Pair("Only done") { record: OrderRecord -> record.order.state == OrderState.Done },
+        Pair("Only reservations") { record: OrderRecord -> record.order.state == OrderState.Reservation },
+        Pair("Only overdue") { record: OrderRecord -> record.order.state == OrderState.OverDue },
     )
 
     LazyColumn (
