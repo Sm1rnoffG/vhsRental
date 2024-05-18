@@ -2,6 +2,9 @@ package com.example.vhsrental.ui.screens.login
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
@@ -15,6 +18,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.sp
+import com.example.vhsrental.ui.theme.Paddings
 import com.example.vhsrental.ui.viewmodels.LoginUiState
 import com.example.vhsrental.ui.viewmodels.UpdateAccountActions
 
@@ -36,31 +41,38 @@ fun AccountUpdateScreen(
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = modifier
+            .fillMaxWidth()
+            .fillMaxHeight()
+            .padding(Paddings.medium)
     ) {
         Text(
             text = "Update account information",
-            textAlign = TextAlign.Center
+            textAlign = TextAlign.Center,
+            fontSize = 35.sp
         )
         OutlinedTextField(
             value = loggedIn.newName,
             onValueChange = { onValueChange(UpdateAccountActions.OnNameUpdate(it)) },
             placeholder = { Text(loggedIn.user.name) },
             label = { Text("Name") },
-            modifier = Modifier,
+            modifier = Modifier
+                .padding(Paddings.small),
         )
         OutlinedTextField(
             value = loggedIn.newSurname,
             onValueChange = { onValueChange(UpdateAccountActions.OnSurnameUpdate(it)) },
             placeholder = { Text(loggedIn.user.surname) },
             label = { Text("Surname") },
-            modifier = Modifier,
+            modifier = Modifier
+                .padding(Paddings.small),
         )
         OutlinedTextField(
             value = loggedIn.newEmail,
             onValueChange = { onValueChange(UpdateAccountActions.OnEmailUpdate(it)) },
             placeholder = { Text(loggedIn.user.email) },
             label = { Text("E-mail") },
-            modifier = Modifier,
+            modifier = Modifier
+                .padding(Paddings.small),
             isError = loggedIn.isError
         )
         if (loggedIn.isError) {
@@ -69,6 +81,7 @@ fun AccountUpdateScreen(
         Button(
             onClick = onConfirm,
             modifier = Modifier
+                .padding(Paddings.small)
                 .wrapContentSize()
         ) {
             Text(

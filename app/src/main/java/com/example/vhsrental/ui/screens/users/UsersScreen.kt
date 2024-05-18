@@ -11,6 +11,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import com.example.vhsrental.data.models.DomainUser
+import com.example.vhsrental.ui.screens.EmptyQuery
 import com.example.vhsrental.ui.viewmodels.UserUiState
 
 @Composable
@@ -18,17 +19,16 @@ fun UsersScreen(
     users: List<DomainUser>,
     toUserDetail: (DomainUser) -> Unit,
     modifier: Modifier = Modifier,
-    onQueryRequest: () -> Unit = {},
 ) {
     val columnState = rememberLazyListState()
 
-    Column (
-        modifier = modifier
-    ) {
-        // QuerryBar()
+    if (users.isEmpty()) {
+        EmptyQuery(message = "No users found")
+    } else {
         LazyColumn (
             state = columnState,
-            modifier = Modifier.fillMaxWidth()
+            modifier = modifier
+                .fillMaxWidth()
         ) {
             users.forEach {
                 item {

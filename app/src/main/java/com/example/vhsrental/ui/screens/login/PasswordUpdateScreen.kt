@@ -2,6 +2,9 @@ package com.example.vhsrental.ui.screens.login
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.material3.Button
 import androidx.compose.material3.OutlinedTextField
@@ -12,7 +15,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.sp
 import com.example.vhsrental.R
+import com.example.vhsrental.ui.theme.Paddings
 import com.example.vhsrental.ui.viewmodels.LoginUiState
 import com.example.vhsrental.ui.viewmodels.UpdateAccountActions
 
@@ -33,18 +38,23 @@ fun PasswordUpdateScreen(
     Column (
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = modifier,
+        modifier = modifier
+            .fillMaxWidth()
+            .fillMaxHeight()
+            .padding(Paddings.large)
     ) {
         Text(
             text = stringResource(id = R.string.update_password_heading),
-            textAlign = TextAlign.Center
+            textAlign = TextAlign.Center,
+            fontSize = 35.sp
         )
         OutlinedTextField(
             value = loggedIn.newPassword,
             label = { Text(text = stringResource(R.string.new_password_label)) },
             onValueChange = { onValueChange(UpdateAccountActions.OnPasswordUpdate(it)) },
             visualTransformation = PasswordVisualTransformation(),
-            modifier = Modifier,
+            modifier = Modifier
+                .padding(Paddings.small),
             isError = loggedIn.isError,
         )
         OutlinedTextField(
@@ -52,7 +62,8 @@ fun PasswordUpdateScreen(
             label = { Text(text = stringResource(id = R.string.repeat_new_password_label)) },
             onValueChange = { onValueChange(UpdateAccountActions.OnPasswordRepeatUpdate(it)) },
             visualTransformation = PasswordVisualTransformation(),
-            modifier = Modifier,
+            modifier = Modifier
+                .padding(Paddings.small),
             isError = loggedIn.isError,
         )
         OutlinedTextField(
@@ -60,7 +71,8 @@ fun PasswordUpdateScreen(
             label = { Text(text = stringResource(R.string.old_password_label)) },
             onValueChange = { onValueChange(UpdateAccountActions.OnOldPasswordUpdate(it)) },
             visualTransformation = PasswordVisualTransformation(),
-            modifier = Modifier,
+            modifier = Modifier
+                .padding(Paddings.small),
             isError = loggedIn.isError,
         )
         if (loggedIn.isError) {
@@ -69,6 +81,7 @@ fun PasswordUpdateScreen(
         Button(
             onClick = onConfirm,
             modifier = Modifier
+                .padding(Paddings.small)
                 .wrapContentSize(),
         ) {
             Text(

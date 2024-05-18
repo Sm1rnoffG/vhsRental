@@ -5,6 +5,8 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -16,6 +18,9 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Info
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -32,6 +37,7 @@ import com.example.vhsrental.data.models.DomainMovie
 import com.example.vhsrental.data.models.Format
 import com.example.vhsrental.data.models.Genre
 import com.example.vhsrental.ui.screens.Dot
+import com.example.vhsrental.ui.screens.EmptyQuery
 import com.example.vhsrental.ui.theme.Paddings
 import com.example.vhsrental.ui.viewmodels.MoviesUiState
 
@@ -39,18 +45,16 @@ import com.example.vhsrental.ui.viewmodels.MoviesUiState
 fun CatalogueScreen (
     movies: List<DomainMovie>,
     toMovieDetail: (DomainMovie) -> Unit,
-    onQuerryRequest: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     val listState = rememberLazyListState()
 
-    Column (
-        modifier = modifier
-    ) {
-        // QuerryBar()
+    if (movies.isEmpty()) {
+        EmptyQuery(message = "No movies found")
+    } else {
         LazyColumn(
             state = listState,
-            modifier = Modifier
+            modifier = modifier
                 .fillMaxWidth()
                 .padding(Paddings.medium)
         ) {

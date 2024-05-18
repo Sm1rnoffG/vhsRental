@@ -84,7 +84,8 @@ fun Navigation(
             val loginState = loginVm.uiStateFlow.collectAsState().value
 
             if (loginState is LoginUiState.LoggedIn) {
-                CatalogueScreen(movies = (movieVm.uiStateFlow.collectAsState().value.catalogue.list),
+                CatalogueScreen(
+                    movies = (movieVm.uiStateFlow.collectAsState().value.catalogue.list),
                     toMovieDetail = { movie ->
                         movieVm.emitAction(
                             MovieActions.OpenMovieDetail(
@@ -95,7 +96,7 @@ fun Navigation(
                         )
                         navController.navigate(Screens.MovieDetail.name)
                     },
-                    onQuerryRequest = { /*TODO*/ })
+                )
             }
         }
         composable(Screens.AddMovie.name) {
@@ -187,7 +188,6 @@ fun Navigation(
                     orderVm.emitAction(OrderActions.OnOrderDetailRequest(record = record))
                     navController.navigate(Screens.OrderDetail.name)
                 },
-                onQueryRequest = {}
             )
         }
         composable(Screens.OrderDetail.name) {
@@ -201,10 +201,16 @@ fun Navigation(
         }
         composable(Screens.ChooseType.name) {
             ChooseOrderTypeScreen(
-                isReservation = {  },
-                isNewOrder = { navController.navigate(Screens.CreateOrder.name) {
-                    popUpTo(Tab.Orders.route) { inclusive = false }
-                } }
+                isReservation = {
+                    navController.navigate(Screens.SelectReservation.name) {
+                        popUpTo(Tab.Orders.route) { inclusive = false }
+                    }
+                },
+                isNewOrder = {
+                    navController.navigate(Screens.CreateOrder.name) {
+                        popUpTo(Tab.Orders.route) { inclusive = false }
+                    }
+                }
             )
         }
         composable(Screens.CreateFromReservation.name) {
@@ -223,7 +229,6 @@ fun Navigation(
                     orderCreatingVm.emitAction(CreateOrderActions.OnMovieUpdate(record.movie))
                     navController.navigate(Screens.CreateFromReservation.name)
                 },
-                onQueryRequest = {}
             )
         }
         composable(Screens.CreateOrder.name) {
@@ -248,7 +253,6 @@ fun Navigation(
                     orderCreatingVm.emitAction(CreateOrderActions.OnMovieUpdate(it))
                     navController.popBackStack()
                 },
-                onQuerryRequest = { /*TODO*/ }
             )
         }
         composable(Screens.ChooseUser.name) {

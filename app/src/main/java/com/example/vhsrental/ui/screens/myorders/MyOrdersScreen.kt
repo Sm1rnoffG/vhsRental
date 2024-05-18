@@ -26,6 +26,7 @@ import com.example.vhsrental.data.models.DomainMovie
 import com.example.vhsrental.data.models.DomainOrder
 import com.example.vhsrental.data.models.OrderRecord
 import com.example.vhsrental.data.models.OrderState
+import com.example.vhsrental.ui.screens.EmptyQuery
 import com.example.vhsrental.ui.screens.movies.Poster
 import com.example.vhsrental.ui.theme.Paddings
 import com.example.vhsrental.ui.viewmodels.OrderUiState
@@ -37,11 +38,11 @@ fun MyOrdersScreen(
     toOrderMyOrderDetail: (OrderRecord) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    Column (
-        modifier = modifier
-    ) {
-        LazyColumn (
-            modifier = Modifier.fillMaxWidth()
+    if (myOrders.isEmpty()) {
+        EmptyQuery(message = "You have no orders")
+    } else {
+        LazyColumn(
+            modifier = modifier.fillMaxWidth()
         ) {
             items(myOrders) {
                 MyOrderCard(

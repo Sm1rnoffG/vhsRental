@@ -1,7 +1,9 @@
 package com.example.vhsrental.ui.screens.movies
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
@@ -14,9 +16,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.sp
 import com.example.vhsrental.data.models.Format
 import com.example.vhsrental.data.models.Genre
 import com.example.vhsrental.ui.screens.OptionSelectDropdownMenu
+import com.example.vhsrental.ui.theme.Paddings
 import com.example.vhsrental.ui.viewmodels.MovieEditActions
 import com.example.vhsrental.ui.viewmodels.MovieEditingUiState
 import com.example.vhsrental.ui.viewmodels.MoviesUiState
@@ -33,11 +37,12 @@ fun MovieEditScreen(
     val textFieldModifier = Modifier
         .wrapContentHeight()
         .fillMaxWidth()
+        .padding(Paddings.small)
     val ageRatingOptions = listOf("3+", "8+", "12+", "15+", "18+")
         .zip(listOf(3L, 8L, 12L, 15L, 18L))
     val genreOptions = Genre.entries.map { it.name }.zip(Genre.entries)
     val formatOptions = Format.entries.map { it.name }.zip(Format.entries)
-    val releaseYearOptions = (1920..LocalDate.now().year).map{ it.toString() }
+    val releaseYearOptions = (1920..LocalDate.now().year).map { it.toString() }
         .zip((1920L..LocalDate.now().year)).reversed()
     val heading = if (state.movie == null)
         "Add movie to database" else "Editing movie: ${state.movie.name}"
@@ -47,9 +52,14 @@ fun MovieEditScreen(
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = modifier
+            .fillMaxWidth()
+            .padding(Paddings.large)
     ) {
         item {
-            Text(text = heading)
+            Text(
+                text = heading,
+                fontSize = 35.sp
+            )
         }
         item {
             OutlinedTextField(
