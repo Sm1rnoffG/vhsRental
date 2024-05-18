@@ -6,27 +6,21 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.focus.focusModifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
-import com.example.vhsrental.data.models.ADomainModel
 import com.example.vhsrental.data.models.DomainMovie
 import com.example.vhsrental.data.models.DomainUser
 import com.example.vhsrental.data.models.OrderRecord
 import com.example.vhsrental.data.models.Role
 import com.example.vhsrental.ui.navigation.Tab
-import com.example.vhsrental.ui.screens.OptionSelectDropdownMenu
 import com.example.vhsrental.ui.theme.Paddings
 import com.example.vhsrental.ui.viewmodels.MovieActions
 import com.example.vhsrental.ui.viewmodels.MoviesViewModel
@@ -34,7 +28,6 @@ import com.example.vhsrental.ui.viewmodels.OrderActions
 import com.example.vhsrental.ui.viewmodels.OrderViewModel
 import com.example.vhsrental.ui.viewmodels.UserActions
 import com.example.vhsrental.ui.viewmodels.UsersViewModel
-import kotlin.time.Duration.Companion.seconds
 
 @Composable
 fun SearchDialog(
@@ -77,10 +70,10 @@ fun SearchDialog(
             )
             
             when (currentTab) {
-                is Tab.Movies -> MovieSearchOptions(movieVm = movieVm)
-                is Tab.Users -> UserSearchOptions(userVm = userVm)
-                is Tab.Orders -> OrderSearchOptions(orderVm = orderVm, asEmployee = currentUser.role == Role.Employee)
-                is Tab.MyOrders -> OrderSearchOptions(orderVm = orderVm, asEmployee = currentUser.role == Role.Employee)
+                is Tab.Movies -> MovieSearchOptions(movieVm)
+                is Tab.Users -> UserSearchOptions(userVm)
+                is Tab.Orders -> OrderSearchOptions(orderVm, asEmployee = currentUser.role == Role.Employee)
+                is Tab.MyOrders -> OrderSearchOptions(orderVm, asEmployee = currentUser.role == Role.Employee)
                 else -> Unit
             }
         }
@@ -172,9 +165,9 @@ fun OrderSearchOptions(
         Pair("In rented movies") { record: OrderRecord -> record.movie.name },
     )
     if (asEmployee) buttons.addAll(listOf(
-        Pair("In user names") { record: OrderRecord -> record.movie.name },
-        Pair("In user surnames") { record: OrderRecord -> record.movie.name },
-        Pair("In user e-mails") { record: OrderRecord -> record.movie.name },
+        Pair("In user names") { record: OrderRecord -> record.user.name },
+        Pair("In user surnames") { record: OrderRecord -> record.user.surname },
+        Pair("In user e-mails") { record: OrderRecord -> record.user.email },
     ))
 
     LazyColumn (

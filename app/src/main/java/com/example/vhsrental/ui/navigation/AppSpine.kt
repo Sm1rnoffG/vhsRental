@@ -11,8 +11,10 @@ import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.vhsrental.ui.viewmodels.LoginViewModel
+import com.example.vhsrental.ui.viewmodels.MovieActions
 import com.example.vhsrental.ui.viewmodels.MovieEditingViewModel
 import com.example.vhsrental.ui.viewmodels.MoviesViewModel
+import com.example.vhsrental.ui.viewmodels.OrderActions
 import com.example.vhsrental.ui.viewmodels.OrderCreatingViewModel
 import com.example.vhsrental.ui.viewmodels.OrderViewModel
 import com.example.vhsrental.ui.viewmodels.UpdateAccountActions
@@ -67,7 +69,7 @@ fun AppSpine(
                 }
             )
         },
-        bottomBar = { BottomBar(navController, loginVm) },
+        bottomBar = { BottomBar(navController, loginVm, movieVm, orderVm, usersVm) },
         floatingActionButton = {
             ActionButton(
                 loginVm = loginVm,

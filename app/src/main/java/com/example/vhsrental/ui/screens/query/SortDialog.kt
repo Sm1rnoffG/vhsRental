@@ -14,7 +14,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import com.example.vhsrental.data.models.DomainMovie
-import com.example.vhsrental.data.models.DomainOrder
 import com.example.vhsrental.data.models.DomainUser
 import com.example.vhsrental.data.models.OrderRecord
 import com.example.vhsrental.data.models.Role
@@ -53,10 +52,10 @@ fun SortDialog(
             )
 
             when (currentTab) {
-                is Tab.Movies -> MovieSortOptions(movieVm = movieVm, asEmployee = asEmployee)
-                is Tab.Orders -> OrderSortOptions(orderVm = orderVm, asEmployee = asEmployee)
-                is Tab.MyOrders -> OrderSortOptions(orderVm = orderVm, asEmployee = asEmployee)
-                is Tab.Users -> UserSortOptions(userVm = userVm)
+                is Tab.Movies -> MovieSortOptions(movieVm, asEmployee)
+                is Tab.Orders -> OrderSortOptions(orderVm, asEmployee)
+                is Tab.MyOrders -> OrderSortOptions(orderVm, asEmployee)
+                is Tab.Users -> UserSortOptions(userVm)
                 else -> Unit
             }
         }

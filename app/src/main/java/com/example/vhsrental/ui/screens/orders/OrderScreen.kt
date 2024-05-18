@@ -85,7 +85,7 @@ fun OrderPreview(
         ) {
             Text(
                 text = "${movie.name} on ${movie.format}",
-                fontSize = 35.sp
+                fontSize = 20.sp
             )
             Row(
                 horizontalArrangement = Arrangement.SpaceBetween,

@@ -10,21 +10,11 @@ data class Query<T>(
     }
 
     fun sort(comparator: Comparator<T> , flipped: Boolean) : Query<T> {
-        var newList = list.sortedWith(comparator)
-        if (flipped) newList = list.reversed()
-        return Query(newList)
+        val newList = list.sortedWith(comparator)
+        return Query(if (flipped) newList else newList.reversed())
     }
 
-    fun search(selector: (T) -> String) : Query<T> {
-        return Query(list.filter { selector(it).contains(searchValue) })
-    }
+    fun search(selector: (T) -> String) = Query(list.filter { selector(it).contains(searchValue) })
 
     fun updateSearch(update: String) : Query<T> = this.copy(searchValue = update)
 }
-
-
-data class Test (
-    val id: Int,
-    val name: String,
-)
-

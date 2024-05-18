@@ -16,6 +16,12 @@ import com.example.vhsrental.R
 import com.example.vhsrental.data.models.Role
 import com.example.vhsrental.ui.viewmodels.LoginUiState
 import com.example.vhsrental.ui.viewmodels.LoginViewModel
+import com.example.vhsrental.ui.viewmodels.MovieActions
+import com.example.vhsrental.ui.viewmodels.MoviesViewModel
+import com.example.vhsrental.ui.viewmodels.OrderActions
+import com.example.vhsrental.ui.viewmodels.OrderViewModel
+import com.example.vhsrental.ui.viewmodels.UserActions
+import com.example.vhsrental.ui.viewmodels.UsersViewModel
 
 
 sealed class Tab (val route: String) {
@@ -30,12 +36,15 @@ sealed class Tab (val route: String) {
 @Composable
 fun BottomBar(
     navController: NavController,
-    vm: LoginViewModel
+    loginVm: LoginViewModel,
+    movieVm: MoviesViewModel,
+    orderVm: OrderViewModel,
+    userVm: UsersViewModel,
 ) {
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentDestination = navBackStackEntry?.destination
 
-    val state = vm.uiStateFlow.collectAsState().value
+    val state = loginVm.uiStateFlow.collectAsState().value
     if (state !is LoginUiState.LoggedIn ||
         currentDestination?.hierarchy?.any { it.route == Screens.AccountDetail.name } == true)
         return
@@ -62,6 +71,13 @@ fun BottomBar(
                 label = { Text(text = triple.second) },
                 selected = currentDestination?.hierarchy?.any { it.route == triple.third.route } == true,
                 onClick = {
+                    when (triple.third) {
+                        Tab.Orders -> orderVm.emitAction(OrderActions.OnLoadList)
+                        Tab.Movies -> movieVm.emitAction(MovieActions.LoadCatalogue)
+                        Tab.Users -> userVm.emitAction(UserActions.OnUserList(state.user))
+                        Tab.MyOrders -> orderVm.emitAction(OrderActions.OnLoadMyList(state.user))
+                        else -> Unit
+                    }
                     navController.navigate(triple.third.route) {
                         popUpTo(navController.graph.findStartDestination().id) {
                             saveState = true

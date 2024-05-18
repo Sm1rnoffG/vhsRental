@@ -1,6 +1,5 @@
 package com.example.vhsrental.ui.viewmodels
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import com.example.vhsrental.data.Query
 import com.example.vhsrental.data.exceptions.OrderExceptions
@@ -86,7 +85,7 @@ class OrderViewModel @Inject constructor(
 
     fun getUsersOrders(userId: Long) = getAllOrders().filter { it.user == userId }
 
-    fun getRecords(user: DomainUser? = null) : List<OrderRecord> {
+    private fun getRecords(user: DomainUser? = null) : List<OrderRecord> {
         return if (user != null) {
             getAllOrders().filter { it.user == user.id }
                 .map { order -> OrderRecord(
@@ -105,11 +104,8 @@ class OrderViewModel @Inject constructor(
 
     private fun getAllOrders() = orderRepository.selectAll()
 
-    private fun deleteUsersOrders(usersId: Long) {
-        val orders = getAllOrders().filter { it.user == usersId }
-        orderRepository.deleteUsersOrders(orders)
-    }
-
+    private fun deleteUsersOrders(usersId: Long) =
+        orderRepository.deleteUsersOrders(getUsersOrders(usersId))
 
     private fun reserveMovie(movie: DomainMovie, user: DomainUser) = orderRepository
         .createOrder(
@@ -131,6 +127,5 @@ class OrderViewModel @Inject constructor(
         ) ?: throw OrderExceptions.UnexpectedException()
 
         orderRepository.insert(updatedOrder)
-
     }
 }
