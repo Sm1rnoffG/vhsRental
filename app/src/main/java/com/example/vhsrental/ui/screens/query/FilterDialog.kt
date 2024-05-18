@@ -6,22 +6,15 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
-import com.example.vhsrental.data.models.ADomainModel
 import com.example.vhsrental.data.models.DomainMovie
-import com.example.vhsrental.data.models.DomainOrder
 import com.example.vhsrental.data.models.DomainUser
 import com.example.vhsrental.data.models.Format
 import com.example.vhsrental.data.models.Genre
@@ -29,7 +22,6 @@ import com.example.vhsrental.data.models.OrderRecord
 import com.example.vhsrental.data.models.OrderState
 import com.example.vhsrental.data.models.Role
 import com.example.vhsrental.ui.navigation.Tab
-import com.example.vhsrental.ui.screens.OptionSelectDropdownMenu
 import com.example.vhsrental.ui.theme.Paddings
 import com.example.vhsrental.ui.viewmodels.MovieActions
 import com.example.vhsrental.ui.viewmodels.MoviesViewModel
@@ -56,7 +48,8 @@ fun FilterDialog(
         ) {
             Text(
                 text = "Filter",
-                fontSize = 35.sp
+                fontSize = 35.sp,
+                color = Color.White
             )
 
             when (currentTab) {

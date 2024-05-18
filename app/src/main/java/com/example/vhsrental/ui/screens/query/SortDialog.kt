@@ -46,7 +46,7 @@ fun SortDialog(
                 .padding(Paddings.large)
         ) {
             Text(
-                text = "Filter",
+                text = "Sort",
                 color = Color.White,
                 fontSize = 35.sp
             )
