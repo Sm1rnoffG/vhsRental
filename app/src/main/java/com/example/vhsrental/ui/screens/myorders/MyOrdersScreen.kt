@@ -106,7 +106,7 @@ fun MyOrderPreview(
 ) {
     val textColor = when (orderState) {
         OrderState.OverDue -> Color.Red
-        OrderState.Done -> Color.LightGray
+        OrderState.Done -> Color.White
         else -> Color.Black
     }
 

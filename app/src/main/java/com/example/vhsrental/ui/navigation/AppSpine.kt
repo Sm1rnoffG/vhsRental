@@ -9,6 +9,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.rememberNavController
 import com.example.vhsrental.ui.viewmodels.LoginViewModel
+import com.example.vhsrental.ui.viewmodels.MovieEditActions
 import com.example.vhsrental.ui.viewmodels.MovieEditingViewModel
 import com.example.vhsrental.ui.viewmodels.MoviesViewModel
 import com.example.vhsrental.ui.viewmodels.OrderCreatingViewModel
@@ -70,7 +71,10 @@ fun AppSpine(
             ActionButton(
                 loginVm = loginVm,
                 navHostController = navController,
-                whenOnMoviesClick = { navController.navigate(Screens.AddMovie.name) },
+                whenOnMoviesClick = {
+                    editMovieVm.emitEditAction(MovieEditActions.OnBeginAddMovie)
+                    navController.navigate(Screens.AddMovie.name)
+                },
                 whenOnOrdersClick = { navController.navigate(Screens.ChooseType.name) }
             )
         },

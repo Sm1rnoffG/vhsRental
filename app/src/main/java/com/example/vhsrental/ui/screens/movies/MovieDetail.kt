@@ -11,6 +11,10 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalUriHandler
@@ -20,6 +24,7 @@ import androidx.compose.ui.unit.sp
 import com.example.vhsrental.R
 import com.example.vhsrental.data.models.DomainMovie
 import com.example.vhsrental.ui.screens.Dot
+import com.example.vhsrental.ui.screens.users.FinalWarning
 import com.example.vhsrental.ui.theme.Paddings
 
 @Composable
@@ -34,6 +39,29 @@ fun MovieDetail(
     modifier: Modifier = Modifier
 ) {
     val uriHandler = LocalUriHandler.current
+    var displayWarning by remember { mutableStateOf(false) }
+    var displayReserve by remember { mutableStateOf(false) }
+
+    when {
+        displayWarning -> FinalWarning(
+            heading = stringResource(id = R.string.permanent_deletion),
+            text = stringResource(id = R.string.delete_movie_dialog),
+            onConfirm = {
+                onDelete(movie)
+                displayWarning = false
+            },
+            onCancel = { displayWarning = false }
+        )
+        displayReserve -> FinalWarning(
+            heading = stringResource(id = R.string.reservation_heading),
+            text = stringResource(id = R.string.reservation_dialog),
+            onConfirm = {
+                onReservation(movie)
+                displayReserve = false
+            },
+            onCancel = { displayReserve = false }
+        )
+    }
 
     LazyColumn (
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -64,8 +92,8 @@ fun MovieDetail(
             }
             MovieActionButtons(
                 onEdit = { onEdit(movie) },
-                onReserve = { onReservation(movie) },
-                onDelete = { onDelete(movie) },
+                onReserve = { displayReserve = true },
+                onDelete = { displayWarning = true },
                 isAvailable = movie.currentlyAvailable > 0,
                 asEmployee = asEmployee,
                 canReserve = canReserve,

@@ -30,6 +30,7 @@ sealed class OrderActions {
     data object OnOrderFinish : OrderActions()
     data object OnLoadList : OrderActions()
     data object OnOrderExtend : OrderActions()
+    data object OnDissmissMessage: OrderActions()
 }
 
 data class OrderUiState (
@@ -37,6 +38,7 @@ data class OrderUiState (
     val order: DomainOrder? = null,
     val user: DomainUser? = null,
     val movie: DomainMovie? = null,
+    val displayMessage: Boolean = false,
 )
 
 @HiltViewModel
@@ -75,16 +77,30 @@ class OrderViewModel @Inject constructor(
                 _uiStateFlow.update { uiStateFlow.value.copy(orders = uiStateFlow.value.orders.sort(action.sortFunction, action.flipped)) }
             is OrderActions.UpdateSearchValue ->
                 _uiStateFlow.update { uiStateFlow.value.copy(orders = uiStateFlow.value.orders.updateSearch(action.update)) }
+            OrderActions.OnDissmissMessage ->
+                _uiStateFlow.update { uiStateFlow.value.copy(displayMessage = false) }
         }
     }
 
-    fun canEmployeeEdit(movie: DomainMovie) = getAllOrders().any { it.movie == movie.id }
+    fun canEmployeeEdit(movie: DomainMovie) = getAllOrders().none { it.movie == movie.id }
 
     fun canUserReserve(movie: DomainMovie, user: DomainUser) =
         getUsersOrders(user.id).none { it.movie == movie.id }
 
     fun getUsersOrders(userId: Long) = getAllOrders().filter { it.user == userId }
 
+    private fun reload(user: DomainUser? = null) {
+        val new = if (user != null) getRecords(user) else getRecords()
+
+        _uiStateFlow.update { uiStateFlow.value.copy(
+            orders = Query(new),
+            order = if (user == null) {
+                orderRepository.getOrderById(it.order?.id ?: throw OrderExceptions.UnexpectedException())
+            } else {
+                null
+            },
+        ) }
+    }
     private fun getRecords(user: DomainUser? = null) : List<OrderRecord> {
         return if (user != null) {
             getAllOrders().filter { it.user == user.id }
@@ -107,17 +123,21 @@ class OrderViewModel @Inject constructor(
     private fun deleteUsersOrders(usersId: Long) =
         orderRepository.deleteUsersOrders(getUsersOrders(usersId))
 
-    private fun reserveMovie(movie: DomainMovie, user: DomainUser) = orderRepository
-        .createOrder(
+    private fun reserveMovie(movie: DomainMovie, user: DomainUser) {
+        orderRepository.createOrder (
             movieId = movie.id,
-            userId = user.id ,
+            userId = user.id,
             isReservationRequest = true
         )
+        reload(user)
+    }
 
     private fun finishOrder() {
         val updatedOrder = uiStateFlow.value.order?.copy(state = OrderState.Done) ?:
             throw OrderExceptions.UnexpectedException()
         orderRepository.insert(updatedOrder)
+        _uiStateFlow.update { uiStateFlow.value.copy(displayMessage = true) }
+        reload()
     }
 
     private fun extendOrder() {
@@ -127,5 +147,7 @@ class OrderViewModel @Inject constructor(
         ) ?: throw OrderExceptions.UnexpectedException()
 
         orderRepository.insert(updatedOrder)
+        _uiStateFlow.update { uiStateFlow.value.copy(displayMessage = true) }
+        reload(userRepository.getUserById(updatedOrder.user))
     }
 }

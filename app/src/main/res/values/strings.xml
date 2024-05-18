@@ -56,11 +56,11 @@
     <string name="filter_movie_age_12">12+</string>
     <string name="filter_movie_age_15">15+</string>
     <string name="filter_movie_age_18">18+</string>
-    <string name="filter_movie_format_heading">Only employees</string>
+    <string name="filter_movie_format_heading">Format</string>
     <string name="filter_movie_format_dvd">Only DVD</string>
     <string name="filter_movie_format_vhs">Only VHS</string>
     <string name="filter_movie_format_br">Only Blue-Ray</string>
-    <string name="filter_movie_genre_heading">Only employees</string>
+    <string name="filter_movie_genre_heading">Genre</string>
     <string name="filter_movie_genre_action">Only actions movies</string>
     <string name="filter_movie_genre_comedy">Only comedy movies</string>
     <string name="filter_movie_genre_family">Only family movies</string>
@@ -89,7 +89,7 @@
     <string name="order_movie_format_heading">Movie format: </string>
     <string name="order_user_heading">User: </string>
     <string name="order_user_contact_heading">User contact info: </string>
-    <string name="finalize_order_button">Finalize and create order</string>
+    <string name="finalize_order_button">Finalize and order and set as done</string>
     <string name="create_order_heading">Create an order:</string>
     <string name="choose_movie_heading">Choose movie</string>
     <string name="choose_user_heading">Choose user</string>
@@ -109,8 +109,8 @@
     <string name="order_from_heading">From: </string>
     <string name="order_action_res_button">Cancel reservation</string>
     <string name="order_action_ex_button">Extend order</string>
-    <string name="add_movie_button">Extend order</string>
-    <string name="add_movie_confirm_button">Extend order</string>
+    <string name="add_movie_button">Add movie</string>
+    <string name="add_movie_confirm_button">Add movie</string>
     <string name="edit_movie_button">Edit movie</string>
     <string name="movie_length">Length</string>
     <string name="movie_available_copies">Available copies</string>
@@ -161,4 +161,8 @@
     <string name="users_tab">Mange Users</string>
     <string name="not_signed_in">Not signed int</string>
     <string name="shop_icon">Shop icon</string>
+    <string name="successful_movie_update">Changes were successfully saved</string>
+    <string name="delete_movie_dialog">You are about to delete this movie permanently from the database</string>
+    <string name="reservation_heading">New reservation</string>
+    <string name="reservation_dialog">Create reservation for this movie? It will be reserved for 3 days</string>
 </resources>

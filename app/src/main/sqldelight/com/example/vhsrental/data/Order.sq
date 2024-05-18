@@ -22,6 +22,10 @@ FROM rentalOrder
 WHERE user_id = ?
 ORDER BY return_date DESC;
 
+getOrder:
+SELECT * FROM rentalOrder
+WHERE id = ?;
+
 createOrder:
 INSERT OR REPLACE INTO rentalOrder (
     id,

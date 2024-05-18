@@ -62,7 +62,11 @@ fun CatalogueScreen (
         ) {
             itemsIndexed(movies) { _, movie ->
                 Surface(onClick = { toMovieDetail(movie) }) {
-                    MovieCard(movie = movie)
+                    MovieCard(
+                        movie = movie,
+                        modifier = Modifier
+                            .padding(Paddings.small / 2)
+                    )
                 }
             }
         }

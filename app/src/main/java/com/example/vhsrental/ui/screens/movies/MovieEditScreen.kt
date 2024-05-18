@@ -1,7 +1,6 @@
 package com.example.vhsrental.ui.screens.movies
 
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
@@ -12,8 +11,13 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
@@ -22,10 +26,10 @@ import com.example.vhsrental.R
 import com.example.vhsrental.data.models.Format
 import com.example.vhsrental.data.models.Genre
 import com.example.vhsrental.ui.screens.OptionSelectDropdownMenu
+import com.example.vhsrental.ui.screens.users.FinalWarning
 import com.example.vhsrental.ui.theme.Paddings
 import com.example.vhsrental.ui.viewmodels.MovieEditActions
 import com.example.vhsrental.ui.viewmodels.MovieEditingUiState
-import com.example.vhsrental.ui.viewmodels.MoviesUiState
 import java.time.LocalDate
 
 
@@ -168,6 +172,14 @@ fun MovieEditScreen(
                 options = genreOptions,
                 onSelection = { onValueChange(MovieEditActions.OnGenreChange(it)) }
             )
+        }
+        if (state.errorMessage.isNotEmpty()) {
+            item {
+                Text(
+                    text = state.errorMessage,
+                    color = Color.Red
+                )
+            }
         }
         item {
             Button(

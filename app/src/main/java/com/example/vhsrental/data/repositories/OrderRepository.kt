@@ -1,5 +1,6 @@
 package com.example.vhsrental.data.repositories
 
+import android.util.Log
 import com.example.vhsrental.data.VHSRentalDB
 import com.example.vhsrental.data.models.ADomainModel
 import com.example.vhsrental.data.models.DomainOrder
@@ -62,4 +63,6 @@ class OrderRepository @Inject constructor(
             state = state
         ))
     }
+
+    fun getOrderById(id: Long) = db.getOrderById(id).asDomainModel()
 }

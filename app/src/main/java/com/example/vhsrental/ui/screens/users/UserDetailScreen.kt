@@ -23,7 +23,6 @@ import com.example.vhsrental.data.models.DomainUser
 import com.example.vhsrental.data.models.OrderState
 import com.example.vhsrental.data.models.Role
 import com.example.vhsrental.ui.theme.Paddings
-import com.example.vhsrental.ui.viewmodels.UserUiState
 
 @Composable
 fun UserDetailScreen(
@@ -46,7 +45,10 @@ fun UserDetailScreen(
             FinalWarning(
                 heading = stringResource(id = R.string.permanent_deletion),
                 text = stringResource(id = R.string.delete_user_warning),
-                onConfirm = { onDeleteClick(user) },
+                onConfirm = {
+                    onDeleteClick(user)
+                    displayDeleteWarning.value = false
+                },
                 onCancel = { displayDeleteWarning.value = false }
             )
         }
@@ -54,7 +56,10 @@ fun UserDetailScreen(
             FinalWarning(
                 heading = stringResource(id = R.string.promotion),
                 text = stringResource(id = R.string.promotion_warning),
-                onConfirm = onPromoteClick,
+                onConfirm = {
+                    onPromoteClick()
+                    displayPromoteWarning.value = false
+                },
                 onCancel = { displayPromoteWarning.value = false }
             )
         }
@@ -68,27 +73,27 @@ fun UserDetailScreen(
     ) {
         item {
             Text(
-                text = stringResource(id = R.string.user_name_heading) + user.name
+                text = "${stringResource(id = R.string.user_name_heading)} ${user.name}"
             )
         }
         item {
             Text(
-                text = stringResource(id = R.string.user_surname_heading) + user.surname
+                text = "${stringResource(id = R.string.user_surname_heading)} ${user.surname}"
             )
         }
         item {
             Text(
-                text = stringResource(id = R.string.user_email_heading) + user.email
+                text = "${stringResource(id = R.string.user_email_heading)} ${user.email}"
             )
         }
         item {
             Text(
-                text = stringResource(id = R.string.user_role_heading) + user.role.toString()
+                text = "${stringResource(id = R.string.user_role_heading)} ${user.role}"
             )
         }
         item {
             Text(
-                text = stringResource(id = R.string.user_latest_order_heading) + orderCount.toString()
+                text = "${stringResource(id = R.string.user_latest_order_heading)} $orderCount"
             )
         }
         item {

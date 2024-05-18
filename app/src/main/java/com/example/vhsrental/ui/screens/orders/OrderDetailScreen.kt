@@ -43,40 +43,37 @@ fun OrderDetailScreen(
             .fillMaxWidth()
     ) {
         Text(
-            text = stringResource(id = R.string.order_id_heading) + order?.id,
+            text = "${stringResource(id = R.string.order_id_heading)} ${order?.id}",
             textAlign = TextAlign.Left,
         )
         Text(
-            text = stringResource(id = R.string.order_state_heading) + order?.state?.name,
+            text = "${stringResource(id = R.string.order_state_heading)} ${order?.state?.name}",
             textAlign = TextAlign.Left,
             color = textColor
         )
         Text(
-            text = stringResource(id = R.string.order_c_date_heading) + order?.createDate,
+            text = "${stringResource(id = R.string.order_c_date_heading)} ${order?.createDate}",
             textAlign = TextAlign.Left,
         )
         Text(
-            text = stringResource(id = R.string.order_r_date_heading) +
-                    (order?.returnDate ?: order?.createDate?.plusDays(3)),
+            text = "${stringResource(id = R.string.order_r_date_heading)} ${order?.returnDate ?: order?.createDate?.plusDays(3)}",
             textAlign = TextAlign.Left,
             color =  textColor
         )
         Text(
-            text = stringResource(id = R.string.order_movie_heading) + movie?.name,
+            text = "${stringResource(id = R.string.order_movie_heading)} ${movie?.name}",
             textAlign = TextAlign.Left,
         )
         Text(
-            text = stringResource(id = R.string.order_movie_format_heading) + movie?.format?.name,
+            text = "${stringResource(id = R.string.order_movie_format_heading)} ${movie?.format?.name}",
             textAlign = TextAlign.Left,
         )
         Text(
-            text = stringResource(id = R.string.order_user_heading) +
-                    user?.name +
-                    user?.surname,
+            text = "${stringResource(id = R.string.order_user_heading)} ${user?.name} ${user?.surname}",
             textAlign = TextAlign.Left,
         )
         Text(
-            text = stringResource(id = R.string.order_user_contact_heading) + user?.email,
+            text = "${stringResource(id = R.string.order_user_contact_heading)} ${user?.email}",
             textAlign = TextAlign.Left,
         )
 

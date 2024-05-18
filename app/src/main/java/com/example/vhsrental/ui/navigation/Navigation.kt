@@ -7,7 +7,6 @@ import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import com.example.vhsrental.data.User
 import com.example.vhsrental.data.exceptions.MovieExceptions
 import com.example.vhsrental.data.models.DEFAULT_USER
 import com.example.vhsrental.data.models.OrderState
@@ -42,7 +41,6 @@ import com.example.vhsrental.ui.viewmodels.OrderViewModel
 import com.example.vhsrental.ui.viewmodels.UpdateAccountActions
 import com.example.vhsrental.ui.viewmodels.UserActions
 import com.example.vhsrental.ui.viewmodels.UsersViewModel
-import kotlin.math.log
 
 @Composable
 fun Navigation(
@@ -122,15 +120,18 @@ fun Navigation(
                 MovieDetail(
                     movie = movieState.displayMovie
                         ?: throw MovieExceptions.UnexpectedException(),
-                    onEdit = { movie -> editMovieVm.emitEditAction(MovieEditActions.OnLoadMovie(movie))
+                    onEdit = {
+                        movie -> editMovieVm.emitEditAction(MovieEditActions.OnLoadMovie(movie))
+                        navController.navigate(Screens.EditMovie.name)
                     },
                     onReservation = { movie ->
                         orderVm.emitAction( OrderActions.OnReservationRequest(movie, loginState.user))
                         editMovieVm.emitEditAction(MovieEditActions.OnMovieRent(movie))
+                        movieVm.emitAction(MovieActions.OnReloadMovie(movieState.displayMovie))
                     },
                     onDelete = { movie ->
-                        navController.popBackStack()
                         movieVm.emitAction(MovieActions.DeleteMovie(movie))
+                        navController.popBackStack()
                     },
                     asEmployee = loginState.user.role == Role.Employee,
                     canEdit = movieState.canMovieEdit,
@@ -155,6 +156,7 @@ fun Navigation(
         // MY ORDERS NAVIGATION
         composable(Tab.MyOrders.route) {
             val loginState = loginVm.uiStateFlow.collectAsState().value
+
             if (loginState is LoginUiState.LoggedIn){
                 MyOrdersScreen(
                     myOrders = orderVm.uiStateFlow.collectAsState().value.orders.list,
@@ -167,17 +169,20 @@ fun Navigation(
         }
         composable(Screens.MyOrderDetail.name) {
             val state = orderVm.uiStateFlow.collectAsState().value
+            val loginUiState = loginVm.uiStateFlow.collectAsState().value
 
-            MyOrderDetailScreen(
-                movie = state.movie,
-                order = state.order,
-                onMyOrderAction = { action, movie ->
-                    if (action is OrderActions.OnOrderFinish) {
-                        editMovieVm.emitEditAction(MovieEditActions.OnMovieReturn(movie))
+            if (loginUiState is LoginUiState.LoggedIn) {
+                MyOrderDetailScreen(
+                    movie = state.movie,
+                    order = state.order,
+                    onMyOrderAction = { action, movie ->
+                        if (action is OrderActions.OnOrderFinish) {
+                            editMovieVm.emitEditAction(MovieEditActions.OnMovieReturn(movie))
+                        }
+                        orderVm.emitAction(action)
                     }
-                    orderVm.emitAction(action)
-                }
-            )
+                )
+            }
         }
 
         // ORDERS NAVIGATION
@@ -191,8 +196,10 @@ fun Navigation(
             )
         }
         composable(Screens.OrderDetail.name) {
+            val state = orderVm.uiStateFlow.collectAsState().value
+
             OrderDetailScreen(
-                state = orderVm.uiStateFlow.collectAsState().value,
+                state = state,
                 onCloseOrder = { movie ->
                     orderVm.emitAction(OrderActions.OnOrderFinish)
                     editMovieVm.emitEditAction(MovieEditActions.OnMovieReturn(movie = movie))
@@ -217,7 +224,10 @@ fun Navigation(
         composable(Screens.CreateFromReservation.name) {
             ConfirmCreateFromReservation(
                 reservation = orderCreatingVm.uiStateFlow.collectAsState().value,
-                onConfirm = { orderCreatingVm.emitAction(CreateOrderActions.OnOrderConfirm) },
+                onConfirm = {
+                    orderCreatingVm.emitAction(CreateOrderActions.OnOrderConfirm)
+                    orderVm.emitAction(OrderActions.OnLoadList)
+                },
             )
         }
         composable(Screens.SelectReservation.name) {
@@ -250,6 +260,7 @@ fun Navigation(
                     onConfirm = { movie ->
                         orderCreatingVm.emitAction(CreateOrderActions.OnOrderConfirm)
                         editMovieVm.emitEditAction(MovieEditActions.OnMovieRent(movie))
+                        orderVm.emitAction(OrderActions.OnLoadList)
                         navController.popBackStack()
                     }
                 )
@@ -280,7 +291,7 @@ fun Navigation(
 
             if (loginState is LoginUiState.LoggedIn) {
                 UsersScreen(
-                    users = usersVm.uiStateFlow.collectAsState().value.users.list,
+                    users = (usersVm.uiStateFlow.collectAsState().value.users.list),
                     toUserDetail = { user ->
                         usersVm.emitAction(UserActions.OnUserDetail(user))
                         navController.navigate(Screens.UserDetail.name)
@@ -289,25 +300,29 @@ fun Navigation(
             }
         }
         composable(Screens.UserDetail.name) {
-            val displayedUser = usersVm.uiStateFlow.value.displayedUser ?: DEFAULT_USER
+            val displayedUser = usersVm.uiStateFlow.collectAsState().value.displayedUser ?: DEFAULT_USER
             val usersOrders = if (displayedUser != DEFAULT_USER) orderVm.getUsersOrders(displayedUser.id)
                 else emptyList()
+            val loginState = loginVm.uiStateFlow.collectAsState().value
 
-            UserDetailScreen(
-                user = displayedUser,
-                usersOrders = usersOrders,
-                onPromoteClick = { usersVm.emitAction(UserActions.OnPromoteUser) },
-                onDeleteClick = { user ->
-                    navController.popBackStack()
-                    orderVm.emitAction(OrderActions.OnDeleteUser(user.id))
-                    usersVm.emitAction(UserActions.OnDeleteUser)
-                }
-            )
+            if (loginState is LoginUiState.LoggedIn) {
+                UserDetailScreen(
+                    user = displayedUser,
+                    usersOrders = usersOrders,
+                    onPromoteClick = { usersVm.emitAction(UserActions.OnPromoteUser) },
+                    onDeleteClick = { user ->
+                        navController.popBackStack()
+                        orderVm.emitAction(OrderActions.OnDeleteUser(user.id))
+                        usersVm.emitAction(UserActions.OnDeleteUser)
+                    }
+                )
+            }
         }
 
         // ACCOUNT NAVIGATION
         composable(Screens.AccountDetail.name) {
             val loginState = loginVm.uiStateFlow.collectAsState().value
+
             if (loginState is LoginUiState.LoggedIn) {
                 LoggedUserScreen(
                     user = loginState.user,

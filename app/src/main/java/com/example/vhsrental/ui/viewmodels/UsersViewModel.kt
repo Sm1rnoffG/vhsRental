@@ -60,9 +60,22 @@ class UsersViewModel @Inject constructor(
         }
     }
 
-    private fun promoteUser(user: DomainUser) = repository.promoteUser(user)
+    private fun promoteUser(user: DomainUser) {
+        repository.promoteUser(user)
+        reload(user)
+    }
 
-    private fun deleteUser(user: DomainUser) = repository.delete(user.id)
+    private fun reload(user: DomainUser? = null) {
+        _uiStateFlow.update { uiStateFlow.value.copy(
+            users = Query(getAllUsers()),
+            displayedUser = if (user != null) repository.getUserById(user.id) else null
+        ) }
+    }
 
-    fun getAllUsers() : List<DomainUser> = repository.selectAll()
+    private fun deleteUser(user: DomainUser) {
+        repository.delete(user.id)
+        reload()
+    }
+
+    private fun getAllUsers() : List<DomainUser> = repository.selectAll()
 }

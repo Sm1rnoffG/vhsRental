@@ -17,6 +17,7 @@ import com.example.vhsrental.R
 import com.example.vhsrental.data.models.DomainMovie
 import com.example.vhsrental.data.models.DomainOrder
 import com.example.vhsrental.data.models.OrderState
+import com.example.vhsrental.ui.screens.login.SuccessfulUpdateAlert
 import com.example.vhsrental.ui.screens.movies.Poster
 import com.example.vhsrental.ui.theme.Paddings
 import com.example.vhsrental.ui.viewmodels.OrderActions

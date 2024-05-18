@@ -115,4 +115,10 @@ class VHSRentalDB @Inject constructor(context: Context) {
             }
         }
     }
+
+    fun getOrderById(id: Long) = VHSRental(driver).orderQueries.getOrder(id).executeAsOne().let {
+        DBOrder(
+            it.id, it.state, it.create_date, it.return_date, it.user_id, it.movie_id
+        )
+    }
 }

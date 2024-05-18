@@ -2,6 +2,7 @@ package com.example.vhsrental.ui.viewmodels
 
 import android.text.BoringLayout
 import androidx.lifecycle.ViewModel
+import com.example.vhsrental.data.Movie
 import com.example.vhsrental.data.Query
 import com.example.vhsrental.data.exceptions.MovieExceptions
 import com.example.vhsrental.data.models.DomainMovie
@@ -25,6 +26,7 @@ sealed class MovieActions {
     data class OnSearch(val searchFunction: (DomainMovie) -> String) : MovieActions()
     data class OnFilter(val filterFunction: (DomainMovie) -> Boolean) : MovieActions()
     data class OnSort(val sortFunction: Comparator<DomainMovie>, val flipped: Boolean) : MovieActions()
+    data class OnReloadMovie(val movie: DomainMovie) : MovieActions()
     data object LoadCatalogue : MovieActions()
 }
 
@@ -64,12 +66,20 @@ class MoviesViewModel @Inject constructor(
                 _uiStateFlow.update { uiStateFlow.value.copy(catalogue = uiStateFlow.value.catalogue.sort(action.sortFunction, action.flipped)) }
             is MovieActions.UpdateSearchValue ->
                 _uiStateFlow.update { uiStateFlow.value.copy(catalogue = uiStateFlow.value.catalogue.updateSearch(action.update)) }
+            is MovieActions.OnReloadMovie -> reload(action.movie)
         }
     }
 
-    private fun deleteMovie() = repository.delete(
-            uiStateFlow.value.displayMovie?.id ?: throw MovieExceptions.UnexpectedException()
-    )
+    private fun deleteMovie() {
+        repository.delete(uiStateFlow.value.displayMovie?.id ?: throw MovieExceptions.UnexpectedException())
+        reload()
+    }
+    private fun reload(movie: DomainMovie? = null) {
+        _uiStateFlow.update { uiStateFlow.value.copy(
+            catalogue = Query(getAllMovies()),
+            displayMovie = if (movie != null) repository.getMovieById(movie.id) else it.displayMovie
+        ) }
+    }
 
     private fun getAllMovies() : List<DomainMovie> = repository.selectAll()
 

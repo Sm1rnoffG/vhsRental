@@ -28,6 +28,7 @@ sealed class MovieEditActions {
     data class OnLoadMovie(val movie: DomainMovie) : MovieEditActions()
     data object OnSaveChanges : MovieEditActions()
     data object OnAddMovie : MovieEditActions()
+    data object OnBeginAddMovie : MovieEditActions()
 }
 
 data class MovieEditingUiState (
@@ -113,6 +114,8 @@ class MovieEditingViewModel @Inject constructor(
                 _uiStateFlow.update { uiStateFlow.value.copy(newReleaseYear = action.update) }
             is MovieEditActions.OnLoadMovie ->
                 _uiStateFlow.update { MovieEditingUiState(movie = action.movie) }
+            is MovieEditActions.OnBeginAddMovie ->
+                _uiStateFlow.update { MovieEditingUiState() }
             is MovieEditActions.OnAddMovie -> addMovie()
             is MovieEditActions.OnSaveChanges -> saveChanges()
             is MovieEditActions.OnMovieRent -> rentMovie(action.movie)
@@ -120,11 +123,14 @@ class MovieEditingViewModel @Inject constructor(
         }
     }
 
-    private fun saveChanges() = repository.updateMovie(uiStateFlow.value.updateMovie())
-
+    private fun saveChanges() {
+        repository.updateMovie(uiStateFlow.value.updateMovie())
+        _uiStateFlow.update { MovieEditingUiState() }
+    }
     private fun addMovie() {
         try {
             repository.insert(uiStateFlow.value.createMovie())
+            _uiStateFlow.update { MovieEditingUiState() }
         } catch (e: Exception) {
             _uiStateFlow.update { uiStateFlow.value.copy(errorMessage = e.message ?: "Error") }
         }
