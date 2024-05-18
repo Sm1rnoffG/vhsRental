@@ -19,9 +19,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.vhsrental.R
 import com.example.vhsrental.data.models.DomainMovie
 import com.example.vhsrental.ui.screens.Dot
 import com.example.vhsrental.ui.theme.Paddings
@@ -46,14 +48,14 @@ fun CreateOrderScreen(
             .fillMaxHeight(),
     ) {
         Text(
-            text = "Create an order:",
+            text = stringResource(id = R.string.create_order_heading),
             textAlign = TextAlign.Center,
             fontSize = 35.sp
         )
 
         if (state.movie == null) {
             Button(onClick = onMovieSelection ) {
-                Text(text = "Choose movie")
+                Text(text = stringResource(id = R.string.choose_movie_heading))
             }
         } else {
             OrderField(
@@ -65,7 +67,7 @@ fun CreateOrderScreen(
 
         if (state.user == null) {
             Button(onClick = onUserSelection) {
-                Text(text = "Choose user")
+                Text(text = stringResource(id = R.string.choose_user_heading))
             }
         } else {
             OrderField(
@@ -76,7 +78,7 @@ fun CreateOrderScreen(
         }
 
         Text(
-            text = "Due date for the order will be set to:",
+            text = stringResource(id = R.string.create_due_date_heading),
             textAlign = TextAlign.Center,
         )
         Text(
@@ -90,7 +92,7 @@ fun CreateOrderScreen(
             modifier = Modifier
                 .padding(Paddings.small)
         ) {
-            Text(text = "Create order")
+            Text(text = stringResource(id = R.string.create_order_button))
         }
     }
 }
@@ -125,7 +127,7 @@ fun OrderField(
         ) {
             Icon(
                 imageVector = Icons.Default.Clear,
-                contentDescription = "clear button",
+                contentDescription = stringResource(id = R.string.clear_selection),
                 modifier = Modifier
                     .padding(5.dp)
                     .size(20.dp)

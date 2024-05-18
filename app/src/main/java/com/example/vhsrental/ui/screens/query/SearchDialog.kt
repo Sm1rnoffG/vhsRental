@@ -14,8 +14,10 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
+import com.example.vhsrental.R
 import com.example.vhsrental.data.models.DomainMovie
 import com.example.vhsrental.data.models.DomainUser
 import com.example.vhsrental.data.models.OrderRecord
@@ -60,7 +62,7 @@ fun SearchDialog(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(
-                text = "Search",
+                text = stringResource(id = R.string.search_heading),
                 color = Color.White,
                 fontSize = 35.sp
             ) 
@@ -101,7 +103,7 @@ fun MovieSearchOptions(
                 },
                 modifier = buttonModifier
             ) {
-                Text(text = "In names of movies")
+                Text(text = stringResource(id = R.string.search_movie_names))
             }
         }
     }
@@ -128,7 +130,7 @@ fun UserSearchOptions(
                 },
                 modifier = buttonModifier
             ) {
-                Text(text = "In names of users")
+                Text(text = stringResource(id = R.string.search_user_names))
             }
             Button(
                 onClick = {
@@ -136,7 +138,7 @@ fun UserSearchOptions(
                 },
                 modifier = buttonModifier
             ) {
-                Text(text = "In surnames of users")
+                Text(text = stringResource(id = R.string.search_user_surnames))
             }
             Button(
                 onClick = {
@@ -144,7 +146,7 @@ fun UserSearchOptions(
                 },
                 modifier = buttonModifier
             ) {
-                Text(text = "In e-mails of users")
+                Text(text = stringResource(id = R.string.search_user_emails))
             }
         }
     }
@@ -162,12 +164,12 @@ fun OrderSearchOptions(
         .wrapContentHeight()
 
     val buttons = mutableListOf(
-        Pair("In rented movies") { record: OrderRecord -> record.movie.name },
+        Pair(stringResource(id = R.string.search_order_movie_names)) { record: OrderRecord -> record.movie.name },
     )
     if (asEmployee) buttons.addAll(listOf(
-        Pair("In user names") { record: OrderRecord -> record.user.name },
-        Pair("In user surnames") { record: OrderRecord -> record.user.surname },
-        Pair("In user e-mails") { record: OrderRecord -> record.user.email },
+        Pair(stringResource(id = R.string.search_order_movie_names)) { record: OrderRecord -> record.user.name },
+        Pair(stringResource(id = R.string.search_order_user_surnames)) { record: OrderRecord -> record.user.surname },
+        Pair(stringResource(id = R.string.search_order_user_email)) { record: OrderRecord -> record.user.email },
     ))
 
     LazyColumn (

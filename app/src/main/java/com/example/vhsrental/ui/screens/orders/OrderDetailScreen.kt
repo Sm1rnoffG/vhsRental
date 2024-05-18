@@ -10,7 +10,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
+import com.example.vhsrental.R
 import com.example.vhsrental.data.models.DomainMovie
 import com.example.vhsrental.data.models.DomainOrder
 import com.example.vhsrental.data.models.DomainUser
@@ -41,42 +43,45 @@ fun OrderDetailScreen(
             .fillMaxWidth()
     ) {
         Text(
-            text = "Order id: ${order?.id}",
+            text = stringResource(id = R.string.order_id_heading) + order?.id,
             textAlign = TextAlign.Left,
         )
         Text(
-            text = "Order state: ${order?.state?.name}",
+            text = stringResource(id = R.string.order_state_heading) + order?.state?.name,
             textAlign = TextAlign.Left,
             color = textColor
         )
         Text(
-            text = "Order create date: ${order?.createDate}",
+            text = stringResource(id = R.string.order_c_date_heading) + order?.createDate,
             textAlign = TextAlign.Left,
         )
         Text(
-            text = "Order return date: ${order?.returnDate ?: order?.createDate?.plusDays(3)}",
+            text = stringResource(id = R.string.order_r_date_heading) +
+                    (order?.returnDate ?: order?.createDate?.plusDays(3)),
             textAlign = TextAlign.Left,
             color =  textColor
         )
         Text(
-            text = "Rented movie: ${movie?.name}",
+            text = stringResource(id = R.string.order_movie_heading) + movie?.name,
             textAlign = TextAlign.Left,
         )
         Text(
-            text = "Movie format: ${movie?.format?.name}",
+            text = stringResource(id = R.string.order_movie_format_heading) + movie?.format?.name,
             textAlign = TextAlign.Left,
         )
         Text(
-            text = "Rented by: ${user?.name} ${user?.surname}",
+            text = stringResource(id = R.string.order_user_heading) +
+                    user?.name +
+                    user?.surname,
             textAlign = TextAlign.Left,
         )
         Text(
-            text = "Contact: ${user?.email}",
+            text = stringResource(id = R.string.order_user_contact_heading) + user?.email,
             textAlign = TextAlign.Left,
         )
 
         Button(onClick = { onCloseOrder(movie) }) {
-            Text(text = "Finalize order and mark as returned")
+            Text(text = stringResource(id = R.string.finalize_order_button))
         }
     }
 }

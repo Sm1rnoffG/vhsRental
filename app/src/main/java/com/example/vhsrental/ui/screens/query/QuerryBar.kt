@@ -16,6 +16,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import com.example.vhsrental.R
 import com.example.vhsrental.data.models.DomainUser
 import com.example.vhsrental.ui.navigation.Tab
@@ -85,7 +86,7 @@ fun QueryBar(
             ) {
                 Icon(
                     painter = painterResource(id = R.drawable.baseline_search_24),
-                    contentDescription = "search icon"
+                    contentDescription = stringResource(id = R.string.search_icon_desc)
                 )
             }
 
@@ -99,7 +100,7 @@ fun QueryBar(
                 ) {
                     Icon(
                         painter = painterResource(id = R.drawable.baseline_sort_24),
-                        contentDescription = "sort icon"
+                        contentDescription = stringResource(id = R.string.sort_icon_desc)
                     )
                 }
                 IconButton(
@@ -108,7 +109,7 @@ fun QueryBar(
                 ) {
                     Icon(
                         painter = painterResource(id = R.drawable.baseline_filter_alt_24),
-                        contentDescription = "filter icon"
+                        contentDescription = stringResource(id = R.string.filter_icon_desc)
                     )
                 }
                 IconButton(onClick = {
@@ -122,7 +123,7 @@ fun QueryBar(
                 }) {
                     Icon(
                         imageVector = Icons.Default.Clear,
-                        contentDescription = "clear icon"
+                        contentDescription = stringResource(id = R.string.clear_query)
                     )
                 }
             }

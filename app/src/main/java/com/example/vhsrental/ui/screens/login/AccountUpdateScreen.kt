@@ -17,8 +17,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.sp
+import com.example.vhsrental.R
 import com.example.vhsrental.ui.theme.Paddings
 import com.example.vhsrental.ui.viewmodels.LoginUiState
 import com.example.vhsrental.ui.viewmodels.UpdateAccountActions
@@ -33,7 +35,7 @@ fun AccountUpdateScreen(
 ) {
     when {
         loggedIn.successfulUpdate -> {
-            SuccessfulUpdateAlert("Account successfully updated") { onSuccess() }
+            SuccessfulUpdateAlert(stringResource(id = R.string.successful_account_update)) { onSuccess() }
         }
     }
 
@@ -46,7 +48,7 @@ fun AccountUpdateScreen(
             .padding(Paddings.medium)
     ) {
         Text(
-            text = "Update account information",
+            text = stringResource(id = R.string.update_account_heading),
             textAlign = TextAlign.Center,
             fontSize = 35.sp
         )
@@ -54,7 +56,7 @@ fun AccountUpdateScreen(
             value = loggedIn.newName,
             onValueChange = { onValueChange(UpdateAccountActions.OnNameUpdate(it)) },
             placeholder = { Text(loggedIn.user.name) },
-            label = { Text("Name") },
+            label = { Text(stringResource(id = R.string.namePlaceholder)) },
             modifier = Modifier
                 .padding(Paddings.small),
         )
@@ -62,7 +64,7 @@ fun AccountUpdateScreen(
             value = loggedIn.newSurname,
             onValueChange = { onValueChange(UpdateAccountActions.OnSurnameUpdate(it)) },
             placeholder = { Text(loggedIn.user.surname) },
-            label = { Text("Surname") },
+            label = { Text(stringResource(id = R.string.surnamePlaceholder)) },
             modifier = Modifier
                 .padding(Paddings.small),
         )
@@ -70,7 +72,7 @@ fun AccountUpdateScreen(
             value = loggedIn.newEmail,
             onValueChange = { onValueChange(UpdateAccountActions.OnEmailUpdate(it)) },
             placeholder = { Text(loggedIn.user.email) },
-            label = { Text("E-mail") },
+            label = { Text(stringResource(id = R.string.emailPlaceholder)) },
             modifier = Modifier
                 .padding(Paddings.small),
             isError = loggedIn.isError
@@ -85,7 +87,7 @@ fun AccountUpdateScreen(
                 .wrapContentSize()
         ) {
             Text(
-                text = "Confirm changes",
+                text = stringResource(id = R.string.confirm_changes_button),
                 textAlign = TextAlign.Center
             )
         }
@@ -101,10 +103,10 @@ fun SuccessfulUpdateAlert(
         onDismissRequest = { onConfirm() },
         confirmButton = {
             Button(onClick = { onConfirm() }) {
-                Text(text = "Ok")
+                Text(text = stringResource(id = R.string.ok))
             }
         },
-        title = { Text(text = "Success!") },
+        title = { Text(text = stringResource(id = R.string.success)) },
         text = { Text(text = message) },
     )
 }

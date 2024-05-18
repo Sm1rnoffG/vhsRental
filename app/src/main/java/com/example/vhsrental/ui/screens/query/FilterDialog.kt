@@ -12,8 +12,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
+import com.example.vhsrental.R
 import com.example.vhsrental.data.models.DomainMovie
 import com.example.vhsrental.data.models.DomainUser
 import com.example.vhsrental.data.models.Format
@@ -47,7 +49,7 @@ fun FilterDialog(
                 .padding(Paddings.large)
         ) {
             Text(
-                text = "Filter",
+                text = stringResource(id = R.string.filter_heading),
                 fontSize = 35.sp,
                 color = Color.White
             )
@@ -69,23 +71,23 @@ fun MovieFilterOptions(
     modifier: Modifier = Modifier
 ) {
     val genreButtons = listOf(
-        Pair("Only action movies") { movie: DomainMovie -> movie.genre == Genre.Action },
-        Pair("Only comedy movies") { movie: DomainMovie -> movie.genre == Genre.Comedy },
-        Pair("Only family movies") { movie: DomainMovie -> movie.genre == Genre.Family },
-        Pair("Only romantic movies") { movie: DomainMovie -> movie.genre == Genre.Romantic },
-        Pair("Only horror movies") { movie: DomainMovie -> movie.genre == Genre.Action },
+        Pair(stringResource(id = R.string.filter_movie_genre_action)) { movie: DomainMovie -> movie.genre == Genre.Action },
+        Pair(stringResource(id = R.string.filter_movie_genre_comedy)) { movie: DomainMovie -> movie.genre == Genre.Comedy },
+        Pair(stringResource(id = R.string.filter_movie_genre_family)) { movie: DomainMovie -> movie.genre == Genre.Family },
+        Pair(stringResource(id = R.string.filter_movie_genre_romantic)) { movie: DomainMovie -> movie.genre == Genre.Romantic },
+        Pair(stringResource(id = R.string.filter_movie_genre_horror)) { movie: DomainMovie -> movie.genre == Genre.Action },
     )
     val formatButtons = listOf(
-        Pair("Only DVD") { movie: DomainMovie -> movie.format == Format.DVD },
-        Pair("Only VHS") { movie: DomainMovie -> movie.format == Format.VHS },
-        Pair("Only Blue-Ray") { movie: DomainMovie -> movie.format == Format.BlueRay },
+        Pair(stringResource(id = R.string.filter_movie_format_dvd)) { movie: DomainMovie -> movie.format == Format.DVD },
+        Pair(stringResource(id = R.string.filter_movie_format_vhs)) { movie: DomainMovie -> movie.format == Format.VHS },
+        Pair(stringResource(id = R.string.filter_movie_format_br)) { movie: DomainMovie -> movie.format == Format.BlueRay },
     )
     val ageRatingButtons = listOf(
-        Pair("3+") { movie: DomainMovie -> movie.ageRating == 3L },
-        Pair("8+") { movie: DomainMovie -> movie.ageRating == 8L },
-        Pair("12+") { movie: DomainMovie -> movie.ageRating == 12L },
-        Pair("15+") { movie: DomainMovie -> movie.ageRating == 15L },
-        Pair("18+") { movie: DomainMovie -> movie.ageRating == 18L },
+        Pair(stringResource(id = R.string.filter_movie_age_3)) { movie: DomainMovie -> movie.ageRating == 3L },
+        Pair(stringResource(id = R.string.filter_movie_age_8)) { movie: DomainMovie -> movie.ageRating == 8L },
+        Pair(stringResource(id = R.string.filter_movie_age_12)) { movie: DomainMovie -> movie.ageRating == 12L },
+        Pair(stringResource(id = R.string.filter_movie_age_15)) { movie: DomainMovie -> movie.ageRating == 15L },
+        Pair(stringResource(id = R.string.filter_movie_age_18)) { movie: DomainMovie -> movie.ageRating == 18L },
     )
     val availabilityButtons = listOf(
         Pair("Available") { movie: DomainMovie -> movie.currentlyAvailable > 0 },
@@ -102,7 +104,7 @@ fun MovieFilterOptions(
     ) {
         item {
             Text(
-                text = "Genres",
+                text = stringResource(id = R.string.filter_movie_format_heading),
                 fontSize = 20.sp,
                 color = Color.White,
                 modifier = Modifier
@@ -121,7 +123,7 @@ fun MovieFilterOptions(
         }
         item {
             Text(
-                text = "Formats",
+                text = stringResource(id = R.string.filter_movie_format_heading),
                 fontSize = 20.sp,
                 color = Color.White,
                 modifier = Modifier.padding(Paddings.small)
@@ -139,7 +141,7 @@ fun MovieFilterOptions(
         }
         item {
             Text(
-                text = "Age Ratings",
+                text = stringResource(id = R.string.filter_movie_age_heading),
                 color = Color.White,
                 fontSize = 20.sp,
                 modifier = Modifier.padding(Paddings.small)
@@ -157,7 +159,7 @@ fun MovieFilterOptions(
         }
         item {
             Text(
-                text = "Availability",
+                text = stringResource(id = R.string.filter_movie_availability_heading),
                 color = Color.White,
                 fontSize = 20.sp,
                 modifier = Modifier.padding(Paddings.small)
@@ -190,7 +192,7 @@ fun UserFilterOptions(
     ) {
         items(count = 1) {
             Text(
-                text = "Role",
+                text = stringResource(id = R.string.filter_user_role_heading),
                 color = Color.White,
                 fontSize = 20.sp
             )
@@ -200,7 +202,7 @@ fun UserFilterOptions(
                 },
                 modifier = buttonModifier
             ) {
-                Text(text = "Only users")
+                Text(text = stringResource(id = R.string.filter_user_role_user))
             }
             Button(
                 onClick = {
@@ -208,7 +210,7 @@ fun UserFilterOptions(
                 },
                 modifier = buttonModifier
             ) {
-                Text(text = "Only employees")
+                Text(text = stringResource(id = R.string.filter_user_role_user))
             }
         }
     }
@@ -225,11 +227,11 @@ fun OrderFilterOptions(
         .wrapContentHeight()
 
     val statusButtons = listOf(
-        Pair("Only in progress") { record: OrderRecord -> record.order.state == OrderState.InProgress },
-        Pair("Only extended") { record: OrderRecord -> record.order.state == OrderState.Extended },
-        Pair("Only done") { record: OrderRecord -> record.order.state == OrderState.Done },
-        Pair("Only reservations") { record: OrderRecord -> record.order.state == OrderState.Reservation },
-        Pair("Only overdue") { record: OrderRecord -> record.order.state == OrderState.OverDue },
+        Pair(stringResource(id = R.string.filter_order_progress)) { record: OrderRecord -> record.order.state == OrderState.InProgress },
+        Pair(stringResource(id = R.string.filter_order_extended)) { record: OrderRecord -> record.order.state == OrderState.Extended },
+        Pair(stringResource(id = R.string.filter_order_done)) { record: OrderRecord -> record.order.state == OrderState.Done },
+        Pair(stringResource(id = R.string.filter_order_reservations)) { record: OrderRecord -> record.order.state == OrderState.Reservation },
+        Pair(stringResource(id = R.string.filter_order_overdue)) { record: OrderRecord -> record.order.state == OrderState.OverDue },
     )
 
     LazyColumn (
@@ -238,7 +240,7 @@ fun OrderFilterOptions(
     ) {
         item {
             Text(
-                text = "Availability",
+                text = stringResource(id = R.string.filter_order_status_heading),
                 color = Color.White,
                 fontSize = 20.sp,
                 modifier = Modifier.padding(Paddings.small)

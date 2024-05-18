@@ -14,9 +14,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.vhsrental.R
 import com.example.vhsrental.ui.theme.Paddings
 
 @Composable
@@ -35,14 +37,14 @@ fun ChooseOrderTypeScreen(
         modifier = modifier.fillMaxSize()
     ) {
         OrderTypeButton(
-            text = "Create From Reservation",
+            text = stringResource(id = R.string.create_order_res_button),
             color = Color.Blue,
             textColor = Color.White,
             onClick = isReservation,
             modifier = buttonModifier
         )
         OrderTypeButton(
-            text = "Create New Order",
+            text = stringResource(id = R.string.create_order_new_button),
             color = Color.Red,
             textColor = Color.White,
             onClick = isNewOrder,

@@ -26,8 +26,10 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import com.example.vhsrental.R
 import com.example.vhsrental.ui.theme.Paddings
 
 @Composable
@@ -98,7 +100,7 @@ fun EmptyQuery(
     ) {
         Icon(
             imageVector = Icons.Default.Info,
-            contentDescription = "info",
+            contentDescription = stringResource(id = R.string.empty_query_icon_desc),
             tint = Color.LightGray
         )
         Text(

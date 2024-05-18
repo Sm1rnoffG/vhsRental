@@ -12,9 +12,11 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.vhsrental.R
 import com.example.vhsrental.ui.theme.Paddings
 import com.example.vhsrental.ui.viewmodels.CreateOrderUiState
 import java.time.LocalDate
@@ -33,16 +35,22 @@ fun ConfirmCreateFromReservation(
             .fillMaxHeight()
     ) {
         Text(
-            text = "User: ${reservation.user?.name} ${reservation.user?.surname}",
+            text = stringResource(id = R.string.res_order_heading),
+            fontSize = 35.sp,
+        )
+        Text(
+            text = stringResource(id = R.string.res_order_movie_heading) +
+                    reservation.user?.name +
+                    reservation.user?.surname,
             fontSize = 20.sp
         )
         Text(
-            text = "Movie: ${reservation.movie?.name}",
+            text = stringResource(id = R.string.res_order_movie_heading) + reservation.movie?.name,
             fontSize = 20.sp
         )
         Spacer(Modifier.size(5.dp))
         Text(
-            text = "Due date for the order will be set to:",
+            text = stringResource(id = R.string.res_order_r_date_heading),
             textAlign = TextAlign.Center,
         )
         Text(

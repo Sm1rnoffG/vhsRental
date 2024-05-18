@@ -14,8 +14,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalUriHandler
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.sp
+import com.example.vhsrental.R
 import com.example.vhsrental.data.models.DomainMovie
 import com.example.vhsrental.ui.screens.Dot
 import com.example.vhsrental.ui.theme.Paddings
@@ -50,7 +52,10 @@ fun MovieDetail(
             Row(horizontalArrangement = Arrangement.Center) {
                 Text(text = movie.format.name)
                 Dot()
-                Text(text = "${movie.currentlyAvailable}/${movie.availableCopies} available")
+                Text(
+                    text = "${movie.currentlyAvailable}/${movie.availableCopies}" +
+                        stringResource(id = R.string.available)
+                )
             }
             Row(horizontalArrangement = Arrangement.Center) {
                 GenreChip(genre = movie.genre, modifier = Modifier.padding(Paddings.small))
@@ -75,7 +80,7 @@ fun MovieDetail(
                 onClick = { uriHandler.openUri(movie.imdbUrl) },
                 modifier = Modifier.wrapContentSize()
             ) {
-                Text(text = "IMDB page", textAlign = TextAlign.Center)
+                Text(text = stringResource(id = R.string.imdb_button), textAlign = TextAlign.Center)
             }
         }
     }
@@ -98,23 +103,25 @@ fun MovieActionButtons(
         modifier = modifier.fillMaxWidth(),
     ) {
         MovieActionButton(
-            enabledText = "Reserve movie",
-            disabledText = if (isAvailable) "Already rented" else "Not available",
+            enabledText = stringResource(id = R.string.res_movie_button),
+            disabledText =
+                if (isAvailable) stringResource(id = R.string.already_rented)
+                else stringResource(id = R.string.not_available),
             enabled = canReserve && isAvailable,
             onClick = onReserve,
             modifier = Modifier.padding(Paddings.small)
         )
         if (asEmployee) {
             MovieActionButton(
-                enabledText = "Edit movie",
-                disabledText = "Movie in use",
+                enabledText = stringResource(id = R.string.edit_movie_button),
+                disabledText = stringResource(id = R.string.movie_used),
                 enabled = canEdit,
                 onClick = onEdit,
                 modifier = Modifier.padding(Paddings.small)
             )
             MovieActionButton(
-                enabledText = "Delete movie",
-                disabledText = "Movie in use",
+                enabledText = stringResource(id = R.string.delete_movie_button),
+                disabledText = stringResource(id = R.string.movie_used),
                 enabled = canEdit,
                 onClick = onDelete,
                 modifier = Modifier.padding(Paddings.small)

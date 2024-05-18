@@ -8,6 +8,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavController
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
@@ -50,15 +51,15 @@ fun BottomBar(
         return
 
     val navBarItems = mutableListOf(
-        Triple(painterResource(id = R.drawable.baseline_menu_book_24), "Catalogue", Tab.Movies),
-        Triple(painterResource(id = R.drawable.baseline_checklist_24), "My Orders", Tab.MyOrders),
+        Triple(painterResource(id = R.drawable.baseline_menu_book_24), stringResource(id = R.string.catalogue_tab), Tab.Movies),
+        Triple(painterResource(id = R.drawable.baseline_checklist_24), stringResource(id = R.string.my_orders_tab), Tab.MyOrders),
     )
     if (state.user.role == Role.Employee) {
         navBarItems.addAll(listOf(
-            Triple(painterResource(id = R.drawable.baseline_storefront_24), "All Orders",
+            Triple(painterResource(id = R.drawable.baseline_storefront_24), stringResource(id = R.string.orders_tab),
                 Tab.Orders
             ),
-            Triple(painterResource(id = R.drawable.baseline_manage_accounts_24), "Manage Users",
+            Triple(painterResource(id = R.drawable.baseline_manage_accounts_24), stringResource(id = R.string.users_tab),
                 Tab.Users
             )
         ))

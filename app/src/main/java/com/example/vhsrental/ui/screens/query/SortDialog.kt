@@ -11,8 +11,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
+import com.example.vhsrental.R
 import com.example.vhsrental.data.models.DomainMovie
 import com.example.vhsrental.data.models.DomainUser
 import com.example.vhsrental.data.models.OrderRecord
@@ -46,7 +48,7 @@ fun SortDialog(
                 .padding(Paddings.large)
         ) {
             Text(
-                text = "Sort",
+                text = stringResource(id = R.string.sort_heading),
                 color = Color.White,
                 fontSize = 35.sp
             )
@@ -73,14 +75,14 @@ fun MovieSortOptions(
         .fillMaxWidth()
 
     val buttons = mutableListOf<Triple<String, Boolean, Comparator<DomainMovie>>>(
-        Triple("By name ascending", false, compareBy { it.name }),
-        Triple("By name descending", true, compareBy { it.name }),
-        Triple("By release year ascending", false, compareBy { it.releaseYear }),
-        Triple("By release year descending", true, compareBy { it.releaseYear }),
+        Triple(stringResource(id = R.string.sort_movie_name_asc), false, compareBy { it.name }),
+        Triple(stringResource(id = R.string.sort_movie_name_desc), true, compareBy { it.name }),
+        Triple(stringResource(id = R.string.sort_movie_year_asc), false, compareBy { it.releaseYear }),
+        Triple(stringResource(id = R.string.sort_movie_year_desc), true, compareBy { it.releaseYear }),
     )
     if (asEmployee) buttons.addAll(listOf(
-        Triple("By id ascending", false, compareBy { it.id }),
-        Triple("By id descending", true, compareBy { it.id }),
+        Triple(stringResource(id = R.string.sort_movie_id_asc), false, compareBy { it.id }),
+        Triple(stringResource(id = R.string.sort_movie_id_desc), true, compareBy { it.id }),
     ))
 
     LazyColumn (
@@ -111,14 +113,14 @@ fun OrderSortOptions(
         .fillMaxWidth()
 
     val buttons = mutableListOf<Triple<String, Boolean, Comparator<OrderRecord>>>(
-        Triple("By create date ascending", false, compareBy { it.order.createDate }),
-        Triple("By create data descending", true, compareBy { it.order.createDate }),
-        Triple("By movie name ascending", false, compareBy { it.movie.name }),
-        Triple("By movie name descending", true, compareBy { it.movie.name }),
+        Triple(stringResource(id = R.string.sort_order_c_date_asc), false, compareBy { it.order.createDate }),
+        Triple(stringResource(id = R.string.sort_order_c_date_desc), true, compareBy { it.order.createDate }),
+        Triple(stringResource(id = R.string.sort_order_movie_name_asc), false, compareBy { it.movie.name }),
+        Triple(stringResource(id = R.string.sort_order_movie_name_desc), true, compareBy { it.movie.name }),
     )
     if (asEmployee) buttons.addAll(listOf(
-        Triple("By id ascending", false, compareBy { it.order.id }),
-        Triple("By id descending", true, compareBy { it.order.id }),
+        Triple(stringResource(id = R.string.sort_order_id_asc), false, compareBy { it.order.id }),
+        Triple(stringResource(id = R.string.sort_order_id_desc), true, compareBy { it.order.id }),
     ))
 
     LazyColumn (
@@ -148,12 +150,12 @@ fun UserSortOptions(
         .fillMaxWidth()
 
     val buttons = listOf<Triple<String, Boolean, Comparator<DomainUser>>>(
-        Triple("By surname ascending", false, compareBy { it.surname }),
-        Triple("By surname descending", true, compareBy { it.surname }),
-        Triple("By e-mail ascending", false, compareBy { it.email }),
-        Triple("By e-mail descending", true, compareBy { it.email }),
-        Triple("By id ascending", false, compareBy { it.id }),
-        Triple("By id descending", true, compareBy { it.id }),
+        Triple(stringResource(id = R.string.sort_user_surname_asc), false, compareBy { it.surname }),
+        Triple(stringResource(id = R.string.sort_user_surname_desc), true, compareBy { it.surname }),
+        Triple(stringResource(id = R.string.sort_user_email_asc), false, compareBy { it.email }),
+        Triple(stringResource(id = R.string.sort_user_email_desc), true, compareBy { it.email }),
+        Triple(stringResource(id = R.string.sort_user_id_asc), false, compareBy { it.id }),
+        Triple(stringResource(id = R.string.sort_user_id_desc), true, compareBy { it.id }),
     )
 
     LazyColumn (

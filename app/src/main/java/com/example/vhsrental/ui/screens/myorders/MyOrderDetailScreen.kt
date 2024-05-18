@@ -10,8 +10,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.sp
+import com.example.vhsrental.R
 import com.example.vhsrental.data.models.DomainMovie
 import com.example.vhsrental.data.models.DomainOrder
 import com.example.vhsrental.data.models.OrderState
@@ -52,13 +54,14 @@ fun MyOrderDetailScreen(
                     .padding(Paddings.small)
             )
             Text(
-                text = "From: ${order?.createDate}",
+                text = stringResource(id = R.string.order_from_heading) + order?.createDate,
                 textAlign = TextAlign.Center,
                 modifier = Modifier
                     .padding(Paddings.small)
             )
             Text(
-                text = "Till: ${order?.returnDate ?: order?.createDate?.plusDays(3)}",
+                text = stringResource(id = R.string.order_till_heading) + 
+                    (order?.returnDate ?: order?.createDate?.plusDays(3)),
                 textAlign = TextAlign.Center,
                 modifier = Modifier
                     .padding(Paddings.small)
@@ -77,8 +80,14 @@ fun MyOrderActionButton(
     val action: OrderActions
     val text: String
     when (order?.state) {
-        OrderState.Reservation -> { action = OrderActions.OnOrderFinish; text = "Cancel Reservation" }
-        OrderState.InProgress -> { action = OrderActions.OnOrderExtend; text = "Extend order"}
+        OrderState.Reservation -> { 
+            action = OrderActions.OnOrderFinish
+            text = stringResource(id = R.string.order_action_res_button)
+        }
+        OrderState.InProgress -> { 
+            action = OrderActions.OnOrderExtend
+            text = stringResource(id = R.string.order_action_ex_button)
+        }
         else -> return
     }
 

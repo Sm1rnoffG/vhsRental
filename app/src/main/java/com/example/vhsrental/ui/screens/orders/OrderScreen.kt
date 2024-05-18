@@ -16,9 +16,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.vhsrental.R
 import com.example.vhsrental.data.models.DomainMovie
 import com.example.vhsrental.data.models.DomainOrder
 import com.example.vhsrental.data.models.DomainUser
@@ -36,7 +38,7 @@ fun OrderScreen(
     val listState = rememberLazyListState()
 
     if (orderData.isEmpty()) {
-        EmptyQuery(message = "No orders found")
+        EmptyQuery(message = stringResource(id = R.string.no_orders))
     } else {
         LazyColumn (
             state = listState,

@@ -13,7 +13,9 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.example.vhsrental.R
 import com.example.vhsrental.data.models.DomainUser
 import com.example.vhsrental.ui.screens.EmptyQuery
 import com.example.vhsrental.ui.theme.Paddings
@@ -27,7 +29,7 @@ fun UsersScreen(
     val columnState = rememberLazyListState()
 
     if (users.isEmpty()) {
-        EmptyQuery(message = "No users found")
+        EmptyQuery(message = stringResource(id = R.string.no_users_found))
     } else {
         LazyColumn (
             state = columnState,

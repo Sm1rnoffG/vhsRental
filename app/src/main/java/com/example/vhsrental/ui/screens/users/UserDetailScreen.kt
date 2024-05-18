@@ -16,6 +16,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
+import com.example.vhsrental.R
 import com.example.vhsrental.data.models.DomainOrder
 import com.example.vhsrental.data.models.DomainUser
 import com.example.vhsrental.data.models.OrderState
@@ -34,23 +36,24 @@ fun UserDetailScreen(
     val displayDeleteWarning = remember { mutableStateOf(false) }
     val displayPromoteWarning = remember { mutableStateOf(false) }
 
-    val orderCount = if (usersOrders.isEmpty()) "Never" else usersOrders.maxOf { it.createDate }
+    val orderCount = 
+        if (usersOrders.isEmpty()) stringResource(id = R.string.never)
+        else usersOrders.maxOf { it.createDate }
     val cantDelete = usersOrders.any { it.state != OrderState.Done }
 
     when {
         displayDeleteWarning.value -> {
             FinalWarning(
-                heading = "Permanent deletion!",
-                text = "You are about to delete this user permanently",
+                heading = stringResource(id = R.string.permanent_deletion),
+                text = stringResource(id = R.string.delete_user_warning),
                 onConfirm = { onDeleteClick(user) },
                 onCancel = { displayDeleteWarning.value = false }
             )
         }
         displayPromoteWarning.value -> {
             FinalWarning(
-                heading = "Promotion to employee!",
-                text = "You are about to promote this user to employee role and give " +
-                        "them access to the whole app",
+                heading = stringResource(id = R.string.promotion),
+                text = stringResource(id = R.string.promotion_warning),
                 onConfirm = onPromoteClick,
                 onCancel = { displayPromoteWarning.value = false }
             )
@@ -65,27 +68,27 @@ fun UserDetailScreen(
     ) {
         item {
             Text(
-                text = "Name: ${user.name}"
+                text = stringResource(id = R.string.user_name_heading) + user.name
             )
         }
         item {
             Text(
-                text = "Surname: ${user.surname}"
+                text = stringResource(id = R.string.user_surname_heading) + user.surname
             )
         }
         item {
             Text(
-                text = "E-mail: ${user.email}"
+                text = stringResource(id = R.string.user_email_heading) + user.email
             )
         }
         item {
             Text(
-                text = "Role: ${user.role}"
+                text = stringResource(id = R.string.user_role_heading) + user.role.toString()
             )
         }
         item {
             Text(
-                text = "Latest order on: $orderCount"
+                text = stringResource(id = R.string.user_latest_order_heading) + orderCount.toString()
             )
         }
         item {
@@ -98,7 +101,7 @@ fun UserDetailScreen(
                     modifier = Modifier
                         .fillMaxWidth()
                 ) {
-                    Text(text = "Promote to employee")
+                    Text(text = stringResource(id = R.string.promote_button))
                 }
             }
         }
@@ -115,10 +118,10 @@ fun UserDetailScreen(
                 modifier = Modifier
                     .fillMaxWidth()
             ) {
-                Text(text = "Delete user")
+                Text(text = stringResource(id = R.string.delete_user_button))
             }
             if (cantDelete) {
-                Text(text = "User cannot be deleted if they have opened orders")
+                Text(text = stringResource(id = R.string.cant_delete_user_button))
             }
         }
     }
@@ -136,15 +139,15 @@ fun OrderStats(
             .padding(Paddings.small)
     ) {
         Column (horizontalAlignment = Alignment.CenterHorizontally) {
-            Text(text = "Total orders")
+            Text(text = stringResource(id = R.string.stats_total_orders))
             Text(text = usersOrders.size.toString())
         }
         Column (horizontalAlignment = Alignment.CenterHorizontally) {
-            Text(text = "Ongoing orders")
+            Text(text = stringResource(id = R.string.stats_ongoing_orders))
             Text(text = usersOrders.filter { it.state == OrderState.InProgress }.size.toString())
         }
         Column (horizontalAlignment = Alignment.CenterHorizontally) {
-            Text(text = "Overdue orders")
+            Text(text = stringResource(id = R.string.stats_overdue_orders))
             Text(text = usersOrders.filter { it.state == OrderState.OverDue }.size.toString())
         }
     }

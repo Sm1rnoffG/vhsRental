@@ -28,11 +28,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
+import com.example.vhsrental.R
 import com.example.vhsrental.data.models.DomainMovie
 import com.example.vhsrental.data.models.Format
 import com.example.vhsrental.data.models.Genre
@@ -50,7 +52,7 @@ fun CatalogueScreen (
     val listState = rememberLazyListState()
 
     if (movies.isEmpty()) {
-        EmptyQuery(message = "No movies found")
+        EmptyQuery(message = stringResource(id = R.string.no_movies))
     } else {
         LazyColumn(
             state = listState,
@@ -98,7 +100,7 @@ fun Poster(url: String, isPreview: Boolean, modifier: Modifier = Modifier) {
     ) {
         AsyncImage(
             model = url,
-            contentDescription = "Movie poster from: $url",
+            contentDescription = stringResource(id = R.string.poster_desc) + url,
             contentScale = ContentScale.FillBounds,
             modifier = Modifier
         )
@@ -148,7 +150,9 @@ fun AvailableChip (
             .wrapContentSize()
     ) {
         Text(
-            text = if (isAvailable) "Available" else "Not available",
+            text =
+                if (isAvailable) stringResource(id = R.string.available)
+                else stringResource(id = R.string.not_available),
             color = if (isAvailable) Color.Green else Color.Red,
             textAlign = TextAlign.Center,
             modifier = Modifier

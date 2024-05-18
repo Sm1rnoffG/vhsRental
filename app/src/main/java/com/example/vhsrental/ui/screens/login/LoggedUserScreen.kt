@@ -13,7 +13,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
+import com.example.vhsrental.R
 import com.example.vhsrental.data.models.DomainUser
 import com.example.vhsrental.ui.screens.users.FinalWarning
 
@@ -31,8 +33,8 @@ fun LoggedUserScreen(
     when {
         displayDeleteWarning.value -> {
             FinalWarning(
-                heading = "Permanent deletion!",
-                text = "You are about to delete your account permanently",
+                heading = stringResource(id = R.string.permanent_deletion),
+                text = stringResource(id = R.string.self_delete_warning),
                 onConfirm = onDeleteAccount,
                 onCancel = { displayDeleteWarning.value = false }
             )
@@ -46,21 +48,21 @@ fun LoggedUserScreen(
     ) {
         Text(text = user.name)
         Text(text = user.surname)
-        Text(text = "Contact information")
+        Text(text = stringResource(R.string.user_contact_info))
         Text(text = user.email)
 
         Button(
             onClick = onUpdateAccountAction,
             modifier = Modifier
         ) {
-            Text(text = "Update account information")
+            Text(text = stringResource(id = R.string.update_account_button))
         }
 
         Button(
             onClick = onUpdatePasswordAction,
             modifier = Modifier
         ) {
-            Text(text = "Update password")
+            Text(text = stringResource(id = R.string.update_password_button))
         }
 
         Button(
@@ -68,11 +70,11 @@ fun LoggedUserScreen(
             colors = ButtonDefaults.buttonColors(containerColor = Color.Red),
             enabled = !cantDelete
         ) {
-            Text(text = "Delete Account")
+            Text(text = stringResource(id = R.string.delete_account_button))
         }
         if (cantDelete) {
             Text(
-                text = "Your account cannot be deleted while you have opened orders",
+                text = stringResource(id = R.string.cant_delete_self),
                 textAlign = TextAlign.Center,
                 color = Color.LightGray
             )

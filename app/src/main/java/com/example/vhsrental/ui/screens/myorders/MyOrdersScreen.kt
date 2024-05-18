@@ -19,9 +19,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.modifier.modifierLocalMapOf
 import androidx.compose.ui.modifier.modifierLocalProvider
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.vhsrental.R
 import com.example.vhsrental.data.models.DomainMovie
 import com.example.vhsrental.data.models.DomainOrder
 import com.example.vhsrental.data.models.OrderRecord
@@ -39,7 +41,7 @@ fun MyOrdersScreen(
     modifier: Modifier = Modifier
 ) {
     if (myOrders.isEmpty()) {
-        EmptyQuery(message = "You have no orders")
+        EmptyQuery(message = stringResource(id = R.string.no_my_orders))
     } else {
         LazyColumn(
             modifier = modifier.fillMaxWidth()
@@ -128,7 +130,7 @@ fun MyOrderPreview(
             modifier = Modifier.padding(Paddings.small)
         )
         Text(
-            text = "Till $returnDate",
+            text = stringResource(id = R.string.order_till_heading) + returnDate,
             textAlign = TextAlign.Right,
             color = textColor,
             modifier = Modifier.padding(Paddings.small)
