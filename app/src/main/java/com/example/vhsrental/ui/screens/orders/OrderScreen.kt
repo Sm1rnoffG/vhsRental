@@ -1,9 +1,13 @@
 package com.example.vhsrental.ui.screens.orders
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.Surface
@@ -18,6 +22,7 @@ import com.example.vhsrental.data.models.DomainOrder
 import com.example.vhsrental.data.models.DomainUser
 import com.example.vhsrental.data.models.OrderRecord
 import com.example.vhsrental.data.models.OrderState
+import com.example.vhsrental.ui.theme.Paddings
 import com.example.vhsrental.ui.viewmodels.OrderUiState
 
 @Composable
@@ -25,18 +30,17 @@ fun OrderScreen(
     orderData: List<OrderRecord>,
     modifier: Modifier = Modifier,
     onOrderSelection: (OrderRecord) -> Unit,
-    onQueryRequest: () -> Unit,
 ) {
     val listState = rememberLazyListState()
 
     Column (
         modifier = modifier
+            .padding(Paddings.small)
     ) {
-        // QueryCard
         LazyColumn (
             state = listState,
         ) {
-            itemsIndexed(orderData) {_, data ->
+            items(orderData) {data ->
                 OrderPreview(
                     user = data.user,
                     order = data.order,
@@ -62,11 +66,16 @@ fun OrderPreview(
 
     Surface (
         onClick = onClick,
-        modifier = modifier,
+        color = Color.LightGray,
+        modifier = modifier
+            .fillMaxWidth()
     ) {
         Row(
+            horizontalArrangement = Arrangement.SpaceBetween,
             modifier = Modifier
                 .fillMaxWidth()
+                .wrapContentHeight()
+                .padding(Paddings.small)
         ) {
             Column(
                 modifier = Modifier

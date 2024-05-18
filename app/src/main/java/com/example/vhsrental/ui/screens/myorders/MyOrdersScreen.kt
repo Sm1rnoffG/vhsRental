@@ -73,6 +73,7 @@ fun MyOrderCard(
             .wrapContentHeight()
     ) {
         Row(
+            horizontalArrangement = Arrangement.SpaceBetween,
             modifier = Modifier
                 .fillMaxWidth()
         ) {

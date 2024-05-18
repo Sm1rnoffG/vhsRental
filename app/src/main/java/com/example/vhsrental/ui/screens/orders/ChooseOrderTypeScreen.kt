@@ -1,10 +1,11 @@
 package com.example.vhsrental.ui.screens.orders
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Surface
@@ -27,15 +28,16 @@ fun ChooseOrderTypeScreen(
     val buttonModifier = Modifier
         .padding(Paddings.large)
         .fillMaxWidth()
-        .fillMaxHeight(0.5F)
+        .height(200.dp)
 
     Column (
+        verticalArrangement = Arrangement.SpaceEvenly,
         modifier = modifier.fillMaxSize()
     ) {
         OrderTypeButton(
             text = "Create From Reservation",
             color = Color.Blue,
-            textColor = Color.Red,
+            textColor = Color.White,
             onClick = isReservation,
             modifier = buttonModifier
         )
@@ -69,7 +71,7 @@ fun OrderTypeButton (
             Text(
                 text = text,
                 color = textColor,
-                fontSize = 35.sp,
+                fontSize = 20.sp,
                 textAlign = TextAlign.Center
             )
         }
