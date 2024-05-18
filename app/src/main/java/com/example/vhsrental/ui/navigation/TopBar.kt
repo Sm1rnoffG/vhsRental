@@ -1,6 +1,7 @@
 package com.example.vhsrental.ui.navigation
 
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.size
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -9,7 +10,10 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.modifier.modifierLocalProvider
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.example.vhsrental.R
@@ -47,8 +51,10 @@ fun TopBar(
         CenterAlignedTopAppBar(
             title = {
                 Icon(
-                    painterResource(id = R.drawable.baseline_storefront_24),
-                    contentDescription = "shopIcon"
+                    painterResource(id = R.drawable.vhs_tape_svgrepo_com),
+                    contentDescription = "shopIcon",
+                    modifier = Modifier
+                        .size(40.dp)
                 )
             },
             navigationIcon = { NavigationButton(vm = loginVm, onBackClick) },

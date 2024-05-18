@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
@@ -19,6 +20,7 @@ import com.example.vhsrental.data.models.DomainOrder
 import com.example.vhsrental.data.models.DomainUser
 import com.example.vhsrental.data.models.OrderState
 import com.example.vhsrental.data.models.Role
+import com.example.vhsrental.ui.theme.Paddings
 import com.example.vhsrental.ui.viewmodels.UserUiState
 
 @Composable
@@ -56,8 +58,10 @@ fun UserDetailScreen(
     }
 
     LazyColumn (
+        horizontalAlignment = Alignment.CenterHorizontally,
         modifier = modifier
             .fillMaxWidth()
+            .padding(Paddings.medium)
     ) {
         item {
             Text(
@@ -122,12 +126,14 @@ fun UserDetailScreen(
 
 @Composable
 fun OrderStats(
-    usersOrders: List<DomainOrder>
+    usersOrders: List<DomainOrder>,
+    modifier: Modifier = Modifier,
 ) {
     Row (
-        horizontalArrangement = Arrangement.Center,
-        modifier = Modifier
+        horizontalArrangement = Arrangement.SpaceBetween,
+        modifier = modifier
             .fillMaxWidth()
+            .padding(Paddings.small)
     ) {
         Column (horizontalAlignment = Alignment.CenterHorizontally) {
             Text(text = "Total orders")

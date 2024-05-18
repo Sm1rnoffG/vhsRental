@@ -36,6 +36,8 @@ fun SortDialog(
     currentUser: DomainUser,
     onDismiss: () -> Unit
 ) {
+    val asEmployee = currentUser.role == Role.Employee
+
     Dialog(
         onDismissRequest = onDismiss,
     ) {
@@ -51,9 +53,9 @@ fun SortDialog(
             )
 
             when (currentTab) {
-                is Tab.Movies -> MovieSortOptions(movieVm = movieVm)
-                is Tab.Orders -> OrderSortOptions(orderVm = orderVm, asEmployee = currentUser.role == Role.Employee)
-                is Tab.MyOrders -> OrderSortOptions(orderVm = orderVm, asEmployee = currentUser.role == Role.Employee)
+                is Tab.Movies -> MovieSortOptions(movieVm = movieVm, asEmployee = asEmployee)
+                is Tab.Orders -> OrderSortOptions(orderVm = orderVm, asEmployee = asEmployee)
+                is Tab.MyOrders -> OrderSortOptions(orderVm = orderVm, asEmployee = asEmployee)
                 is Tab.Users -> UserSortOptions(userVm = userVm)
                 else -> Unit
             }
@@ -64,20 +66,23 @@ fun SortDialog(
 @Composable
 fun MovieSortOptions(
     movieVm: MoviesViewModel,
+    asEmployee: Boolean,
     modifier: Modifier = Modifier
 ) {
     val buttonModifier = Modifier
         .padding(Paddings.small)
         .fillMaxWidth()
 
-    val buttons = listOf<Triple<String, Boolean, Comparator<DomainMovie>>>(
-        Triple("By id ascending", false, compareBy { it.id }),
-        Triple("By id descending", true, compareBy { it.id }),
+    val buttons = mutableListOf<Triple<String, Boolean, Comparator<DomainMovie>>>(
         Triple("By name ascending", false, compareBy { it.name }),
         Triple("By name descending", true, compareBy { it.name }),
         Triple("By release year ascending", false, compareBy { it.releaseYear }),
         Triple("By release year descending", true, compareBy { it.releaseYear }),
     )
+    if (asEmployee) buttons.addAll(listOf(
+        Triple("By id ascending", false, compareBy { it.id }),
+        Triple("By id descending", true, compareBy { it.id }),
+    ))
 
     LazyColumn (
         horizontalAlignment = Alignment.CenterHorizontally,

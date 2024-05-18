@@ -49,6 +49,8 @@ fun OrderScreen(
                     order = data.order,
                     movie = data.movie,
                     onClick = { onOrderSelection(data) },
+                    modifier = Modifier
+                        .padding(Paddings.medium)
                 )
             }
         }

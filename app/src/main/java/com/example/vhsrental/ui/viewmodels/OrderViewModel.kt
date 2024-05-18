@@ -65,7 +65,7 @@ class OrderViewModel @Inject constructor(
                 _uiStateFlow.update { uiStateFlow.value.copy(order = action.record.order, movie = action.record.movie, user = action.record.user) }
             is OrderActions.OnOrderExtend -> extendOrder()
             is OrderActions.OnOrderFinish -> finishOrder()
-            is OrderActions.OnReservationRequest -> reserveMovie()
+            is OrderActions.OnReservationRequest -> reserveMovie(action.movie, action.user)
             is OrderActions.OnMyOrderDetailRequest ->
                 _uiStateFlow.update { uiStateFlow.value.copy(order = action.record.order, movie = action.record.movie) }
             is OrderActions.OnFilter ->
@@ -111,17 +111,12 @@ class OrderViewModel @Inject constructor(
     }
 
 
-    private fun reserveMovie() {
-        try {
-            orderRepository.createOrder(
-                movieId = uiStateFlow.value.movie?.id ?: throw OrderExceptions.EmptyFieldException(),
-                userId = uiStateFlow.value.user?.id ?: throw OrderExceptions.EmptyFieldException(),
-                isReservationRequest = true
-            )
-        } catch (e: Exception) {
-            Log.d(null, e.message ?: "Error")
-        }
-    }
+    private fun reserveMovie(movie: DomainMovie, user: DomainUser) = orderRepository
+        .createOrder(
+            movieId = movie.id,
+            userId = user.id ,
+            isReservationRequest = true
+        )
 
     private fun finishOrder() {
         val updatedOrder = uiStateFlow.value.order?.copy(state = OrderState.Done) ?:
