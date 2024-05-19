@@ -55,14 +55,14 @@ fun MyOrderDetailScreen(
                     .padding(Paddings.small)
             )
             Text(
-                text = stringResource(id = R.string.order_from_heading) + order?.createDate,
+                text = "${stringResource(id = R.string.order_from_heading)} ${order?.createDate}",
                 textAlign = TextAlign.Center,
                 modifier = Modifier
                     .padding(Paddings.small)
             )
             Text(
-                text = stringResource(id = R.string.order_till_heading) + 
-                    (order?.returnDate ?: order?.createDate?.plusDays(3)),
+                text = "${stringResource(id = R.string.order_till_heading)} ${
+                    order?.returnDate ?: order?.createDate?.plusDays(3)}",
                 textAlign = TextAlign.Center,
                 modifier = Modifier
                     .padding(Paddings.small)
