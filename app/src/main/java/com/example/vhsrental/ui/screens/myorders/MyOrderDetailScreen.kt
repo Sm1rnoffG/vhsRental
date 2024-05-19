@@ -21,11 +21,11 @@ import com.example.vhsrental.R
 import com.example.vhsrental.data.models.DomainMovie
 import com.example.vhsrental.data.models.DomainOrder
 import com.example.vhsrental.data.models.OrderState
-import com.example.vhsrental.ui.screens.login.SuccessfulUpdateAlert
 import com.example.vhsrental.ui.screens.movies.Poster
 import com.example.vhsrental.ui.screens.users.FinalWarning
 import com.example.vhsrental.ui.theme.Paddings
 import com.example.vhsrental.ui.viewmodels.OrderActions
+import java.time.LocalDate
 
 @Composable
 fun MyOrderDetailScreen(
@@ -72,6 +72,17 @@ fun MyOrderDetailScreen(
                 modifier = Modifier
                     .padding(Paddings.small)
             )
+            if (order?.state != OrderState.Done) {
+                val remainingDays = order?.returnDate?.toEpochDay()?.minus(LocalDate.now().toEpochDay()) ?:
+                    order?.createDate?.plusDays(3)?.toEpochDay()?.minus(LocalDate.now().toEpochDay())
+
+                Text(
+                    text = "${stringResource(id = R.string.remaining_days)} $remainingDays",
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier
+                        .padding(Paddings.small)
+                )
+            }
             MyOrderActionButton(order, { action -> onMyOrderAction(action, movie) })
         }
     }

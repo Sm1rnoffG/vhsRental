@@ -18,7 +18,9 @@ import com.example.vhsrental.data.models.DomainOrder
 import com.example.vhsrental.data.models.DomainUser
 import com.example.vhsrental.data.models.OrderState
 import com.example.vhsrental.ui.screens.movies.Movie
+import com.example.vhsrental.ui.theme.Paddings
 import com.example.vhsrental.ui.viewmodels.OrderUiState
+import java.time.LocalDate
 
 @Composable
 fun OrderDetailScreen(
@@ -60,6 +62,17 @@ fun OrderDetailScreen(
             textAlign = TextAlign.Left,
             color =  textColor
         )
+        if (order?.state != OrderState.Done) {
+            val remainingDays = order?.returnDate?.toEpochDay()?.minus(LocalDate.now().toEpochDay()) ?:
+            order?.createDate?.plusDays(3)?.toEpochDay()?.minus(LocalDate.now().toEpochDay())
+
+            Text(
+                text = "${stringResource(id = R.string.remaining_days)} $remainingDays",
+                textAlign = TextAlign.Center,
+                modifier = Modifier
+                    .padding(Paddings.small)
+            )
+        }
         Text(
             text = "${stringResource(id = R.string.order_movie_heading)} ${movie?.name}",
             textAlign = TextAlign.Left,

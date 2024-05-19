@@ -171,4 +171,5 @@
     <string name="confirm_edit_dialog">You are about to store the changes into database. Do you want to proceed?</string>
     <string name="confirm_extend_dialog">Order return date will be pushed back by 30 days</string>
     <string name="confirm_cancel_res_dialog">Reservation will be canceled</string>
+    <string name="remaining_days">Days remaining:</string>
 </resources>

@@ -210,7 +210,10 @@ class LoginViewModel @Inject constructor (
             ) }
         }
         _uiStateFlow.update {
-            (uiStateFlow.value as LoginUiState.Register).copy(successfulRegister = true)
+            (uiStateFlow.value as LoginUiState.Register).copy(
+                successfulRegister = true,
+                registerError = false,
+            )
         }
     }
 }
