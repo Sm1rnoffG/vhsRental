@@ -77,7 +77,10 @@ fun OrderDetailScreen(
             textAlign = TextAlign.Left,
         )
 
-        Button(onClick = { onCloseOrder(movie) }) {
+        Button(
+            onClick = { onCloseOrder(movie) },
+            enabled = order?.state != OrderState.Done
+        ) {
             Text(text = stringResource(id = R.string.finalize_order_button))
         }
     }

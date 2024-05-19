@@ -1,12 +1,9 @@
 package com.example.vhsrental.ui.viewmodels
 
-import android.text.BoringLayout
 import androidx.lifecycle.ViewModel
-import com.example.vhsrental.data.Movie
 import com.example.vhsrental.data.Query
 import com.example.vhsrental.data.exceptions.MovieExceptions
 import com.example.vhsrental.data.models.DomainMovie
-import com.example.vhsrental.data.models.DomainOrder
 import com.example.vhsrental.data.repositories.MovieRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -77,7 +74,9 @@ class MoviesViewModel @Inject constructor(
     private fun reload(movie: DomainMovie? = null) {
         _uiStateFlow.update { uiStateFlow.value.copy(
             catalogue = Query(getAllMovies()),
-            displayMovie = if (movie != null) repository.getMovieById(movie.id) else it.displayMovie
+            displayMovie = if (movie != null) repository.getMovieById(movie.id) else it.displayMovie,
+            canMovieReserve = false,
+            canMovieEdit = false,
         ) }
     }
 

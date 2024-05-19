@@ -125,7 +125,6 @@ class OrderViewModel @Inject constructor(
             userId = user.id,
             isReservationRequest = true
         )
-        reload(user)
     }
 
     private fun finishOrder() {

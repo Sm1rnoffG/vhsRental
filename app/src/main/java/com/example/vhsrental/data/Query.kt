@@ -11,7 +11,7 @@ data class Query<T>(
 
     fun sort(comparator: Comparator<T> , flipped: Boolean) : Query<T> {
         val newList = list.sortedWith(comparator)
-        return Query(if (flipped) newList else newList.reversed())
+        return Query(if (flipped) newList.reversed() else newList)
     }
 
     fun search(selector: (T) -> String) = Query(list.filter { selector(it).contains(searchValue) })

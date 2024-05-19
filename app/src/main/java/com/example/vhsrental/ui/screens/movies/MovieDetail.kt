@@ -81,8 +81,8 @@ fun MovieDetail(
                 Text(text = movie.format.name)
                 Dot()
                 Text(
-                    text = "${movie.currentlyAvailable}/${movie.availableCopies}" +
-                        stringResource(id = R.string.available)
+                    text = "${movie.currentlyAvailable}/${movie.availableCopies} ${
+                        stringResource(id = R.string.available)}"
                 )
             }
             Row(horizontalArrangement = Arrangement.Center) {
