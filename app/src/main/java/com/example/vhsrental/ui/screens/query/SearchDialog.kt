@@ -167,7 +167,7 @@ fun OrderSearchOptions(
         Pair(stringResource(id = R.string.search_order_movie_names)) { record: OrderRecord -> record.movie.name },
     )
     if (asEmployee) buttons.addAll(listOf(
-        Pair(stringResource(id = R.string.search_order_movie_names)) { record: OrderRecord -> record.user.name },
+        Pair(stringResource(id = R.string.search_order_user_names)) { record: OrderRecord -> record.user.name },
         Pair(stringResource(id = R.string.search_order_user_surnames)) { record: OrderRecord -> record.user.surname },
         Pair(stringResource(id = R.string.search_order_user_email)) { record: OrderRecord -> record.user.email },
     ))

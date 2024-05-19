@@ -219,6 +219,7 @@ fun Navigation(
                     }
                 },
                 isNewOrder = {
+                    orderCreatingVm.emitAction(CreateOrderActions.OnCreateOrder)
                     navController.navigate(Screens.CreateOrder.name) {
                         popUpTo(Tab.Orders.route) { inclusive = false }
                     }
