@@ -40,6 +40,11 @@ fun MovieEditScreen(
     onValueChange: (MovieEditActions) -> Unit,
     modifier: Modifier = Modifier
 ) {
+    val heading: String
+    val confirmButtonText: String
+    val confirmDialog: String
+    val confirmDialogHeading: String;
+
     val textFieldModifier = Modifier
         .wrapContentHeight()
         .fillMaxWidth()
@@ -55,12 +60,31 @@ fun MovieEditScreen(
     val formatOptions = Format.entries.map { it.name }.zip(Format.entries)
     val releaseYearOptions = (1920..LocalDate.now().year).map { it.toString() }
         .zip((1920L..LocalDate.now().year)).reversed()
-    val heading =
-        if (state.movie == null) stringResource(id = R.string.add_movie_button)
-        else stringResource(id = R.string.edit_movie_button) + state.movie.name
-    val confirmButtonText =
-        if (state.movie == null) stringResource(id = R.string.add_movie_confirm_button)
-        else stringResource(id = R.string.confirm_changes_button)
+
+    if (state.movie == null) {
+        heading = stringResource(id = R.string.add_movie_button)
+        confirmButtonText = stringResource(id = R.string.add_movie_button)
+        confirmDialog = stringResource(id = R.string.confirm_add_dialog)
+        confirmDialogHeading = stringResource(id = R.string.confirm_add_dialog_heading)
+    } else {
+        heading = stringResource(id = R.string.edit_movie_button) + state.movie.name
+        confirmButtonText = stringResource(id = R.string.confirm_changes_button)
+        confirmDialog = stringResource(id = R.string.confirm_edit_dialog)
+        confirmDialogHeading = stringResource(id = R.string.confirm_edit_dialog_heading)
+    }
+    var displayDialog by remember { mutableStateOf(false) }
+
+    when {
+        displayDialog -> FinalWarning(
+            heading = confirmDialogHeading,
+            text = confirmDialog,
+            onConfirm = {
+                onConfirm()
+                displayDialog = false
+            },
+            onCancel = { displayDialog = false },
+        )
+    }
 
     LazyColumn (
         verticalArrangement = Arrangement.Center,
@@ -183,7 +207,7 @@ fun MovieEditScreen(
         }
         item {
             Button(
-                onClick = { onConfirm() },
+                onClick = { displayDialog = true },
                 modifier = Modifier.wrapContentSize()
             ) {
                 Text(text = confirmButtonText, textAlign = TextAlign.Center)

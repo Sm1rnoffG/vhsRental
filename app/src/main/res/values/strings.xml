@@ -165,4 +165,8 @@
     <string name="delete_movie_dialog">You are about to delete this movie permanently from the database</string>
     <string name="reservation_heading">New reservation</string>
     <string name="reservation_dialog">Create reservation for this movie? It will be reserved for 3 days</string>
+    <string name="confirm_add_dialog_heading">Add movie</string>
+    <string name="confirm_add_dialog">You are about to add this movie into database. Do you want to proceed?</string>
+    <string name="confirm_edit_dialog_heading">Confirm changes?</string>
+    <string name="confirm_edit_dialog">You are about to store the changes into database. Do you want to proceed?</string>
 </resources>
