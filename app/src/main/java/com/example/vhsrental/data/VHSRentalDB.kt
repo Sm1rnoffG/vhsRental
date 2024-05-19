@@ -1,7 +1,6 @@
 package com.example.vhsrental.data
 
 import android.content.Context
-import app.cash.sqldelight.Query
 import app.cash.sqldelight.db.SqlDriver
 import app.cash.sqldelight.driver.android.AndroidSqliteDriver
 import com.example.vhsrental.data.exceptions.MovieExceptions
@@ -99,10 +98,6 @@ class VHSRentalDB @Inject constructor(context: Context) {
                     it.id, it.state, it.create_date, it.return_date, it.user_id, it.movie_id
                 )
             }
-
-    fun selectUsersOrders(id: Long) : Query<RentalOrder> =
-        VHSRental(driver).orderQueries.selectUsersOrders(id)
-
 
     fun addOrder(order: DBOrder) = VHSRental(driver).orderQueries.createOrder(
             order.id, order.state, order.createDate, order.returnDate, order.userId, order.movieId

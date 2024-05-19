@@ -1,5 +1,6 @@
 package com.example.vhsrental.ui.navigation
 
+import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
@@ -28,6 +29,7 @@ import com.example.vhsrental.ui.screens.orders.OrderDetailScreen
 import com.example.vhsrental.ui.screens.orders.OrderScreen
 import com.example.vhsrental.ui.screens.users.UserDetailScreen
 import com.example.vhsrental.ui.screens.users.UsersScreen
+import com.example.vhsrental.ui.theme.Paddings
 import com.example.vhsrental.ui.viewmodels.CreateOrderActions
 import com.example.vhsrental.ui.viewmodels.LoginUiState
 import com.example.vhsrental.ui.viewmodels.LoginViewModel
@@ -54,7 +56,8 @@ fun Navigation(
     NavHost(
         navController = navController,
         startDestination = Tab.Login.route,
-        modifier = modifier,
+        modifier = modifier
+            .padding(Paddings.small),
     ) {
         // LOGIN NAVIGATION
         composable(Tab.Login.route) {
@@ -131,6 +134,7 @@ fun Navigation(
                     },
                     onDelete = { movie ->
                         movieVm.emitAction(MovieActions.DeleteMovie(movie))
+                        orderVm.emitAction(OrderActions.OnDeleteMovie(movie.id))
                         navController.popBackStack()
                     },
                     asEmployee = loginState.user.role == Role.Employee,
