@@ -47,4 +47,4 @@ INSERT OR ABORT INTO user (
 VALUES (?, ?, ?, ?, ?, ?);
 
 INSERT INTO user (id, name, surname, email, password, role)
-VALUES (0, "main", "admin", "admin@vhsrental.com", "8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918", 0);
+VALUES (0, "main", "admin", "admin@vhsrental.com", 63510138342444003596188279565448361031871357402171886015166189192138742868248, 0);

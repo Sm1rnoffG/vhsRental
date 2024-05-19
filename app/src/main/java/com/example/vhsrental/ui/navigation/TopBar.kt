@@ -11,7 +11,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.modifier.modifierLocalProvider
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -34,8 +33,8 @@ fun TopBar(
     orderVm: OrderViewModel,
     navController: NavHostController,
     onLogout: () -> Unit,
+    onCloseApp: () -> Unit,
     onAccountDetailClick: () -> Unit,
-    onBackClick: () -> Unit
 ) {
     val state = loginVm.uiStateFlow.collectAsState().value
     val navBackStackEntry by navController.currentBackStackEntryAsState()
@@ -46,6 +45,14 @@ fun TopBar(
         Tab.Orders.route -> Tab.Orders
         Tab.MyOrders.route -> Tab.MyOrders
         else -> null
+    }
+    val onBackClick = when (currentDestinationRoute) {
+        Tab.Movies.route -> onCloseApp
+        Tab.Users.route -> onCloseApp
+        Tab.Orders.route -> onCloseApp
+        Tab.MyOrders.route -> onCloseApp
+        Tab.Login.route -> onCloseApp
+        else -> { { navController.popBackStack() } }
     }
 
     Column {
@@ -58,7 +65,7 @@ fun TopBar(
                         .size(40.dp)
                 )
             },
-            navigationIcon = { NavigationButton(vm = loginVm, onBackClick) },
+            navigationIcon = { NavigationButton(vm = loginVm) { onBackClick() } },
             actions = {
                 if (state is LoginUiState.LoggedIn) {
                     UserOptions(

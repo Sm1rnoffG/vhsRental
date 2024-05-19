@@ -47,13 +47,11 @@ fun AppSpine(
                 userVm = usersVm,
                 orderVm = orderVm,
                 navController = navController,
-                onBackClick = {
-                    if (!navController.popBackStack()) activity.finish()
-                },
                 onAccountDetailClick = {
                     loginVm.emitActionLoggedIn(UpdateAccountActions.OnDisplayDataRequest)
                     navController.navigate(Screens.AccountDetail.name)
                 },
+                onCloseApp = { activity.finish() },
                 onLogout = {
                     loginVm.emitActionLoggedIn(UpdateAccountActions.OnLogOut)
                     navController.navigate(Tab.Login.route) {
