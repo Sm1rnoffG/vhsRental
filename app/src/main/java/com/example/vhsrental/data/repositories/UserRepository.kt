@@ -89,7 +89,7 @@ class UserRepository @Inject constructor(
         db.updateUser(user.copy(role = Role.Employee).asDBModel())
     }
 
-    fun register(attempt: LoginUiState.Register) {
+    fun register(attempt: LoginUiState.Login) {
         if (attempt.name.isEmpty() || attempt.surname.isEmpty() || attempt.email.isEmpty() ||
             attempt.password.isEmpty() || attempt.passwordRepeat.isEmpty())
                 throw LoginException.EmptyFieldException()

@@ -29,10 +29,7 @@ fun LoginScreen(
     toRegister: () -> Unit = {},
 ) {
     val collected = vm.uiStateFlow.collectAsState()
-    if (collected.value is LoginUiState.Register) {
-        toRegister()
-        return
-    } else if (collected.value is LoginUiState.LoggedIn) {
+    if (collected.value is LoginUiState.LoggedIn) {
         toCatalogue()
         return
     }
@@ -53,24 +50,24 @@ fun LoginScreen(
         )
         OutlinedTextField(
             value = state.email,
-            onValueChange = { vm.emitAction(LoginActions.OnLoginEmailUpdate(it)) },
+            onValueChange = { vm.emitAction(LoginActions.OnEmailUpdate(it)) },
             placeholder = { Text(text = stringResource(id = R.string.emailPlaceholder)) },
             modifier = Modifier
                 .padding(Paddings.small),
-            isError = state.loginError && state.email.isEmpty()
+            isError = state.isError && state.email.isEmpty()
         )
         OutlinedTextField(
             value = state.password,
-            onValueChange = { vm.emitAction(LoginActions.OnLoginPasswordUpdate(it)) },
+            onValueChange = { vm.emitAction(LoginActions.OnPasswordUpdate(it)) },
             placeholder = { Text(text = stringResource(id = R.string.passwordPlaceholder)) },
             visualTransformation = PasswordVisualTransformation(),
             modifier = Modifier
                 .padding(Paddings.small),
-            isError = state.loginError && state.password.isEmpty()
+            isError = state.isError && state.password.isEmpty()
         )
-        if (state.loginError) {
+        if (state.isError) {
             Text(
-                text = state.loginErrorMessage
+                text = state.errorMessage
             )
         }
         Button(
@@ -84,7 +81,10 @@ fun LoginScreen(
             )
         }
         Button(
-            onClick = { vm.emitAction(LoginActions.OnSwitchScreen) },
+            onClick = {
+                vm.emitAction(LoginActions.OnSwitchScreen)
+                toRegister()
+            },
             modifier = Modifier
                 .padding(Paddings.small),
         ) {

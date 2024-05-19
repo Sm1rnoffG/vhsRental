@@ -52,6 +52,7 @@ fun TopBar(
         Tab.Orders.route -> onCloseApp
         Tab.MyOrders.route -> onCloseApp
         Tab.Login.route -> onCloseApp
+        Screens.Register.name -> onCloseApp
         else -> { { navController.popBackStack() } }
     }
 

@@ -13,13 +13,11 @@ import javax.inject.Inject
 
 
 sealed class LoginActions {
-    data class OnLoginPasswordUpdate(val update: String) : LoginActions()
-    data class OnLoginEmailUpdate(val update: String) : LoginActions()
-    data class OnRegisterNameUpdate(val update: String) : LoginActions()
-    data class OnRegisterSurnameUpdate(val update: String) : LoginActions()
-    data class OnRegisterPasswordUpdate(val update: String) : LoginActions()
-    data class OnRegisterPasswordRepeatUpdate(val update: String) : LoginActions()
-    data class OnRegisterEmailUpdate(val update: String) : LoginActions()
+    data class OnPasswordUpdate(val update: String) : LoginActions()
+    data class OnEmailUpdate(val update: String) : LoginActions()
+    data class OnNameUpdate(val update: String) : LoginActions()
+    data class OnSurnameUpdate(val update: String) : LoginActions()
+    data class OnPasswordRepeatUpdate(val update: String) : LoginActions()
     data object OnLoginAttempt : LoginActions()
     data object OnRegisterAttempt : LoginActions()
     data object OnSwitchScreen : LoginActions()
@@ -42,20 +40,13 @@ sealed class UpdateAccountActions {
 
 sealed class LoginUiState {
     data class Login (
-        var email: String = "",
-        var password: String = "",
-        var loginError: Boolean = false,
-        var loginErrorMessage: String = "",
-    ) : LoginUiState()
-
-    data class Register (
         var name: String = "",
         var surname: String = "",
         var email: String = "",
         var password: String = "",
         var passwordRepeat: String = "",
-        var registerError: Boolean = false,
-        var registerErrorMessage: String = "",
+        var isError: Boolean = false,
+        var errorMessage: String = "",
         var successfulRegister: Boolean = false,
     ) : LoginUiState()
 
@@ -87,20 +78,16 @@ class LoginViewModel @Inject constructor (
 
     fun emitAction(action: LoginActions) {
         when (action) {
-            is LoginActions.OnLoginEmailUpdate ->
+            is LoginActions.OnEmailUpdate ->
                 _uiStateFlow.update { (it as LoginUiState.Login).copy(email = action.update) }
-            is LoginActions.OnLoginPasswordUpdate ->
+            is LoginActions.OnPasswordUpdate ->
                 _uiStateFlow.update { (it as LoginUiState.Login).copy(password = action.update) }
-            is LoginActions.OnRegisterNameUpdate ->
-                _uiStateFlow.update { (it as LoginUiState.Register).copy(name = action.update) }
-            is LoginActions.OnRegisterSurnameUpdate ->
-                _uiStateFlow.update { (it as LoginUiState.Register).copy(surname = action.update) }
-            is LoginActions.OnRegisterEmailUpdate ->
-                _uiStateFlow.update { (it as LoginUiState.Register).copy(email = action.update) }
-            is LoginActions.OnRegisterPasswordUpdate ->
-                _uiStateFlow.update { (it as LoginUiState.Register).copy(password = action.update) }
-            is LoginActions.OnRegisterPasswordRepeatUpdate ->
-                _uiStateFlow.update { (it as LoginUiState.Register).copy(passwordRepeat = action.update) }
+            is LoginActions.OnNameUpdate ->
+                _uiStateFlow.update { (it as LoginUiState.Login).copy(name = action.update) }
+            is LoginActions.OnSurnameUpdate ->
+                _uiStateFlow.update { (it as LoginUiState.Login).copy(surname = action.update) }
+            is LoginActions.OnPasswordRepeatUpdate ->
+                _uiStateFlow.update { (it as LoginUiState.Login).copy(passwordRepeat = action.update) }
             is LoginActions.OnLoginAttempt -> login()
             is LoginActions.OnRegisterAttempt -> register()
             is LoginActions.OnSwitchScreen -> switchScreen()
@@ -173,13 +160,7 @@ class LoginViewModel @Inject constructor (
         }
     }
 
-    private fun switchScreen() {
-        when (uiStateFlow.value) {
-            is LoginUiState.Login -> _uiStateFlow.update { LoginUiState.Register() }
-            is LoginUiState.Register -> _uiStateFlow.update { LoginUiState.Login() }
-            else -> Unit
-        }
-    }
+    private fun switchScreen() = _uiStateFlow.update { LoginUiState.Login() }
 
     private fun login() {
         val state = uiStateFlow.value as LoginUiState.Login
@@ -190,30 +171,31 @@ class LoginViewModel @Inject constructor (
         } catch (e: LoginException) {
             _uiStateFlow.update {
                 state.copy(
-                    loginError = true,
-                    loginErrorMessage = e.message ?: "Error",
+                    isError = true,
+                    errorMessage = e.message ?: "Error",
                     password = "",
             ) }
         }
     }
 
     private fun register() {
-        val state = uiStateFlow.value as LoginUiState.Register
+        val state = uiStateFlow.value as LoginUiState.Login
 
         try {
             userRepository.register(state)
+            _uiStateFlow.update {
+                (uiStateFlow.value as LoginUiState.Login).copy(
+                    successfulRegister = true,
+                    isError = false,
+                )
+            }
         } catch (e: LoginException) {
             _uiStateFlow.update {
                 state.copy(
-                    registerError = true,
-                    registerErrorMessage = e.message ?: "Error",
+                    isError = true,
+                    successfulRegister = false,
+                    errorMessage = e.message ?: "Error",
             ) }
-        }
-        _uiStateFlow.update {
-            (uiStateFlow.value as LoginUiState.Register).copy(
-                successfulRegister = true,
-                registerError = false,
-            )
         }
     }
 }

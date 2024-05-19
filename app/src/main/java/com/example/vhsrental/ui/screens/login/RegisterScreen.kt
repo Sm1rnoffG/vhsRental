@@ -27,12 +27,7 @@ fun RegisterScreen(
     modifier: Modifier = Modifier,
     toLogin: () -> Unit = {},
 ) {
-    val collected = vm.uiStateFlow.collectAsState()
-    if (collected.value is LoginUiState.Login) {
-        toLogin()
-        return
-    }
-    val state = collected.value as LoginUiState.Register
+    val state = vm.uiStateFlow.collectAsState().value as LoginUiState.Login
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -49,44 +44,44 @@ fun RegisterScreen(
         )
         OutlinedTextField(
             value = state.name,
-            onValueChange = { vm.emitAction(LoginActions.OnRegisterNameUpdate(it)) },
+            onValueChange = { vm.emitAction(LoginActions.OnNameUpdate(it)) },
             placeholder = { Text(text = stringResource(id = R.string.namePlaceholder)) },
-            isError = state.registerError && state.name.isEmpty(),
+            isError = state.isError && state.name.isEmpty(),
             modifier = Modifier
         )
         OutlinedTextField(
             value = state.surname,
-            onValueChange = { vm.emitAction(LoginActions.OnRegisterSurnameUpdate(it)) },
+            onValueChange = { vm.emitAction(LoginActions.OnSurnameUpdate(it)) },
             placeholder = { Text(text = stringResource(id = R.string.surnamePlaceholder)) },
-            isError = state.registerError && state.surname.isEmpty(),
+            isError = state.isError && state.surname.isEmpty(),
             modifier = Modifier
         )
         OutlinedTextField(
             value = state.email,
-            onValueChange = { vm.emitAction(LoginActions.OnRegisterEmailUpdate(it)) },
+            onValueChange = { vm.emitAction(LoginActions.OnEmailUpdate(it)) },
             placeholder = { Text(text = stringResource(id = R.string.emailPlaceholder)) },
-            isError = state.registerError && state.email.isEmpty(),
+            isError = state.isError && state.email.isEmpty(),
             modifier = Modifier
         )
         OutlinedTextField(
             value = state.password,
-            onValueChange = { vm.emitAction(LoginActions.OnRegisterPasswordUpdate(it)) },
+            onValueChange = { vm.emitAction(LoginActions.OnPasswordUpdate(it)) },
             placeholder = { Text(text = stringResource(id = R.string.passwordPlaceholder)) },
             visualTransformation = PasswordVisualTransformation(),
-            isError = state.registerError && state.password.isEmpty(),
+            isError = state.isError && state.password.isEmpty(),
             modifier = Modifier
         )
         OutlinedTextField(
             value = state.passwordRepeat,
-            onValueChange = { vm.emitAction(LoginActions.OnRegisterPasswordRepeatUpdate(it)) },
+            onValueChange = { vm.emitAction(LoginActions.OnPasswordRepeatUpdate(it)) },
             placeholder = { Text(text = stringResource(id = R.string.repeatPasswordPlaceholder)) },
             visualTransformation = PasswordVisualTransformation(),
-            isError = state.registerError && state.passwordRepeat.isEmpty(),
+            isError = state.isError && state.passwordRepeat.isEmpty(),
             modifier = Modifier
         )
-        if (state.registerError) {
+        if (state.isError) {
             Text(
-                text = state.registerErrorMessage,
+                text = state.errorMessage,
                 modifier = Modifier
             )
         } else if (state.successfulRegister) {
@@ -105,7 +100,10 @@ fun RegisterScreen(
             )
         }
         Button(
-            onClick = { vm.emitAction(LoginActions.OnSwitchScreen) },
+            onClick = {
+                vm.emitAction(LoginActions.OnSwitchScreen)
+                toLogin()
+            },
             modifier = Modifier
         ) {
             Text(
