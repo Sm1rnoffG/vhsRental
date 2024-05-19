@@ -14,10 +14,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import com.example.vhsrental.R
 import com.example.vhsrental.data.models.DomainMovie
-import com.example.vhsrental.data.models.DomainOrder
-import com.example.vhsrental.data.models.DomainUser
 import com.example.vhsrental.data.models.OrderState
-import com.example.vhsrental.ui.screens.movies.Movie
 import com.example.vhsrental.ui.theme.Paddings
 import com.example.vhsrental.ui.viewmodels.OrderUiState
 import java.time.LocalDate
@@ -74,7 +71,7 @@ fun OrderDetailScreen(
             )
         }
         Text(
-            text = "${stringResource(id = R.string.order_movie_heading)} ${movie?.name}",
+            text = "${stringResource(id = R.string.order_movie_heading)} ${movie?.name} (${movie?.id})",
             textAlign = TextAlign.Left,
         )
         Text(
@@ -82,7 +79,7 @@ fun OrderDetailScreen(
             textAlign = TextAlign.Left,
         )
         Text(
-            text = "${stringResource(id = R.string.order_user_heading)} ${user?.name} ${user?.surname}",
+            text = "${stringResource(id = R.string.order_user_heading)} ${user?.name} ${user?.surname} (${user?.id})",
             textAlign = TextAlign.Left,
         )
         Text(
