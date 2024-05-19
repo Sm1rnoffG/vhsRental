@@ -64,5 +64,14 @@ class OrderRepository @Inject constructor(
         ))
     }
 
+    fun createOrderFromReservation(
+        reservation: DomainOrder,
+    ) {
+        insert(reservation.copy(
+            returnDate = LocalDate.now().plusDays(30),
+            state = OrderState.InProgress
+        ))
+    }
+
     fun getOrderById(id: Long) = db.getOrderById(id).asDomainModel()
 }

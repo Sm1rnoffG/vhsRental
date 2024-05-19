@@ -17,15 +17,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.modifier.modifierLocalMapOf
-import androidx.compose.ui.modifier.modifierLocalProvider
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.vhsrental.R
-import com.example.vhsrental.data.models.DomainMovie
-import com.example.vhsrental.data.models.DomainOrder
 import com.example.vhsrental.data.models.OrderRecord
 import com.example.vhsrental.data.models.OrderState
 import com.example.vhsrental.ui.screens.EmptyQuery

@@ -7,6 +7,10 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -19,6 +23,7 @@ import com.example.vhsrental.data.models.DomainOrder
 import com.example.vhsrental.data.models.OrderState
 import com.example.vhsrental.ui.screens.login.SuccessfulUpdateAlert
 import com.example.vhsrental.ui.screens.movies.Poster
+import com.example.vhsrental.ui.screens.users.FinalWarning
 import com.example.vhsrental.ui.theme.Paddings
 import com.example.vhsrental.ui.viewmodels.OrderActions
 
@@ -78,22 +83,39 @@ fun MyOrderActionButton(
     onMyOrderAction: (OrderActions) -> Unit,
     modifier: Modifier = Modifier
 ) {
+    var displayDialog by remember { mutableStateOf(false) }
     val action: OrderActions
     val text: String
+    val dialogText: String
+
     when (order?.state) {
         OrderState.Reservation -> { 
             action = OrderActions.OnOrderFinish
             text = stringResource(id = R.string.order_action_res_button)
+            dialogText = stringResource(id = R.string.confirm_cancel_res_dialog)
         }
         OrderState.InProgress -> { 
             action = OrderActions.OnOrderExtend
             text = stringResource(id = R.string.order_action_ex_button)
+            dialogText = stringResource(id = R.string.confirm_extend_dialog)
         }
         else -> return
     }
 
+    when {
+        displayDialog -> FinalWarning(
+            heading = text,
+            text = dialogText,
+            onConfirm = {
+                onMyOrderAction(action)
+                displayDialog = false
+            },
+            onCancel = { displayDialog = false }
+        )
+    }
+
     Button(
-        onClick = { onMyOrderAction(action) },
+        onClick = { displayDialog = true },
         modifier = modifier.wrapContentSize()
     ) {
         Text(text = text)

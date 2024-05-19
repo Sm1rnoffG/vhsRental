@@ -222,11 +222,14 @@ fun Navigation(
             )
         }
         composable(Screens.CreateFromReservation.name) {
+            val reservation = orderCreatingVm.uiStateFlow.collectAsState().value
+
             ConfirmCreateFromReservation(
-                reservation = orderCreatingVm.uiStateFlow.collectAsState().value,
+                reservation = reservation,
                 onConfirm = {
-                    orderCreatingVm.emitAction(CreateOrderActions.OnOrderConfirm)
+                    orderCreatingVm.emitAction(CreateOrderActions.OnOrderFromReservationConfirm)
                     orderVm.emitAction(OrderActions.OnLoadList)
+                    navController.popBackStack()
                 },
             )
         }
@@ -235,8 +238,9 @@ fun Navigation(
                 orderData = orderVm.uiStateFlow.collectAsState().value.orders.list
                     .filter { it.order.state == OrderState.Reservation },
                 onOrderSelection = { record ->
-                    orderCreatingVm.emitAction(CreateOrderActions.OnUserUpdate(record.user))
+                    orderCreatingVm.emitAction(CreateOrderActions.OnCreateOrderFromReservation(record.order))
                     orderCreatingVm.emitAction(CreateOrderActions.OnMovieUpdate(record.movie))
+                    orderCreatingVm.emitAction(CreateOrderActions.OnUserUpdate(record.user))
                     navController.navigate(Screens.CreateFromReservation.name)
                 },
             )

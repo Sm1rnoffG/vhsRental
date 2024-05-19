@@ -3,7 +3,9 @@ package com.example.vhsrental.ui.viewmodels
 import androidx.lifecycle.ViewModel
 import com.example.vhsrental.data.exceptions.OrderExceptions
 import com.example.vhsrental.data.models.DomainMovie
+import com.example.vhsrental.data.models.DomainOrder
 import com.example.vhsrental.data.models.DomainUser
+import com.example.vhsrental.data.models.OrderRecord
 import com.example.vhsrental.data.repositories.OrderRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -15,8 +17,10 @@ import javax.inject.Inject
 sealed class CreateOrderActions {
     data class OnUserUpdate(val update: DomainUser) : CreateOrderActions()
     data class OnMovieUpdate(val update: DomainMovie) : CreateOrderActions()
+    data class OnCreateOrderFromReservation(val reservation: DomainOrder) : CreateOrderActions()
     data object OnCreateOrder : CreateOrderActions()
     data object OnOrderConfirm : CreateOrderActions()
+    data object OnOrderFromReservationConfirm : CreateOrderActions()
     data object OnClearUser : CreateOrderActions()
     data object OnClearMovie : CreateOrderActions()
 }
@@ -24,6 +28,7 @@ sealed class CreateOrderActions {
 data class CreateOrderUiState (
     val movie: DomainMovie? = null,
     val user: DomainUser? = null,
+    val reservation: DomainOrder? = null,
     val canCreate: Boolean = false,
 )
 
@@ -52,6 +57,10 @@ class OrderCreatingViewModel @Inject constructor(
                 checkCanCreate()
             }
             is CreateOrderActions.OnOrderConfirm -> createOrder()
+            is CreateOrderActions.OnCreateOrderFromReservation ->
+                _uiStateFlow.update { uiStateFlow.value.copy(reservation = action.reservation) }
+            CreateOrderActions.OnOrderFromReservationConfirm ->
+                createOrderFromReservation()
         }
     }
 
@@ -68,6 +77,12 @@ class OrderCreatingViewModel @Inject constructor(
         } else {
             _uiStateFlow.update { uiStateFlow.value.copy(canCreate = false) }
         }
+    }
+
+    private fun createOrderFromReservation() {
+        repository.createOrderFromReservation(
+            reservation = uiStateFlow.value.reservation ?: throw OrderExceptions.EmptyFieldException()
+        )
     }
 
     private fun createOrder() = repository.createOrder(
