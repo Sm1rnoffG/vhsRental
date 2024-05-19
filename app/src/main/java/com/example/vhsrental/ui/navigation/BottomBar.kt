@@ -80,11 +80,8 @@ fun BottomBar(
                         else -> Unit
                     }
                     navController.navigate(triple.third.route) {
-                        popUpTo(navController.graph.findStartDestination().id) {
-                            saveState = true
-                        }
+                        popUpTo(navController.graph.findStartDestination().id)
                         launchSingleTop = true
-                        restoreState = true
                     }
                 }
             )

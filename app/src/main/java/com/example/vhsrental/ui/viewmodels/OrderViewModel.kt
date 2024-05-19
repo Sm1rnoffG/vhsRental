@@ -26,6 +26,7 @@ sealed class OrderActions {
     data class OnFilter(val filterFunction: (OrderRecord) -> Boolean) : OrderActions()
     data class OnSort(val sortFunction: Comparator<OrderRecord>, val flipped: Boolean) : OrderActions()
     data class OnDeleteUser(val userId: Long) : OrderActions()
+    data class OnDeleteMovie(val movieId: Long) : OrderActions()
     data class OnLoadMyList(val user: DomainUser): OrderActions()
     data object OnOrderFinish : OrderActions()
     data object OnLoadList : OrderActions()
@@ -75,6 +76,8 @@ class OrderViewModel @Inject constructor(
                 _uiStateFlow.update { uiStateFlow.value.copy(orders = uiStateFlow.value.orders.sort(action.sortFunction, action.flipped)) }
             is OrderActions.UpdateSearchValue ->
                 _uiStateFlow.update { uiStateFlow.value.copy(orders = uiStateFlow.value.orders.updateSearch(action.update)) }
+            is OrderActions.OnDeleteMovie ->
+                deleteMovieOrders(action.movieId)
         }
     }
 
@@ -140,5 +143,11 @@ class OrderViewModel @Inject constructor(
 
         orderRepository.insert(updatedOrder)
         reload(userRepository.getUserById(updatedOrder.user))
+    }
+
+    private fun deleteMovieOrders(id: Long) {
+        orderRepository.deleteMovieOrders(
+            getAllOrders().filter { it.movie == id }
+        )
     }
 }

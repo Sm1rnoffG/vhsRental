@@ -8,8 +8,9 @@ import com.example.vhsrental.data.exceptions.MovieExceptions
 import com.example.vhsrental.data.models.DBMovie
 import com.example.vhsrental.data.models.DBOrder
 import com.example.vhsrental.data.models.DBUser
-import com.example.vhsrental.data.models.DEFAULT_MOVIE
 import com.example.vhsrental.data.models.DEFAULT_USER
+import com.example.vhsrental.data.models.Role
+import java.security.MessageDigest
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -21,6 +22,17 @@ class VHSRentalDB @Inject constructor(context: Context) {
         context = context,
         name = "vhsrental.db"
     )
+
+    init {
+        // context.deleteDatabase("vhsrental.db")
+        addUser(
+            DBUser(
+                0, "main", "admin", "admin@gmail.com",
+                MessageDigest.getInstance("SHA-256").digest("admin".toByteArray()),
+                Role.Employee.ordinal.toLong()
+            )
+        )
+    }
 
     fun selectAllMovies() : List<DBMovie> = VHSRental(driver).movieQueries
             .selectAll()

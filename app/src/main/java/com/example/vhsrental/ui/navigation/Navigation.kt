@@ -241,7 +241,9 @@ fun Navigation(
                     orderCreatingVm.emitAction(CreateOrderActions.OnCreateOrderFromReservation(record.order))
                     orderCreatingVm.emitAction(CreateOrderActions.OnMovieUpdate(record.movie))
                     orderCreatingVm.emitAction(CreateOrderActions.OnUserUpdate(record.user))
-                    navController.navigate(Screens.CreateFromReservation.name)
+                    navController.navigate(Screens.CreateFromReservation.name) {
+                        popUpTo(Tab.Orders.route) { inclusive = false }
+                    }
                 },
             )
         }

@@ -74,4 +74,8 @@ class OrderRepository @Inject constructor(
     }
 
     fun getOrderById(id: Long) = db.getOrderById(id).asDomainModel()
+
+    fun deleteMovieOrders(orders: List<DomainOrder>) {
+        db.deleteMultipleOrders(orders.map { it.asDBModel() })
+    }
 }

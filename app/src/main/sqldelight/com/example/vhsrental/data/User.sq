@@ -36,7 +36,7 @@ SELECT * FROM user
 WHERE email = ?;
 
 addUser:
-INSERT OR ABORT INTO user (
+INSERT OR REPLACE INTO user (
     id,
     name,
     surname,
@@ -45,6 +45,3 @@ INSERT OR ABORT INTO user (
     role
 )
 VALUES (?, ?, ?, ?, ?, ?);
-
-INSERT INTO user (id, name, surname, email, password, role)
-VALUES (0, "main", "admin", "admin@vhsrental.com", 63510138342444003596188279565448361031871357402171886015166189192138742868248, 0);
