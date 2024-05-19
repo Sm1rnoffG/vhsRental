@@ -121,6 +121,8 @@ fun OrderSortOptions(
     if (asEmployee) buttons.addAll(listOf(
         Triple(stringResource(id = R.string.sort_order_id_asc), false, compareBy { it.order.id }),
         Triple(stringResource(id = R.string.sort_order_id_desc), true, compareBy { it.order.id }),
+        Triple(stringResource(id = R.string.sort_order_email_asc), false, compareBy { it.user.email }),
+        Triple(stringResource(id = R.string.sort_order_email_desc), true, compareBy { it.user.email })
     ))
 
     LazyColumn (

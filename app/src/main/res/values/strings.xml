@@ -31,6 +31,8 @@
     <string name="sort_order_movie_name_desc">By movie name descending</string>
     <string name="sort_order_id_asc">By id descending</string>
     <string name="sort_order_id_desc">By id descending</string>
+    <string name="sort_order_email_asc">By user e-mail ascending</string>
+    <string name="sort_order_email_desc">By user e-mail descending</string>
     <string name="sort_movie_name_asc">By name ascending</string>
     <string name="sort_movie_name_desc">By name descending</string>
     <string name="sort_movie_year_asc">By release year ascending</string>
