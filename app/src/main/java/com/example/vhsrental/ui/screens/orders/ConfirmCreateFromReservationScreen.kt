@@ -29,7 +29,7 @@ fun ConfirmCreateFromReservation(
 ) {
     Column (
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.SpaceAround,
+        verticalArrangement = Arrangement.Center,
         modifier = modifier
             .fillMaxWidth()
             .fillMaxHeight()
@@ -39,13 +39,11 @@ fun ConfirmCreateFromReservation(
             fontSize = 35.sp,
         )
         Text(
-            text = stringResource(id = R.string.res_order_movie_heading) +
-                    reservation.user?.name +
-                    reservation.user?.surname,
+            text = "${stringResource(id = R.string.res_order_user_heading)} ${reservation.user?.name} ${reservation.user?.surname}",
             fontSize = 20.sp
         )
         Text(
-            text = stringResource(id = R.string.res_order_movie_heading) + reservation.movie?.name,
+            text = "${stringResource(id = R.string.res_order_movie_heading)} ${reservation.movie?.name}",
             fontSize = 20.sp
         )
         Spacer(Modifier.size(5.dp))

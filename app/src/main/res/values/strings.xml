@@ -161,7 +161,7 @@
     <string name="my_orders_tab">My Orders</string>
     <string name="orders_tab">All Orders</string>
     <string name="users_tab">Mange Users</string>
-    <string name="not_signed_in">Not signed int</string>
+    <string name="not_signed_in">Not signed in</string>
     <string name="shop_icon">Shop icon</string>
     <string name="successful_movie_update">Changes were successfully saved</string>
     <string name="delete_movie_dialog">You are about to delete this movie permanently from the database</string>

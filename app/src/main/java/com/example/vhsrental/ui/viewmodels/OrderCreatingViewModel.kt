@@ -6,6 +6,7 @@ import com.example.vhsrental.data.models.DomainMovie
 import com.example.vhsrental.data.models.DomainOrder
 import com.example.vhsrental.data.models.DomainUser
 import com.example.vhsrental.data.models.OrderRecord
+import com.example.vhsrental.data.models.OrderState
 import com.example.vhsrental.data.repositories.OrderRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -72,7 +73,7 @@ class OrderCreatingViewModel @Inject constructor(
             _uiStateFlow.update { uiStateFlow.value.copy(
                 canCreate = repository.selectAll()
                     .filter { it.user == uiStateFlow.value.user?.id }
-                    .none { it.movie == uiStateFlow.value.movie?.id }
+                    .none { it.movie == uiStateFlow.value.movie?.id && it.state != OrderState.Done }
             ) }
         } else {
             _uiStateFlow.update { uiStateFlow.value.copy(canCreate = false) }

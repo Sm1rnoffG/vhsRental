@@ -42,7 +42,7 @@ fun CreateOrderScreen(
 ) {
     Column (
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.SpaceAround,
+        verticalArrangement = Arrangement.Center,
         modifier = modifier
             .fillMaxWidth()
             .fillMaxHeight(),
@@ -106,6 +106,7 @@ fun OrderField(
 ) {
     Row (
         horizontalArrangement = Arrangement.Center,
+        verticalAlignment = Alignment.CenterVertically,
         modifier = modifier
     ) {
         Text(
